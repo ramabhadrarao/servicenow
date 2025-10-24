@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Policies & Actions - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()">
+                        <i class="ti ti-eye"></i> Show All
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()">
+                        <i class="ti ti-eye-off"></i> Hide All
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Client-Side JavaScript - Topic 3</div>
+                            <h2 class="page-title">UI Policies & UI Actions</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            
+                            <!-- UI Policies Introduction -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What are UI Policies?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>UI Policies dynamically change form behavior based on specified conditions. They control field visibility, mandatory status, and read-only state without requiring JavaScript code.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Key Advantage
+                                        </div>
+                                        <p>UI Policies are declarative (no-code) and easier to maintain than client scripts. They run automatically when conditions are met, making forms responsive to user input.</p>
+                                    </div>
+
+                                    <h4 class="mt-4">UI Policy vs Client Script</h4>
+                                    <table class="table comparison-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Feature</th>
+                                                <th>UI Policy</th>
+                                                <th>Client Script</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Coding Required</strong></td>
+                                                <td>No (declarative)</td>
+                                                <td>Yes (JavaScript)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Actions</strong></td>
+                                                <td>Visible, Mandatory, Read-only</td>
+                                                <td>Any form manipulation</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Complexity</strong></td>
+                                                <td>Simple conditions</td>
+                                                <td>Complex logic</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Performance</strong></td>
+                                                <td>Optimized</td>
+                                                <td>Depends on code</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Maintenance</strong></td>
+                                                <td>Easier</td>
+                                                <td>Requires developer</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Creating UI Policies -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Creating UI Policies</h3>
+                                </div>
+                                <div class="card-body">
+                                    <h4>Components of a UI Policy</h4>
+                                    <ul>
+                                        <li><strong>Conditions:</strong> When should the policy run? (e.g., Priority is 1)</li>
+                                        <li><strong>UI Policy Actions:</strong> What fields to affect and how</li>
+                                        <li><strong>Execute on server:</strong> Run on form load (server-side)</li>
+                                        <li><strong>Reverse if false:</strong> Undo actions when condition becomes false</li>
+                                    </ul>
+
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Example: Priority-Based UI Policy</span>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>Table: incident
+Conditions: Priority is 1 (Critical)
+Actions:
+  - assignment_group: Mandatory = true
+  - assigned_to: Mandatory = true
+  - work_notes: Visible = true
+  
+Reverse if false: Yes
+Execute on server: No (runs client-side)</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Best Practice
+                                        </div>
+                                        <p>Use "Reverse if false" to automatically undo policy actions when conditions no longer match. Keep UI Policies simple - use client scripts for complex logic.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- UI Policy Actions -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">UI Policy Actions</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>UI Policy Actions define what happens to specific fields when policy conditions are met.</p>
+
+                                    <h4 class="mt-3">Available Actions</h4>
+                                    <table class="table comparison-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>Description</th>
+                                                <th>Example</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Mandatory</strong></td>
+                                                <td>Makes field required</td>
+                                                <td>Make assignment_group mandatory for P1 incidents</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Visible</strong></td>
+                                                <td>Shows/hides field</td>
+                                                <td>Show resolution fields only when state is Resolved</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Read only</strong></td>
+                                                <td>Makes field non-editable</td>
+                                                <td>Make number field read-only after creation</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>Example: State-Based Visibility</span>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>UI Policy: Show Resolution Fields
+Table: incident
+Conditions: State is Resolved OR State is Closed
+UI Policy Actions:
+  1. Field: close_notes
+     - Visible: true
+     - Mandatory: true
+  2. Field: close_code
+     - Visible: true
+     - Mandatory: true
+  3. Field: resolution_info (section)
+     - Visible: true</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- UI Policy Scripts -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">UI Policy Scripts (Advanced)</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>For complex scenarios, you can add JavaScript to UI Policies using the "Run scripts" checkbox.</p>
+
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>UI Policy with Script</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="ti ti-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Script runs when policy conditions are true
+function onConditionTrue() {
+    // Get priority value
+    var priority = g_form.getValue('priority');
+    
+    // Set field properties based on priority
+    if (priority == '1') {
+        g_form.setMandatory('assignment_group', true);
+        g_form.setMandatory('assigned_to', true);
+        g_form.showFieldMsg('priority', 'Critical - Immediate response required', 'error');
+    }
+}
+
+// Script runs when policy conditions become false
+function onConditionFalse() {
+    g_form.setMandatory('assignment_group', false);
+    g_form.setMandatory('assigned_to', false);
+    g_form.hideFieldMsg('priority');
+}
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="note-box mt-3">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> When to Use Scripts
+                                        </div>
+                                        <p>Use UI Policy scripts only when standard actions aren't sufficient. For purely visibility/mandatory/readonly changes, use standard UI Policy actions for better performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- UI Actions Introduction -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What are UI Actions?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>UI Actions are buttons, links, or context menu items that execute custom functionality on forms, lists, or related lists.</p>
+
+                                    <h4 class="mt-3">Types of UI Actions</h4>
+                                    <table class="table comparison-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>Location</th>
+                                                <th>Use Case</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Form Button</strong></td>
+                                                <td>Top or bottom of form</td>
+                                                <td>Submit, Update, Close incident</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Form Link</strong></td>
+                                                <td>Form header/footer</td>
+                                                <td>Open related record, Print</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Form Context Menu</strong></td>
+                                                <td>Right-click menu</td>
+                                                <td>Insert and Stay, Delete</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>List Button</strong></td>
+                                                <td>Above list</td>
+                                                <td>New, Export, Bulk actions</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>List Choice</strong></td>
+                                                <td>Actions on selected dropdown</td>
+                                                <td>Update selected, Delete selected</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>List Banner Button</strong></td>
+                                                <td>List banner area</td>
+                                                <td>Create new type records</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Creating UI Actions -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Creating UI Actions</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Client-Side UI Action (Form Button)</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="ti ti-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// UI Action Configuration:
+Name: Escalate to Manager
+Table: incident
+Action name: escalate_manager
+Client: true
+Form button: true
+Condition: current.state < 6 && current.priority <= 2
+
+// Client Script:
+function onClick() {
+    // Validate
+    if (g_form.getValue('assignment_group') == '') {
+        alert('Please assign to a group first');
+        return false;
+    }
+    
+    // Confirm action
+    var confirmed = confirm('Escalate this incident to management?');
+    if (!confirmed) {
+        return false;
+    }
+    
+    // Update fields
+    g_form.setValue('escalation', '1');
+    g_form.setValue('priority', '1');
+    g_form.addInfoMessage('Incident escalated to management');
+    
+    // Submit form
+    g_form.submit();
+}
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>Server-Side UI Action</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="ti ti-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// UI Action Configuration:
+Name: Assign to Me
+Table: incident
+Action name: assign_to_me
+Client: false (server-side)
+Form button: true
+Condition: current.assigned_to.nil()
+
+// Server Script:
+(function() {
+    // Assign to current user
+    current.assigned_to = gs.getUserID();
+    current.state = '2'; // In Progress
+    current.update();
+    
+    // Display success message
+    gs.addInfoMessage('Incident assigned to you');
+    
+    // Return to form
+    action.setRedirectURL(current);
+})();
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Client vs Server
+                                        </div>
+                                        <p><strong>Client-side:</strong> Faster, validates before submission, can prevent form submit. <strong>Server-side:</strong> Access to full GlideRecord API, more secure for data changes, can trigger business rules.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- UI Action Conditions -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">UI Action Conditions</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Conditions control when UI Actions are visible/available to users.</p>
+
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Example Conditions</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="ti ti-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Show only for active incidents
+current.active == true
+
+// Show for high priority only
+current.priority == '1' || current.priority == '2'
+
+// Show only if unassigned
+current.assigned_to.nil()
+
+// Show only for specific users/roles
+gs.hasRole('itil') || gs.hasRole('admin')
+
+// Show only on new records
+current.isNewRecord()
+
+// Show only on existing records
+!current.isNewRecord()
+
+// Show based on state
+current.state != '6' && current.state != '7'
+
+// Complex condition
+current.priority <= '2' && current.assignment_group.nil() && gs.hasRole('manager')
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- List UI Actions -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">List UI Actions</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Bulk Update List Action</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="ti ti-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// UI Action Configuration:
+Name: Bulk Assign
+Table: incident
+List choice: true
+Client: false
+
+// Server Script:
+(function() {
+    var records = [];
+    var sysIds = g_list.getChecked().split(',');
+    
+    // Get assignment group from user
+    var groupID = g_form.getValue('assignment_group');
+    
+    if (!groupID) {
+        gs.addErrorMessage('Please select an assignment group first');
+        return;
+    }
+    
+    // Update all selected records
+    var gr = new GlideRecord('incident');
+    for (var i = 0; i < sysIds.length; i++) {
+        if (gr.get(sysIds[i])) {
+            gr.assignment_group = groupID;
+            gr.state = '2'; // In Progress
+            gr.update();
+            records.push(gr.number.toString());
+        }
+    }
+    
+    gs.addInfoMessage('Updated ' + records.length + ' incidents: ' + records.join(', '));
+})();
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (10 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <!-- Question 1 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is the primary advantage of UI Policies over Client Scripts?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) They run faster</li>
+                                        <li>B) They are declarative and require no code</li>
+                                        <li>C) They can do more actions</li>
+                                        <li>D) They work on the server side</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            UI Policies are declarative (no-code) configuration, making them easier to create and maintain than JavaScript client scripts. They're ideal for simple visibility, mandatory, and read-only changes.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 2 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does the "Reverse if false" option do in UI Policies?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Reverses the order of actions</li>
+                                        <li>B) Undoes the policy actions when conditions become false</li>
+                                        <li>C) Reverses the condition logic</li>
+                                        <li>D) Prevents the policy from running</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            "Reverse if false" automatically undoes the policy actions when the conditions no longer match. For example, if a field was made mandatory when priority=1, it becomes optional again when priority changes.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 3 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which actions can UI Policies perform on fields?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Only visibility</li>
+                                        <li>B) Visibility, mandatory, and read-only</li>
+                                        <li>C) Any form manipulation</li>
+                                        <li>D) Only mandatory</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            UI Policy Actions can control three aspects: Visibility (show/hide), Mandatory (required/optional), and Read-only (editable/non-editable). For more complex actions, use client scripts.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 4 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is the difference between client-side and server-side UI Actions?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) No functional difference</li>
+                                        <li>B) Client-side is faster and can prevent form submission; server-side has full database access</li>
+                                        <li>C) Server-side is always better</li>
+                                        <li>D) Client-side can only read data</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Client-side UI Actions run in the browser, are faster, and can validate/prevent form submission. Server-side UI Actions have access to GlideRecord and full server APIs, are more secure for data changes, and can trigger business rules.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 5 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Where can Form Button UI Actions appear?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Only at the top of the form</li>
+                                        <li>B) Only at the bottom of the form</li>
+                                        <li>C) At both the top and bottom of the form</li>
+                                        <li>D) In the form header only</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            Form Button UI Actions appear at both the top and bottom of forms by default. You can control their position using the "Show insert" and "Show update" checkboxes.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 6 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does the Condition field in a UI Action do?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Executes code when true</li>
+                                        <li>B) Controls when the UI Action is visible/available</li>
+                                        <li>C) Validates form data</li>
+                                        <li>D) Sets the button color</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            The Condition field determines when the UI Action button/link appears. If the condition evaluates to false, the UI Action is hidden. Example: current.state != '6' shows button only for non-closed records.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 7 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>When should you use UI Policy scripts instead of standard UI Policy actions?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Always use scripts for better performance</li>
+                                        <li>B) Only when standard actions (visibility, mandatory, readonly) are insufficient</li>
+                                        <li>C) Never use scripts in UI Policies</li>
+                                        <li>D) When you want to query the database</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use standard UI Policy actions when possible for better performance and maintainability. Only add scripts when you need complex logic that can't be achieved with standard actions like showing field messages or complex field manipulations.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 8 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you make a client-side UI Action submit the form?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) form.submit()</li>
+                                        <li>B) g_form.submit()</li>
+                                        <li>C) current.submit()</li>
+                                        <li>D) action.submit()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            In client-side UI Actions, use g_form.submit() to submit the form. You can also prevent submission by returning false from the onClick function.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 9 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What type of UI Action is used for bulk operations on list views?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Form Button</li>
+                                        <li>B) List Choice</li>
+                                        <li>C) Form Link</li>
+                                        <li>D) Context Menu</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            List Choice UI Actions appear in the "Actions on selected" dropdown and operate on multiple selected records. They're ideal for bulk updates, deletions, or other mass operations.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 10 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can UI Policies run on the server side?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) No, they only run client-side</li>
+                                        <li>B) Yes, when "Execute on server" is checked, they run on form load</li>
+                                        <li>C) Yes, they always run on the server</li>
+                                        <li>D) Only with a special license</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            When "Execute on server" is checked, the UI Policy evaluates on the server during form load, before the form is sent to the client. This is useful for policies that should apply immediately when opening a record.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">Navigation</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="client-scripts.html" class="list-group-item list-group-item-action">
+                                        <i class="ti ti-arrow-left me-2"></i> Previous: Client Scripts
+                                    </a>
+                                    <a href="glideform-glideuser.html" class="list-group-item list-group-item-action">
+                                        Next: g_form & g_user <i class="ti ti-arrow-right ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>Key Takeaways</h4>
+                                    <ul>
+                                        <li>UI Policies = no-code field control</li>
+                                        <li>Actions: visible, mandatory, readonly</li>
+                                        <li>Use "Reverse if false" for dynamic behavior</li>
+                                        <li>UI Actions = custom buttons/links</li>
+                                        <li>Client-side = fast, can prevent submit</li>
+                                        <li>Server-side = full database access</li>
+                                        <li>Use conditions to control visibility</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                                <li class="list-inline-item"><a href="glideform-glideuser.html">Next Topic</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>

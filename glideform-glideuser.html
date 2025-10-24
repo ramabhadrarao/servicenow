@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>g_form & g_user APIs - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()"><i class="ti ti-eye"></i> Show All</button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()"><i class="ti ti-eye-off"></i> Hide All</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Client-Side JavaScript - Topic 4</div>
+                            <h2 class="page-title">g_form & g_user APIs</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row row-deck row-cards">
+                        <div class="col-lg-8">
+                            
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What is g_form?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>g_form is the primary client-side API for interacting with forms. It provides methods to get/set values, control field behavior, display messages, and manipulate form elements.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Critical for Exams
+                                        </div>
+                                        <p>g_form is heavily tested in CSA and CAD exams. Master getValue(), setValue(), setMandatory(), setDisplay(), addInfoMessage(), and clearValue().</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Getting and Setting Field Values</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>getValue() and setValue()</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Get field value
+var priority = g_form.getValue('priority');
+var state = g_form.getValue('state');
+
+// Get display value (for reference fields)
+var assignedToName = g_form.getDisplayValue('assigned_to');
+var groupName = g_form.getDisplayValue('assignment_group');
+
+// Set field value
+g_form.setValue('priority', '1');
+g_form.setValue('short_description', 'Email server down');
+
+// Set reference field (pass sys_id)
+g_form.setValue('assigned_to', 'user_sys_id_here');
+g_form.setValue('assignment_group', 'group_sys_id_here');
+
+// Set value with display value
+g_form.setValue('assigned_to', 'user_sys_id', 'John Doe');
+
+// Clear field value
+g_form.clearValue('assignment_group');
+g_form.clearValue('assigned_to');
+
+// Example: Copy caller to assigned user
+var caller = g_form.getValue('caller_id');
+if (caller) {
+    g_form.setValue('assigned_to', caller);
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Field Visibility and Display</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Show/Hide Fields and Sections</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Hide field
+g_form.setDisplay('assigned_to', false);
+
+// Show field
+g_form.setDisplay('assignment_group', true);
+
+// Hide multiple fields
+g_form.setDisplay('caller_id', false);
+g_form.setDisplay('contact_type', false);
+
+// Show/hide section
+g_form.setSectionDisplay('resolution_info', true);
+g_form.setSectionDisplay('closure_information', false);
+
+// Example: Show resolution fields only when resolved
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || isTemplate) return;
+    
+    if (newValue == '6') {  // Resolved
+        g_form.setSectionDisplay('resolution_info', true);
+        g_form.setMandatory('close_notes', true);
+    } else {
+        g_form.setSectionDisplay('resolution_info', false);
+        g_form.setMandatory('close_notes', false);
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Mandatory and Read-Only Fields</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Field Requirements and Editability</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Make field mandatory
+g_form.setMandatory('assignment_group', true);
+
+// Remove mandatory requirement
+g_form.setMandatory('assigned_to', false);
+
+// Check if field is mandatory
+var isMandatory = g_form.isMandatory('priority');
+
+// Make field read-only
+g_form.setReadOnly('number', true);
+
+// Make field editable
+g_form.setReadOnly('short_description', false);
+
+// Disable field (similar to read-only)
+g_form.setDisabled('state', true);
+
+// Enable field
+g_form.setDisabled('priority', false);
+
+// Example: Critical incidents require assignment
+if (g_form.getValue('priority') == '1') {
+    g_form.setMandatory('assignment_group', true);
+    g_form.setMandatory('assigned_to', true);
+} else {
+    g_form.setMandatory('assignment_group', false);
+    g_form.setMandatory('assigned_to', false);
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">User Messages and Field Messages</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Display Messages to Users</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Info message (blue banner)
+g_form.addInfoMessage('Record updated successfully');
+
+// Error message (red banner)
+g_form.addErrorMessage('Please fill in all required fields');
+
+// Warning message (yellow banner)  
+g_form.addWarningMessage('This action cannot be undone');
+
+// Clear all messages
+g_form.clearMessages();
+
+// Field-specific message
+g_form.showFieldMsg('priority', 'Critical priority requires immediate attention', 'info');
+g_form.showFieldMsg('assignment_group', 'Required for P1 incidents', 'error');
+g_form.showFieldMsg('assigned_to', 'Assign to available team member', 'warning');
+
+// Hide field message
+g_form.hideFieldMsg('priority');
+g_form.hideFieldMsg('assignment_group', false);  // Don't clear other messages
+
+// Example: Validation with messages
+function onSubmit() {
+    if (g_form.getValue('priority') == '1' && 
+        g_form.getValue('assignment_group') == '') {
+        g_form.addErrorMessage('Critical incidents must have an assignment group');
+        g_form.showFieldMsg('assignment_group', 'This field is required', 'error');
+        return false;
+    }
+    return true;
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Form Submission and Actions</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Control Form Submission</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Submit form
+g_form.submit();
+
+// Submit form with action name
+g_form.submit('insert_and_stay');
+g_form.submit('update');
+
+// Disable form submit button
+g_form.disableButton('submit');
+g_form.disableButton('insert');
+
+// Enable form submit button
+g_form.enableButton('submit');
+
+// Example: Validate and submit
+function validateAndSubmit() {
+    if (g_form.getValue('short_description') == '') {
+        g_form.addErrorMessage('Description is required');
+        return;
+    }
+    g_form.submit();
+}
+
+// Save form (same as submit but returns to list)
+g_form.save();
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Reference Field Methods</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Working with Reference Fields</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Get reference sys_id
+var assignedToID = g_form.getValue('assigned_to');
+
+// Get reference display value
+var assignedToName = g_form.getDisplayValue('assigned_to');
+
+// Get reference field object
+var refField = g_form.getReference('assigned_to', function(ref) {
+    if (ref) {
+        var email = ref.email;
+        var phone = ref.phone;
+        alert('User: ' + ref.name + ', Email: ' + email);
+    }
+});
+
+// Add filter to reference field
+g_form.addFilter('assigned_to', 'active', true);
+g_form.addFilter('assignment_group', 'type', 'support');
+
+// Example: Filter users by selected group
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || isTemplate) return;
+    
+    // Clear assigned user when group changes
+    g_form.clearValue('assigned_to');
+    
+    // Filter assigned_to by selected group
+    if (newValue) {
+        g_form.addFilter('assigned_to', 'member_of', newValue);
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Form Utility Methods</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Additional g_form Methods</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Check if form is new
+var isNew = g_form.isNewRecord();
+
+// Get form's sys_id
+var sysID = g_form.getUniqueValue();
+
+// Get table name
+var tableName = g_form.getTableName();
+
+// Get section names
+var sections = g_form.getSections();
+
+// Flash field (highlight briefly)
+g_form.flash('priority', '#FF0000', 0);  // Red flash
+
+// Add option to choice list
+g_form.addOption('state', '10', 'Custom State');
+
+// Clear options from choice list
+g_form.clearOptions('category');
+
+// Remove option from choice list
+g_form.removeOption('priority', '5');
+
+// Hide all field messages
+g_form.hideAllFieldMsgs();
+
+// Hide related lists
+g_form.hideRelatedList('incident_task');
+
+// Show related lists
+g_form.showRelatedList('incident_task');
+
+// Example: New record setup
+function onLoad() {
+    if (g_form.isNewRecord()) {
+        g_form.setValue('caller_id', g_user.userID);
+        g_form.setValue('opened_by', g_user.userID);
+        g_form.addInfoMessage('Creating new incident for ' + g_user.firstName);
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What is g_user?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>g_user provides information about the currently logged-in user in client scripts. It's a client-side object containing user properties.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>g_user Properties and Methods</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// User properties
+var userID = g_user.userID;              // sys_id
+var userName = g_user.userName;          // username (e.g., 'john.doe')
+var firstName = g_user.firstName;        // First name
+var lastName = g_user.lastName;          // Last name
+var fullName = g_user.firstName + ' ' + g_user.lastName;
+
+// Check if user has role
+var hasAdmin = g_user.hasRole('admin');
+var hasITIL = g_user.hasRole('itil');
+
+// Check multiple roles (OR logic)
+var hasCriticalRole = g_user.hasRole('admin,itil');
+
+// Client data (custom user properties)
+var clientData = g_user.getClientData('custom_property');
+
+// Example: Auto-assign new records to current user
+function onLoad() {
+    if (g_form.isNewRecord()) {
+        g_form.setValue('opened_by', g_user.userID);
+        g_form.setValue('caller_id', g_user.userID);
+        
+        if (g_user.hasRole('itil')) {
+            g_form.setValue('contact_type', 'self-service');
+        }
+    }
+}
+
+// Example: Role-based field control
+function onLoad() {
+    if (!g_user.hasRole('admin')) {
+        g_form.setReadOnly('state', true);
+        g_form.setReadOnly('priority', true);
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Common g_form Patterns</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Real-World Examples</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Pattern 1: Conditional mandatory fields
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || isTemplate) return;
+    
+    if (newValue == '1') {  // Critical priority
+        g_form.setMandatory('assignment_group', true);
+        g_form.setMandatory('assigned_to', true);
+        g_form.showFieldMsg('priority', 'Immediate response required', 'error');
+    } else {
+        g_form.setMandatory('assignment_group', false);
+        g_form.setMandatory('assigned_to', false);
+        g_form.hideFieldMsg('priority');
+    }
+}
+
+// Pattern 2: Cascading field updates
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || isTemplate) return;
+    
+    // Clear dependent field
+    g_form.clearValue('subcategory');
+    
+    // Add filter for dependent field
+    if (newValue) {
+        g_form.addFilter('subcategory', 'parent', newValue);
+    }
+}
+
+// Pattern 3: Form validation
+function onSubmit() {
+    var priority = g_form.getValue('priority');
+    var group = g_form.getValue('assignment_group');
+    
+    if (priority == '1' && group == '') {
+        g_form.addErrorMessage('Critical incidents require an assignment group');
+        g_form.showFieldMsg('assignment_group', 'Required', 'error');
+        return false;
+    }
+    
+    return true;
+}
+
+// Pattern 4: Dynamic field visibility
+function onLoad() {
+    var state = g_form.getValue('state');
+    
+    if (state == '6' || state == '7') {  // Resolved or Closed
+        g_form.setSectionDisplay('resolution_info', true);
+        g_form.setMandatory('close_notes', true);
+    } else {
+        g_form.setSectionDisplay('resolution_info', false);
+    }
+}
+
+// Pattern 5: User-specific defaults
+function onLoad() {
+    if (g_form.isNewRecord()) {
+        g_form.setValue('opened_by', g_user.userID);
+        g_form.setValue('caller_id', g_user.userID);
+        
+        if (g_user.hasRole('vip')) {
+            g_form.setValue('priority', '2');
+            g_form.addInfoMessage('VIP user - High priority assigned');
+        }
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (18 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <!-- Questions 1-18 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you get a field value in a client script?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.getFieldValue('field')</li>
+                                        <li>B) g_form.getValue('field')</li>
+                                        <li>C) g_form.get('field')</li>
+                                        <li>D) g_form.field.value</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_form.getValue('field_name') retrieves the value of a form field. For reference fields, it returns the sys_id. Use getDisplayValue() to get the display name of reference fields.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you make a field mandatory using g_form?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.setRequired('field', true)</li>
+                                        <li>B) g_form.setMandatory('field', true)</li>
+                                        <li>C) g_form.mandatory('field')</li>
+                                        <li>D) g_form.require('field', true)</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_form.setMandatory('field_name', true) makes a field required. Use false to remove the requirement. This is one of the most common g_form methods in exams.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does g_form.getDisplayValue() return for reference fields?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) The sys_id of the referenced record</li>
+                                        <li>B) The display value/name of the referenced record</li>
+                                        <li>C) The entire record object</li>
+                                        <li>D) A JSON string</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            getDisplayValue() returns the display value (name) of reference fields. getValue() returns the sys_id. Example: getValue('assigned_to') returns sys_id, getDisplayValue('assigned_to') returns "John Doe".
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you hide a field using g_form?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.hideField('field')</li>
+                                        <li>B) g_form.setVisible('field', false)</li>
+                                        <li>C) g_form.setDisplay('field', false)</li>
+                                        <li>D) g_form.hide('field')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            g_form.setDisplay('field_name', false) hides a field. Use true to show it. To hide entire sections, use g_form.setSectionDisplay('section_name', false).
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you display an error message to the user?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.showError('message')</li>
+                                        <li>B) g_form.addErrorMessage('message')</li>
+                                        <li>C) g_form.errorMessage('message')</li>
+                                        <li>D) g_form.displayError('message')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_form.addErrorMessage('text') displays a red error banner. Also available: addInfoMessage() for blue info banner, addWarningMessage() for yellow warning banner.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does g_form.clearValue() do?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Clears all form fields</li>
+                                        <li>B) Removes a specific field from the form</li>
+                                        <li>C) Clears the value of a specific field</li>
+                                        <li>D) Validates the field value</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            g_form.clearValue('field_name') sets a field's value to empty. Commonly used when clearing dependent fields, like clearing subcategory when category changes.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you submit a form using g_form?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.save()</li>
+                                        <li>B) g_form.submit()</li>
+                                        <li>C) g_form.update()</li>
+                                        <li>D) g_form.send()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_form.submit() submits the form. Can pass action name: g_form.submit('insert_and_stay'). g_form.save() also works but returns to list view.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you make a field read-only?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.setReadOnly('field', true)</li>
+                                        <li>B) g_form.readOnly('field')</li>
+                                        <li>C) g_form.setEditable('field', false)</li>
+                                        <li>D) g_form.lock('field')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: A</strong>
+                                        <div class="explanation">
+                                            g_form.setReadOnly('field_name', true) makes a field read-only (non-editable). Use false to make it editable again. Also available: setDisabled() which is similar.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does g_user.userID contain?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) The username (login name)</li>
+                                        <li>B) The user's full name</li>
+                                        <li>C) The user's sys_id</li>
+                                        <li>D) The user's email</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            g_user.userID contains the current user's sys_id. g_user.userName contains the login name (e.g., 'john.doe'). g_user.firstName and lastName contain name parts.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you check if a user has a specific role using g_user?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) g_user.checkRole('admin')</li>
+                                        <li>B) g_user.hasRole('admin')</li>
+                                        <li>C) g_user.isRole('admin')</li>
+                                        <li>D) g_user.validateRole('admin')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_user.hasRole('role_name') returns true if the user has that role. Can check multiple roles with OR logic: g_user.hasRole('admin,itil') returns true if user has admin OR itil.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you show a field-specific message?</span>
+                                    <span class="question-number">Q11</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.addFieldMessage('field', 'text')</li>
+                                        <li>B) g_form.showFieldMsg('field', 'text', 'info')</li>
+                                        <li>C) g_form.fieldMessage('field', 'text')</li>
+                                        <li>D) g_form.setFieldMsg('field', 'text')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer11')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer11" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_form.showFieldMsg('field', 'message', 'type') displays a message under a specific field. Types: 'info' (blue), 'error' (red), 'warning' (yellow). Use hideFieldMsg() to remove.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does g_form.isNewRecord() return?</span>
+                                    <span class="question-number">Q12</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) The record's sys_id</li>
+                                        <li>B) True if the form is creating a new record</li>
+                                        <li>C) The record number</li>
+                                        <li>D) True if the record was recently created</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer12')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer12" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_form.isNewRecord() returns true if the form is for a new record (not yet saved), false for existing records. Commonly used in onLoad to set default values only for new records.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you get the sys_id of the current record?</span>
+                                    <span class="question-number">Q13</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.getSysID()</li>
+                                        <li>B) g_form.getUniqueValue()</li>
+                                        <li>C) g_form.getId()</li>
+                                        <li>D) g_form.recordID</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer13')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer13" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_form.getUniqueValue() returns the sys_id of the current record. Returns null for new records that haven't been saved yet.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you add a filter to a reference field?</span>
+                                    <span class="question-number">Q14</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.setFilter('field', 'condition', 'value')</li>
+                                        <li>B) g_form.addFilter('field', 'condition', 'value')</li>
+                                        <li>C) g_form.filter('field', 'condition', 'value')</li>
+                                        <li>D) g_form.applyFilter('field', 'condition', 'value')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer14')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer14" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_form.addFilter('field_name', 'condition_field', 'value') filters reference field choices. Example: g_form.addFilter('assigned_to', 'active', true) shows only active users.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does g_form.clearMessages() do?</span>
+                                    <span class="question-number">Q15</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Clears all form field values</li>
+                                        <li>B) Removes all banner messages (info, error, warning)</li>
+                                        <li>C) Clears the form history</li>
+                                        <li>D) Deletes the form</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer15')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer15" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_form.clearMessages() removes all banner messages (info, error, warning) from the top of the form. Field-specific messages are cleared with hideFieldMsg().
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you hide a section on the form?</span>
+                                    <span class="question-number">Q16</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.hideSection('section_name')</li>
+                                        <li>B) g_form.setSectionDisplay('section_name', false)</li>
+                                        <li>C) g_form.setDisplay('section_name', false)</li>
+                                        <li>D) g_form.sectionVisible('section_name', false)</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer16')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer16" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_form.setSectionDisplay('section_name', false) hides an entire form section. Use true to show it. setDisplay() is for individual fields, not sections.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can you use g_form in Business Rules?</span>
+                                    <span class="question-number">Q17</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Yes, in all business rules</li>
+                                        <li>B) Only in display business rules</li>
+                                        <li>C) No, g_form is client-side only</li>
+                                        <li>D) Only in before business rules</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer17')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer17" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_form is primarily client-side, but can be used in Display Business Rules which run after the form loads. For other business rules, use GlideRecord and the 'current' object instead.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What's the difference between setDisplay and setVisible?</span>
+                                    <span class="question-number">Q18</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) No difference, they're aliases</li>
+                                        <li>B) setDisplay exists, setVisible doesn't exist in g_form</li>
+                                        <li>C) setVisible is faster</li>
+                                        <li>D) setDisplay is for fields, setVisible for sections</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer18')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer18" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            setVisible() is not a valid g_form method. Always use setDisplay() to show/hide fields and setSectionDisplay() for sections.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">Navigation</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="ui-policies-actions.html" class="list-group-item list-group-item-action">
+                                        <i class="ti ti-arrow-left me-2"></i> Previous: UI Policies & Actions
+                                    </a>
+                                    <a href="glideajax.html" class="list-group-item list-group-item-action">
+                                        Next: GlideAjax <i class="ti ti-arrow-right ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>g_form Quick Reference</h4>
+                                    <ul class="small">
+                                        <li><code>getValue('field')</code></li>
+                                        <li><code>setValue('field', value)</code></li>
+                                        <li><code>getDisplayValue('field')</code></li>
+                                        <li><code>setMandatory('field', bool)</code></li>
+                                        <li><code>setDisplay('field', bool)</code></li>
+                                        <li><code>setReadOnly('field', bool)</code></li>
+                                        <li><code>addErrorMessage(text)</code></li>
+                                        <li><code>clearValue('field')</code></li>
+                                        <li><code>submit()</code></li>
+                                        <li><code>isNewRecord()</code></li>
+                                    </ul>
+                                    <h4 class="mt-3">g_user Properties</h4>
+                                    <ul class="small">
+                                        <li><code>g_user.userID</code></li>
+                                        <li><code>g_user.userName</code></li>
+                                        <li><code>g_user.firstName</code></li>
+                                        <li><code>g_user.hasRole('role')</code></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                                <li class="list-inline-item"><a href="glideajax.html">Next Topic</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>
