@@ -71,6 +71,8 @@ body {
     border-left: 4px solid var(--primary-color);
     transition: all 0.3s ease;
     overflow: visible;
+    display: block;
+    width: 100%;
 }
 
 .question-card:hover {
@@ -91,13 +93,13 @@ body {
     min-height: 60px;
 }
 
-/* Fix question text display */
+/* Fix question text display and prevent extreme shrinking */
 .question-header > span:first-child {
-    flex: 1 1 0%;
-    min-width: 0;
+    flex: 1 1 auto;
+    min-width: 280px;
     white-space: normal;
-    word-wrap: break-word;
     overflow-wrap: break-word;
+    word-break: normal;
     line-height: 1.5;
     padding-right: 1rem;
 }
@@ -591,4 +593,18 @@ strong {
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     background: white;
     border-bottom: 1px solid #e2e8f0;
+}
+
+/* Ensure cards stack vertically inside main content columns */
+.page-body .col-lg-8 > .card,
+.page-body .col-lg-4 > .card {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    float: none;
+}
+
+/* Defensive rule in case a deck/grid tries to compress cards */
+.row-cards .card {
+    flex: 0 0 100%;
 }
