@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Question Bank — CSA & CAD</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar navbar-expand-md navbar-light d-print-none">
+    <div class="container-xl">
+      <h1 class="navbar-brand">
+        <a href="../index.html"><i class="ti ti-arrow-left me-2"></i>Back to Home</a>
+      </h1>
+      <div class="navbar-nav flex-row order-md-last">
+        <button class="btn btn-primary me-2" onclick="showAllAnswers()"><i class="ti ti-eye"></i> Show All</button>
+        <button class="btn btn-outline-primary" onclick="hideAllAnswers()"><i class="ti ti-eye-off"></i> Hide All</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-wrapper">
+    <!-- Page header -->
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <div class="page-pretitle">Reference</div>
+            <h2 class="page-title">JavaScript Question Bank</h2>
+            <div class="text-muted">Focused on CSA/CAD exam topics with concise answers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page body -->
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row row-deck row-cards">
+
+          <!-- Quick Links to source references -->
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Source References</h3>
+              </div>
+              <div class="card-body">
+                <ul class="list-unstyled">
+                  <li><i class="ti ti-file-text me-1"></i> <a href="only javascript related_ give CSA and CAD exam rel.md" target="_blank">JavaScript-related — CSA/CAD</a></li>
+                  <li><i class="ti ti-file-text me-1"></i> <a href="serviceNow related model question paper with answe.md" target="_blank">ServiceNow model questions with answers</a></li>
+                  <li><i class="ti ti-file-text me-1"></i> <a href="give another set of question paper.md" target="_blank">Another set of question paper</a></li>
+                </ul>
+                <div class="text-muted small">These Markdown files open raw; content is curated below for quick practice.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search -->
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row g-2 align-items-center">
+                  <div class="col-auto">
+                    <i class="ti ti-search"></i>
+                  </div>
+                  <div class="col">
+                    <input id="qb-search" type="text" class="form-control" placeholder="Search questions..." oninput="searchQuestions(this.value)" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Question Bank -->
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Core JavaScript</h3>
+              </div>
+              <div class="card-body">
+                <!-- Q1 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q1.</strong> Difference between <code>var</code>, <code>let</code>, and <code>const</code>?</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q1')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q1" class="answer-section hide mt-2">
+                    <ul class="mb-0">
+                      <li><code>var</code>: function-scoped, hoisted, re-declarable</li>
+                      <li><code>let</code>: block-scoped, hoisted (TDZ), re-assignable</li>
+                      <li><code>const</code>: block-scoped, must initialize, not re-assigned</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q2.</strong> What is hoisting?</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q2')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q2" class="answer-section hide mt-2">
+                    <div>Declarations are moved to the top of scope during compilation. <code>var</code> declarations and function declarations hoist; <code>let/const</code> hoist but remain in the temporal dead zone until initialized.</div>
+                  </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q3.</strong> Explain <code>==</code> vs <code>===</code>.</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q3')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q3" class="answer-section hide mt-2">
+                    <div><code>==</code> performs type coercion before comparison; <code>===</code> compares both type and value without coercion. Prefer <code>===</code> for predictability.</div>
+                  </div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q4.</strong> What are closures? Give a practical use.</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q4')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q4" class="answer-section hide mt-2">
+                    <div>A closure retains access to its lexical scope even after the outer function returns. Use cases: private state, function factories, memoization, event handlers.</div>
+                  </div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q5.</strong> Describe event loop, call stack, and task queues.</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q5')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q5" class="answer-section hide mt-2">
+                    <div>Call stack runs synchronous code; Web APIs schedule async work. Macro/microtask queues (e.g., <code>setTimeout</code>, promises) are processed by the event loop when the stack is empty.</div>
+                  </div>
+                </div>
+
+                <!-- Q6 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q6.</strong> Explain <code>this</code> binding rules.</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q6')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q6" class="answer-section hide mt-2">
+                    <ul class="mb-0">
+                      <li>Default: global (<code>window</code>) or <code>undefined</code> in strict mode</li>
+                      <li>Implicit: object before dot</li>
+                      <li>Explicit: <code>call/apply/bind</code></li>
+                      <li>Arrow functions: lexical <code>this</code></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Q7 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q7.</strong> Difference between <code>null</code> and <code>undefined</code>?</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q7')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q7" class="answer-section hide mt-2">
+                    <div><code>undefined</code>: variable declared but not assigned; <code>null</code>: intentional absence of value by the programmer.</div>
+                  </div>
+                </div>
+
+                <!-- Q8 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q8.</strong> What is the difference between <code>map</code>, <code>forEach</code>, and <code>reduce</code>?</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q8')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q8" class="answer-section hide mt-2">
+                    <ul class="mb-0">
+                      <li><code>forEach</code>: iterate for side effects, returns <code>undefined</code></li>
+                      <li><code>map</code>: transforms each element, returns new array</li>
+                      <li><code>reduce</code>: accumulates into a single value</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Q9 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q9.</strong> What is a promise? Contrast with callbacks.</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q9')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q9" class="answer-section hide mt-2">
+                    <div>Promises represent eventual completion/failure of async operations with <code>then/catch</code>; avoid callback hell, standardize chaining, integrate with <code>async/await</code>.</div>
+                  </div>
+                </div>
+
+                <!-- Q10 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q10.</strong> Explain <code>async/await</code> and error handling.</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q10')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q10" class="answer-section hide mt-2">
+                    <div><code>async</code> functions return promises; <code>await</code> pauses inside <code>async</code> until promise settles. Use <code>try/catch</code> or attach <code>.catch</code> to awaited promise.</div>
+                  </div>
+                </div>
+
+                <!-- Add more groups as needed -->
+              </div>
+            </div>
+          </div>
+
+          <!-- ES6+ -->
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">ES6+ Features</h3>
+              </div>
+              <div class="card-body">
+                <!-- Q11 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q11.</strong> What are destructuring and default values?</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q11')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q11" class="answer-section hide mt-2">
+                    <div>Extract values from arrays/objects into variables: <code>const {a=1} = obj</code>, <code>const [x=0] = arr</code>. Defaults apply when the value is <code>undefined</code>.</div>
+                  </div>
+                </div>
+
+                <!-- Q12 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q12.</strong> Difference between rest <code>...</code> and spread <code>...</code>?</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q12')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q12" class="answer-section hide mt-2">
+                    <div>Rest collects remaining items (<code>function f(a, ...rest)</code>); spread expands iterable/object (<code>[...arr]</code>, <code>{...obj}</code>).</div>
+                  </div>
+                </div>
+
+                <!-- Q13 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q13.</strong> What are modules? How to import/export?</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q13')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q13" class="answer-section hide mt-2">
+                    <div>Use <code>export</code>/<code>export default</code> and <code>import</code>. Modules are file-scoped, support tree-shaking, and run in strict mode by default.</div>
+                  </div>
+                </div>
+
+                <!-- Q14 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q14.</strong> What is optional chaining and nullish coalescing?</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q14')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q14" class="answer-section hide mt-2">
+                    <div><code>?.</code> safely accesses nested properties; <code>??</code> provides a default when value is <code>null</code> or <code>undefined</code>.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ServiceNow Context -->
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">ServiceNow JavaScript Context</h3>
+              </div>
+              <div class="card-body">
+                <!-- Q15 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q15.</strong> Client Script types and typical use cases?</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q15')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q15" class="answer-section hide mt-2">
+                    <ul class="mb-0">
+                      <li><strong>onLoad:</strong> initialize UI</li>
+                      <li><strong>onChange:</strong> react to field changes</li>
+                      <li><strong>onSubmit:</strong> validate before submit</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Q16 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q16.</strong> What is <code>g_form</code>? Common methods?</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q16')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q16" class="answer-section hide mt-2">
+                    <div>Client-side API for form manipulation: <code>setValue</code>, <code>getValue</code>, <code>setDisplay</code>, <code>addInfoMessage</code>, <code>clearMessages</code>, etc.</div>
+                  </div>
+                </div>
+
+                <!-- Q17 -->
+                <div class="question-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>Q17.</strong> Server-side basics: <code>gs</code> object and GlideRecord?</div>
+                    <button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer('q17')"><i class="ti ti-eye me-1"></i>Show Answer</button>
+                  </div>
+                  <div id="q17" class="answer-section hide mt-2">
+                    <div><code>gs</code> provides logging, utilities. GlideRecord is used to query/update records server-side: <code>new GlideRecord('table')</code>, <code>addQuery</code>, <code>query</code>, <code>next</code>.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const files = [
+        { path: 'only javascript related_ give CSA and CAD exam rel.md', title: 'JavaScript — CSA/CAD' },
+        { path: 'serviceNow related model question paper with answe.md', title: 'ServiceNow Model Q&A' },
+        { path: 'give another set of question paper.md', title: 'Additional Question Set' }
+      ];
+
+      const rowContainer = document.querySelector('.row.row-deck.row-cards');
+      if (!rowContainer) return;
+
+      function sanitize(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function parseQuestionsFromMarkdown(md) {
+        const lines = md.split(/\r?\n/);
+        const items = [];
+        let currentQ = null;
+        let buffer = [];
+        let seenAny = false;
+
+        const isQuestionLine = (line) => {
+          return /^\s*(Q\s*\d+\.|Q\d+\.|\d+\.|\d+\)|Question[:\-])/i.test(line);
+        };
+        const isAnswerIndicator = (line) => {
+          return /^\s*(Ans(?:wer)?|Answer)[:\-]/i.test(line);
+        };
+
+        let collectingAnswer = false;
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          if (isQuestionLine(line)) {
+            seenAny = true;
+            if (currentQ) {
+              items.push({ question: currentQ.trim(), answer: buffer.join('\n').trim() });
+              buffer = [];
+            }
+            currentQ = line.replace(/^\s*(Question[:\-]\s*)/i, '').trim();
+            collectingAnswer = false;
+            continue;
+          }
+          if (isAnswerIndicator(line)) {
+            collectingAnswer = true;
+            continue;
+          }
+          if (currentQ) {
+            buffer.push(line);
+          }
+        }
+        if (currentQ) {
+          items.push({ question: currentQ.trim(), answer: buffer.join('\n').trim() });
+        }
+
+        // Fallback: derive Q/A by headings if no explicit markers
+        if (!seenAny && items.length === 0) {
+          const sections = md.split(/\n\s*#{1,6}\s+/);
+          if (sections.length > 1) {
+            sections.forEach((s) => {
+              const [firstLine, ...rest] = s.split(/\n/);
+              const q = (firstLine || '').trim();
+              const ans = rest.join('\n').trim();
+              if (q) items.push({ question: q, answer: ans });
+            });
+          }
+        }
+
+        return items.filter((it) => it.question);
+      }
+
+      function renderQuestions(items, sourceTitle) {
+        if (!items.length) return;
+
+        // Source header card
+        const headerCol = document.createElement('div');
+        headerCol.className = 'col-12';
+        const headerCard = document.createElement('div');
+        headerCard.className = 'card';
+        const headerBody = document.createElement('div');
+        headerBody.className = 'card-body';
+        headerBody.innerHTML = '<span class="text-muted"><i class="ti ti-folder me-1"></i>' + sanitize(sourceTitle) + '</span>';
+        headerCard.appendChild(headerBody);
+        headerCol.appendChild(headerCard);
+        rowContainer.appendChild(headerCol);
+
+        items.forEach((it, idx) => {
+          const col = document.createElement('div');
+          col.className = 'col-12';
+
+          const card = document.createElement('div');
+          card.className = 'card question-card';
+
+          const body = document.createElement('div');
+          body.className = 'card-body';
+
+          const id = sourceTitle.replace(/\W+/g, '_').toLowerCase() + '_' + (idx + 1);
+
+          const bar = document.createElement('div');
+          bar.className = 'd-flex justify-content-between align-items-center';
+          bar.innerHTML = '<div><strong>' + sanitize('Q' + (idx + 1) + '.') + '</strong> ' + sanitize(it.question) + '</div>' +
+            '<button class="btn btn-sm btn-outline-secondary toggle-answer" onclick="toggleAnswer(\'' + id + '\')"><i class="ti ti-eye me-1"></i>Show Answer</button>';
+
+          const ans = document.createElement('div');
+          ans.id = id;
+          ans.className = 'answer-section hide mt-2';
+          const safeAns = sanitize(it.answer || '').replace(/\n/g, '<br>');
+          ans.innerHTML = safeAns || '<span class="text-muted">No answer provided in source.</span>';
+
+          body.appendChild(bar);
+          body.appendChild(ans);
+          card.appendChild(body);
+          col.appendChild(card);
+          rowContainer.appendChild(col);
+        });
+      }
+
+      // Load files sequentially to keep sections grouped
+      files.reduce((p, f) => {
+        return p.then(() => fetch(f.path).then((r) => r.text())
+          .then((text) => {
+            const items = parseQuestionsFromMarkdown(text);
+            renderQuestions(items, f.title);
+          })
+          .catch(() => {
+            const warnCol = document.createElement('div');
+            warnCol.className = 'col-12';
+            const warn = document.createElement('div');
+            warn.className = 'alert alert-warning';
+            warn.textContent = 'Unable to load ' + f.path;
+            warnCol.appendChild(warn);
+            rowContainer.appendChild(warnCol);
+          }));
+      }, Promise.resolve());
+    });
+  </script>
+  <script src="../common.js"></script>
+</body>
+</html>
