@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheduled Jobs & Events - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()"><i class="ti ti-eye"></i> Show All</button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()"><i class="ti ti-eye-off"></i> Hide All</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Server-Side JavaScript - Topic 12</div>
+                            <h2 class="page-title">Scheduled Jobs & Events</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What are Scheduled Jobs?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Scheduled Jobs execute scripts automatically at specified times or intervals. They automate routine tasks like data cleanup, report generation, and maintenance.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Background Execution
+                                        </div>
+                                        <p>Scheduled Jobs run in the background without user interaction. They're perfect for maintenance, batch processing, and scheduled operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Creating Scheduled Jobs</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Basic Scheduled Job Script</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Scheduled Job: Close Old Incidents
+// Run: Daily at 2:00 AM
+// Repeat: Daily
+
+(function() {
+    var gr = new GlideRecord('incident');
+    gr.addQuery('state', '6'); // Resolved
+    gr.addQuery('resolved_at', '<', gs.daysAgoStart(30));
+    gr.query();
+    
+    var count = 0;
+    while (gr.next()) {
+        gr.state = '7'; // Closed
+        gr.close_code = 'Solved (Permanently)';
+        gr.close_notes = 'Auto-closed after 30 days';
+        gr.update();
+        count++;
+    }
+    
+    gs.info('Auto-closed ' + count + ' old incidents');
+})();
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>Scheduled Job: Generate Report</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Scheduled Job: Weekly Incident Report
+// Run: Every Monday at 8:00 AM
+
+(function() {
+    // Get incidents from last week
+    var ga = new GlideAggregate('incident');
+    ga.addQuery('sys_created_on', '>=', gs.daysAgoStart(7));
+    ga.groupBy('priority');
+    ga.addAggregate('COUNT');
+    ga.query();
+    
+    var report = 'Weekly Incident Report\n\n';
+    while (ga.next()) {
+        var priority = ga.priority.getDisplayValue();
+        var count = ga.getAggregate('COUNT');
+        report += priority + ': ' + count + ' incidents\n';
+    }
+    
+    // Send email
+    var email = new GlideEmailOutbound();
+    email.setSubject('Weekly Incident Report');
+    email.setBody(report);
+    email.addAddress('manager@company.com');
+    email.send();
+    
+    gs.info('Weekly report sent');
+})();
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Schedule Types</h3>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table comparison-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Schedule Type</th>
+                                                <th>When It Runs</th>
+                                                <th>Example</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Run once</strong></td>
+                                                <td>One time only</td>
+                                                <td>Import data on specific date</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Daily</strong></td>
+                                                <td>Every day at specific time</td>
+                                                <td>Nightly cleanup at 2 AM</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Weekly</strong></td>
+                                                <td>Specific day(s) of week</td>
+                                                <td>Monday morning reports</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Monthly</strong></td>
+                                                <td>Specific day of month</td>
+                                                <td>First of month billing</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Periodically</strong></td>
+                                                <td>Every N minutes/hours</td>
+                                                <td>Every 15 minutes integration</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Events and Event Processing</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Events trigger automated actions like notifications, scripts, and workflows. They provide loose coupling between system components.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Triggering Events</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Business Rule: Fire event when priority escalates
+if (current.priority.changesFrom('3').changesTo('1')) {
+    gs.eventQueue('incident.priority.critical', current, 
+                  current.assigned_to, current.assignment_group);
+}
+
+// Script: Trigger custom event
+gs.eventQueue('custom.order.shipped', orderRecord, 
+              customer_sys_id, order_number);
+
+// Fire event immediately (synchronous)
+gs.eventQueueScheduled('incident.assigned', current, 
+                       gs.nowDateTime(), current.assigned_to);
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>Script Action for Event</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Script Action: incident.priority.critical
+// Runs when event fires
+
+(function(current, event) {
+    // Create high-priority task
+    var task = new GlideRecord('incident_task');
+    task.initialize();
+    task.parent = current.sys_id;
+    task.short_description = 'Urgent: Review critical incident ' + current.number;
+    task.priority = '1';
+    task.assigned_to = event.parm2; // From eventQueue parameter
+    task.insert();
+    
+    // Log event
+    gs.info('Critical incident task created: ' + current.number);
+    
+})(current, event);
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Scheduled Job Best Practices</h3>
+                                </div>
+                                <div class="card-body">
+                                    <ul>
+                                        <li><strong>Schedule wisely:</strong> Run during off-peak hours to minimize impact</li>
+                                        <li><strong>Use conditionals:</strong> Check conditions before processing (business hours, holidays)</li>
+                                        <li><strong>Limit scope:</strong> Use setLimit() to process records in batches</li>
+                                        <li><strong>Log activity:</strong> Use gs.info() to track execution</li>
+                                        <li><strong>Error handling:</strong> Wrap in try-catch to prevent job failure</li>
+                                        <li><strong>Test thoroughly:</strong> Test with "Execute Now" before scheduling</li>
+                                    </ul>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>Robust Scheduled Job Template</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>(function() {
+    try {
+        var startTime = new GlideDateTime();
+        gs.info('Starting scheduled job: MyJobName');
+        
+        // Main logic
+        var gr = new GlideRecord('incident');
+        gr.addQuery('active', true);
+        gr.addQuery('priority', '1');
+        gr.setLimit(100); // Process in batches
+        gr.query();
+        
+        var processed = 0;
+        while (gr.next()) {
+            try {
+                // Process each record
+                gr.state = '2';
+                gr.update();
+                processed++;
+            } catch (ex) {
+                gs.error('Error processing record ' + gr.number + ': ' + ex.message);
+            }
+        }
+        
+        var endTime = new GlideDateTime();
+        var duration = GlideDateTime.subtract(startTime, endTime);
+        gs.info('Completed: Processed ' + processed + ' records in ' + 
+                duration.getDisplayValue());
+        
+    } catch (ex) {
+        gs.error('Scheduled job failed: ' + ex.message);
+    }
+})();
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (11 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What are Scheduled Jobs used for?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Running scripts at specified times automatically</li>
+                                        <li>B) User interface customization</li>
+                                        <li>C) Form validation</li>
+                                        <li>D) Client-side automation</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: A</strong>
+                                        <div class="explanation">
+                                            Scheduled Jobs execute scripts automatically at specified times or intervals for maintenance, reporting, and batch processing.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Where do Scheduled Jobs execute?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) In the user's browser</li>
+                                        <li>B) On the server in the background</li>
+                                        <li>C) In the database</li>
+                                        <li>D) On the client device</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Scheduled Jobs execute on the server in the background, independent of user interaction.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you trigger an event in ServiceNow?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.fireEvent()</li>
+                                        <li>B) gs.eventQueue()</li>
+                                        <li>C) gs.triggerEvent()</li>
+                                        <li>D) gs.createEvent()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use gs.eventQueue('event.name', record, parm1, parm2) to trigger events. Events are processed asynchronously.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can Scheduled Jobs use GlideRecord?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) No, only GlideAggregate</li>
+                                        <li>B) Yes, they're server-side scripts</li>
+                                        <li>C) Only for reading data</li>
+                                        <li>D) Only with special permissions</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Yes! Scheduled Jobs are server-side scripts with full access to GlideRecord, gs, and all server APIs.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What happens when a Scheduled Job fails?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) It stops all scheduled jobs</li>
+                                        <li>B) Error is logged and job continues on schedule</li>
+                                        <li>C) System restarts</li>
+                                        <li>D) User receives notification</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            When a Scheduled Job fails, the error is logged in the system log and the job continues on its normal schedule. Use try-catch for error handling.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is a Script Action in event processing?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Client-side script</li>
+                                        <li>B) Script that executes when an event fires</li>
+                                        <li>C) UI Action</li>
+                                        <li>D) Business Rule</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Script Actions are server-side scripts that execute when specific events are triggered, allowing event-driven automation.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you test a Scheduled Job before scheduling it?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Schedule it for 1 minute from now</li>
+                                        <li>B) Use the "Execute Now" button</li>
+                                        <li>C) Cannot test, must schedule</li>
+                                        <li>D) Run in Scripts - Background</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use "Execute Now" to test the Scheduled Job immediately before setting up the schedule. You can also test the script in Scripts - Background.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>When should you use Scheduled Jobs?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) For real-time user interactions</li>
+                                        <li>B) For batch processing and maintenance tasks</li>
+                                        <li>C) For form validation</li>
+                                        <li>D) For client-side operations</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use Scheduled Jobs for batch processing, data cleanup, report generation, and maintenance tasks that should run automatically at specific times.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Are events processed synchronously or asynchronously?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Always synchronously</li>
+                                        <li>B) Always asynchronously</li>
+                                        <li>C) Depends on configuration</li>
+                                        <li>D) Random</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Events are processed asynchronously by default. Use gs.eventQueueScheduled() for scheduled event processing.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can you pass parameters when firing an event?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) No, events have no parameters</li>
+                                        <li>B) Yes, via parm1 and parm2 in gs.eventQueue()</li>
+                                        <li>C) Only the record object</li>
+                                        <li>D) Maximum of one parameter</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Yes, pass parameters using: gs.eventQueue('event.name', record, parm1, parm2). Access in Script Action via event.parm1 and event.parm2.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What's the best practice for processing large datasets in Scheduled Jobs?</span>
+                                    <span class="question-number">Q11</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Process all records at once</li>
+                                        <li>B) Use setLimit() to process in batches</li>
+                                        <li>C) Never process large datasets</li>
+                                        <li>D) Use client scripts instead</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer11')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer11" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use setLimit() to process records in batches (e.g., 100 at a time) to avoid timeouts and performance issues. Schedule the job to run frequently to process all records over time.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">Navigation</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="glideaggregate.html" class="list-group-item list-group-item-action">
+                                        <i class="ti ti-arrow-left me-2"></i> Previous: GlideAggregate
+                                    </a>
+                                    <a href="index.html" class="list-group-item list-group-item-action">
+                                        Back to Home <i class="ti ti-home ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>Quick Reference</h4>
+                                    <ul class="small">
+                                        <li><strong>Scheduled Jobs:</strong> Automated scripts</li>
+                                        <li><strong>Events:</strong> Trigger automation</li>
+                                        <li><code>gs.eventQueue()</code> - Fire event</li>
+                                        <li>Run in background</li>
+                                        <li>Use setLimit() for batches</li>
+                                        <li>Test with "Execute Now"</li>
+                                        <li>Schedule during off-peak</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                                <li class="list-inline-item"><a href="glideaggregate.html">Previous Topic</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>

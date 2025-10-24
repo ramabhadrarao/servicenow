@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlideAggregate - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()"><i class="ti ti-eye"></i> Show All</button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()"><i class="ti ti-eye-off"></i> Hide All</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Server-Side JavaScript - Topic 11</div>
+                            <h2 class="page-title">GlideAggregate - Database Aggregation</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What is GlideAggregate?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>GlideAggregate performs database aggregation queries like COUNT, SUM, AVG, MIN, and MAX. It's optimized for statistical calculations.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Performance
+                                        </div>
+                                        <p>GlideAggregate is more efficient than looping through records with GlideRecord for counts and calculations. Use it for reporting and analytics.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">COUNT - Counting Records</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Basic COUNT Example</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Count active incidents
+var ga = new GlideAggregate('incident');
+ga.addQuery('active', true);
+ga.addAggregate('COUNT');
+ga.query();
+
+if (ga.next()) {
+    var count = ga.getAggregate('COUNT');
+    gs.info('Active incidents: ' + count);
+}
+
+// Count by priority
+var ga2 = new GlideAggregate('incident');
+ga2.addQuery('active', true);
+ga2.groupBy('priority');
+ga2.addAggregate('COUNT');
+ga2.query();
+
+while (ga2.next()) {
+    var priority = ga2.priority.toString();
+    var count = ga2.getAggregate('COUNT');
+    gs.info('Priority ' + priority + ': ' + count + ' incidents');
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">SUM, AVG, MIN, MAX</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Numeric Aggregations</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// SUM - Total cost of all hardware
+var ga = new GlideAggregate('alm_hardware');
+ga.addAggregate('SUM', 'cost');
+ga.query();
+
+if (ga.next()) {
+    var totalCost = ga.getAggregate('SUM', 'cost');
+    gs.info('Total hardware cost: $' + totalCost);
+}
+
+// AVG - Average resolution time
+var ga2 = new GlideAggregate('incident');
+ga2.addQuery('state', '6'); // Resolved
+ga2.addAggregate('AVG', 'calendar_duration');
+ga2.query();
+
+if (ga2.next()) {
+    var avgDuration = ga2.getAggregate('AVG', 'calendar_duration');
+    gs.info('Average resolution time: ' + avgDuration + ' seconds');
+}
+
+// MIN and MAX - Age range
+var ga3 = new GlideAggregate('incident');
+ga3.addAggregate('MIN', 'opened_at');
+ga3.addAggregate('MAX', 'opened_at');
+ga3.query();
+
+if (ga3.next()) {
+    var oldest = ga3.getAggregate('MIN', 'opened_at');
+    var newest = ga3.getAggregate('MAX', 'opened_at');
+    gs.info('Oldest: ' + oldest + ', Newest: ' + newest);
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">GROUP BY - Grouping Results</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Grouping and Aggregating</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Count incidents by assignment group
+var ga = new GlideAggregate('incident');
+ga.addQuery('active', true);
+ga.groupBy('assignment_group');
+ga.addAggregate('COUNT');
+ga.orderByAggregate('COUNT'); // Order by count
+ga.query();
+
+gs.info('Incidents by Group:');
+while (ga.next()) {
+    var group = ga.assignment_group.getDisplayValue();
+    var count = ga.getAggregate('COUNT');
+    gs.info(group + ': ' + count);
+}
+
+// Multiple grouping - by state and priority
+var ga2 = new GlideAggregate('incident');
+ga2.groupBy('state');
+ga2.groupBy('priority');
+ga2.addAggregate('COUNT');
+ga2.query();
+
+while (ga2.next()) {
+    var state = ga2.state.getDisplayValue();
+    var priority = ga2.priority.toString();
+    var count = ga2.getAggregate('COUNT');
+    gs.info('State: ' + state + ', Priority: ' + priority + ', Count: ' + count);
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">HAVING Clause</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Filtering Aggregated Results</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Groups with more than 10 incidents
+var ga = new GlideAggregate('incident');
+ga.addQuery('active', true);
+ga.groupBy('assignment_group');
+ga.addAggregate('COUNT');
+ga.addHaving('COUNT', '>', 10);
+ga.query();
+
+gs.info('Groups with >10 incidents:');
+while (ga.next()) {
+    var group = ga.assignment_group.getDisplayValue();
+    var count = ga.getAggregate('COUNT');
+    gs.info(group + ': ' + count);
+}
+
+// Users with average resolution time > 2 days
+var ga2 = new GlideAggregate('incident');
+ga2.addQuery('state', '6');
+ga2.groupBy('assigned_to');
+ga2.addAggregate('AVG', 'calendar_duration');
+ga2.addHaving('AVG', 'calendar_duration', '>', 172800); // 2 days in seconds
+ga2.query();
+
+while (ga2.next()) {
+    var user = ga2.assigned_to.getDisplayValue();
+    var avgTime = ga2.getAggregate('AVG', 'calendar_duration');
+    gs.info(user + ': ' + avgTime + ' seconds average');
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Common Patterns</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Practical Examples</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Pattern 1: Get total count
+function getTotalIncidents() {
+    var ga = new GlideAggregate('incident');
+    ga.addAggregate('COUNT');
+    ga.query();
+    return ga.next() ? parseInt(ga.getAggregate('COUNT')) : 0;
+}
+
+// Pattern 2: Count by field value
+function countByPriority() {
+    var results = {};
+    var ga = new GlideAggregate('incident');
+    ga.groupBy('priority');
+    ga.addAggregate('COUNT');
+    ga.query();
+    
+    while (ga.next()) {
+        var priority = ga.priority.toString();
+        results[priority] = parseInt(ga.getAggregate('COUNT'));
+    }
+    return results;
+}
+
+// Pattern 3: Top N records
+function getTopAssignees(limit) {
+    var ga = new GlideAggregate('incident');
+    ga.groupBy('assigned_to');
+    ga.addAggregate('COUNT');
+    ga.orderByAggregate('COUNT');
+    ga.setLimit(limit);
+    ga.query();
+    
+    var results = [];
+    while (ga.next()) {
+        results.push({
+            user: ga.assigned_to.getDisplayValue(),
+            count: ga.getAggregate('COUNT')
+        });
+    }
+    return results;
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (10 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is GlideAggregate used for?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Updating multiple records</li>
+                                        <li>B) Database aggregation queries (COUNT, SUM, AVG)</li>
+                                        <li>C) Creating records</li>
+                                        <li>D) Deleting records</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            GlideAggregate performs database aggregation queries like COUNT, SUM, AVG, MIN, and MAX. It's optimized for statistics and reporting.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you count records using GlideAggregate?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) ga.count()</li>
+                                        <li>B) ga.addAggregate('COUNT')</li>
+                                        <li>C) ga.getCount()</li>
+                                        <li>D) ga.addCount()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use ga.addAggregate('COUNT') to count records, then retrieve with ga.getAggregate('COUNT') after querying.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What method groups results in GlideAggregate?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) ga.group('field')</li>
+                                        <li>B) ga.groupBy('field')</li>
+                                        <li>C) ga.addGroup('field')</li>
+                                        <li>D) ga.setGroup('field')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use groupBy('field_name') to group results. You can call it multiple times for multiple grouping levels.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you retrieve an aggregated value?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) ga.getValue('COUNT')</li>
+                                        <li>B) ga.getAggregate('COUNT')</li>
+                                        <li>C) ga.aggregate('COUNT')</li>
+                                        <li>D) ga.count</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use getAggregate('FUNCTION') or getAggregate('FUNCTION', 'field') to retrieve aggregated values after calling next().
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which aggregation calculates average values?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) MEAN</li>
+                                        <li>B) AVG</li>
+                                        <li>C) AVERAGE</li>
+                                        <li>D) MEDIAN</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use AVG to calculate averages: ga.addAggregate('AVG', 'field_name'). Then retrieve with getAggregate('AVG', 'field_name').
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does addHaving() do?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Adds a query condition</li>
+                                        <li>B) Filters aggregated results</li>
+                                        <li>C) Adds a field to results</li>
+                                        <li>D) Includes related records</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            addHaving() filters aggregated results (like SQL HAVING clause). Example: ga.addHaving('COUNT', '>', 10) returns only groups with count > 10.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can you loop through GlideAggregate results like GlideRecord?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) No, different structure</li>
+                                        <li>B) Yes, use while (ga.next())</li>
+                                        <li>C) Only with forEach()</li>
+                                        <li>D) Only with for loop</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Yes, use while (ga.next()) to loop through aggregated results, just like GlideRecord. Each iteration represents a group.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you order results by the aggregated value?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) ga.orderBy('COUNT')</li>
+                                        <li>B) ga.orderByAggregate('COUNT')</li>
+                                        <li>C) ga.sortAggregate('COUNT')</li>
+                                        <li>D) ga.sort('COUNT')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use orderByAggregate('FUNCTION') to order by aggregated values. Useful for finding top/bottom performers.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which is more efficient for counting records?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) GlideRecord with getRowCount()</li>
+                                        <li>B) GlideAggregate with COUNT</li>
+                                        <li>C) Both are equal</li>
+                                        <li>D) Depends on the table</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            GlideAggregate is more efficient for counting and calculations because it performs aggregation at the database level without loading full records.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can GlideAggregate modify records?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Yes, like GlideRecord</li>
+                                        <li>B) No, it's read-only for statistics</li>
+                                        <li>C) Only with admin role</li>
+                                        <li>D) Only for numeric fields</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            GlideAggregate is read-only and used only for statistical queries. Use GlideRecord for creating, updating, or deleting records.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">Navigation</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="script-includes.html" class="list-group-item list-group-item-action">
+                                        <i class="ti ti-arrow-left me-2"></i> Previous: Script Includes
+                                    </a>
+                                    <a href="scheduled-jobs.html" class="list-group-item list-group-item-action">
+                                        Next: Scheduled Jobs <i class="ti ti-arrow-right ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>Aggregate Functions</h4>
+                                    <ul class="small">
+                                        <li><code>COUNT</code> - Count records</li>
+                                        <li><code>SUM</code> - Total values</li>
+                                        <li><code>AVG</code> - Average values</li>
+                                        <li><code>MIN</code> - Minimum value</li>
+                                        <li><code>MAX</code> - Maximum value</li>
+                                        <li><code>groupBy()</code> - Group results</li>
+                                        <li><code>addHaving()</code> - Filter groups</li>
+                                        <li>Read-only, optimized queries</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                                <li class="list-inline-item"><a href="scheduled-jobs.html">Next Topic</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>

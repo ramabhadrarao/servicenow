@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Rules - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()"><i class="ti ti-eye"></i> Show All</button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()"><i class="ti ti-eye-off"></i> Hide All</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Server-Side JavaScript - Topic 6</div>
+                            <h2 class="page-title">Business Rules - Server-Side Automation</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What are Business Rules?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Business Rules are server-side scripts that run when records are queried, updated, inserted, or deleted. They automate business logic and data processing.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Critical Concept
+                                        </div>
+                                        <p>Business Rules are THE most important server-side automation in ServiceNow. They run on the server, have full database access, and execute automatically based on conditions.</p>
+                                    </div>
+
+                                    <h4 class="mt-4">Four Types of Business Rules</h4>
+                                    <table class="table comparison-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>When</th>
+                                                <th>Use Case</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Before</strong></td>
+                                                <td>Before database write</td>
+                                                <td>Validate data, set field values, prevent save</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>After</strong></td>
+                                                <td>After database write</td>
+                                                <td>Create related records, send notifications</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Async</strong></td>
+                                                <td>After commit, background</td>
+                                                <td>Long-running operations, external integrations</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Display</strong></td>
+                                                <td>When form loads</td>
+                                                <td>Set UI properties, control form behavior</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Before Business Rules</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Run before the record is written to the database. Can modify field values or prevent the operation.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Before Insert/Update Example</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Business Rule: Auto-assign High Priority Incidents
+// Table: incident
+// When: before
+// Insert: true, Update: true
+// Condition: current.priority == '1'
+
+(function executeRule(current, previous /*null when async*/) {
+    
+    // Ensure assignment for critical incidents
+    if (current.assignment_group.nil()) {
+        current.assignment_group = 'high_priority_group_sys_id';
+        gs.info('Auto-assigned high priority incident: ' + current.number);
+    }
+    
+    // Set state to In Progress
+    if (current.state == '1') { // New
+        current.state = '2'; // In Progress
+    }
+    
+})(current, previous);
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>Before - Prevent Save</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Business Rule: Prevent Closing Without Resolution
+// Table: incident
+// When: before
+// Update: true
+// Condition: current.state == '7' (Closed)
+
+(function executeRule(current, previous /*null when async*/) {
+    
+    // Validate resolution information
+    if (current.close_notes.nil() || current.close_code.nil()) {
+        gs.addErrorMessage('Cannot close incident without resolution notes and close code');
+        current.setAbortAction(true); // Prevent save
+        return;
+    }
+    
+    // Ensure resolved date is set
+    if (current.resolved_at.nil()) {
+        current.resolved_at = gs.nowDateTime();
+    }
+    
+})(current, previous);
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Before Rules Best Practices
+                                        </div>
+                                        <p>Use for: data validation, setting field values, calculations. Do NOT query other tables excessively. Use current.setAbortAction(true) to prevent save. Changes to 'current' are saved automatically.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">After Business Rules</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Run after the record is written to the database. Cannot modify the current record (must use update()).</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>After Insert - Create Related Records</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Business Rule: Create Incident Tasks
+// Table: incident
+// When: after
+// Insert: true
+// Condition: current.priority == '1'
+
+(function executeRule(current, previous /*null when async*/) {
+    
+    // Create initial investigation task
+    var task = new GlideRecord('incident_task');
+    task.initialize();
+    task.parent = current.sys_id;
+    task.short_description = 'Initial investigation for ' + current.number;
+    task.assignment_group = current.assignment_group;
+    task.priority = '1';
+    task.insert();
+    
+    gs.info('Created task for critical incident: ' + current.number);
+    
+})(current, previous);
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>After Update - Track Changes</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Business Rule: Log Priority Changes
+// Table: incident
+// When: after
+// Update: true
+// Condition: current.priority.changes()
+
+(function executeRule(current, previous /*null when async*/) {
+    
+    // Log the priority change
+    var oldPriority = previous.priority.toString();
+    var newPriority = current.priority.toString();
+    
+    gs.log('Priority changed from ' + oldPriority + ' to ' + newPriority + 
+           ' for incident: ' + current.number + ' by ' + gs.getUserName());
+    
+    // Add work note
+    current.work_notes = 'Priority escalated from ' + oldPriority + ' to ' + newPriority;
+    current.update(); // Note: This triggers business rules again!
+    
+})(current, previous);
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> After Rules Best Practices
+                                        </div>
+                                        <p>Use for: creating related records, triggering workflows, sending notifications. To modify current record, use current.update(). Be careful of infinite loops! Use .changes() to detect field modifications.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Async Business Rules</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Run in the background after the database transaction completes. Don't block the user.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Async Example</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Business Rule: External System Integration
+// Table: incident
+// When: async
+// Insert: true, Update: true
+// Condition: current.priority <= '2'
+
+(function executeRule(current, previous /*null when async*/) {
+    
+    // Note: 'previous' is not available in async
+    
+    // Call external API
+    try {
+        var request = new sn_ws.RESTMessageV2();
+        request.setEndpoint('https://external-system.com/api/incident');
+        request.setHttpMethod('POST');
+        
+        var body = {
+            number: current.number.toString(),
+            priority: current.priority.toString(),
+            description: current.short_description.toString()
+        };
+        
+        request.setRequestBody(JSON.stringify(body));
+        var response = request.execute();
+        
+        gs.info('Sent incident to external system: ' + response.getStatusCode());
+        
+    } catch (ex) {
+        gs.error('Failed to send to external system: ' + ex.message);
+    }
+    
+})(current, previous);
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Async Rules Best Practices
+                                        </div>
+                                        <p>Use for: external integrations, long-running operations, email sending. 'previous' is NOT available. User doesn't wait for completion. gs.addInfoMessage() won't display to user.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Display Business Rules</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Run when a form is loaded, before it's sent to the client. Can use g_form methods.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Display Example</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Business Rule: Set Form Properties
+// Table: incident
+// When: display
+// Condition: current.state == '6' || current.state == '7'
+
+(function executeRule(current, previous /*null when async*/) {
+    
+    // Make fields read-only for closed incidents
+    g_scratchpad.isResolved = true;
+    
+    // This data is available client-side via g_scratchpad
+    g_scratchpad.resolvedBy = current.resolved_by.getDisplayValue();
+    g_scratchpad.resolutionTime = current.resolved_at.toString();
+    
+})(current, previous);
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Display Rules Best Practices
+                                        </div>
+                                        <p>Use for: passing data to client scripts via g_scratchpad. Limited use cases. Prefer UI Policies for form control. Don't perform heavy queries.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Detecting Field Changes</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Change Detection Methods</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Check if ANY field changed
+if (current.changes()) {
+    gs.info('Record was modified');
+}
+
+// Check if specific field changed
+if (current.priority.changes()) {
+    gs.info('Priority changed');
+}
+
+// Check if field changed FROM a value
+if (current.state.changesFrom('2')) {
+    gs.info('State changed from In Progress');
+}
+
+// Check if field changed TO a value
+if (current.state.changesTo('6')) {
+    gs.info('State changed to Resolved');
+}
+
+// Check if field changed from one value to another
+if (current.state.changesFrom('2').changesTo('6')) {
+    gs.info('State changed from In Progress to Resolved');
+}
+
+// Get old value
+if (current.priority.changes()) {
+    var oldValue = current.priority.getOldValue();
+    var newValue = current.priority.getValue();
+    gs.info('Priority changed from ' + oldValue + ' to ' + newValue);
+}
+
+// Using previous object (not available in async)
+if (previous && previous.priority != current.priority) {
+    gs.info('Priority changed from ' + previous.priority + ' to ' + current.priority);
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Business Rule Order and Control</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Controlling Execution</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Prevent save (before rules only)
+current.setAbortAction(true);
+
+// Prevent other business rules from running
+current.setWorkflow(false);
+
+// Check if running from async business rule
+if (!gs.isInteractive()) {
+    // Running in background
+}
+
+// Order field: Controls execution order (100, 200, 300...)
+// Lower numbers run first
+
+// Advanced: Skip business rules on update
+current.setWorkflow(false);
+current.autoSysFields(false); // Don't update sys fields
+current.update();
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (16 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <!-- Questions -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>When do before business rules execute?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) After the database is updated</li>
+                                        <li>B) Before the database is updated</li>
+                                        <li>C) When the form loads</li>
+                                        <li>D) In the background</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Before business rules execute before the record is written to the database. They can modify field values or prevent the operation with setAbortAction(true).
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you prevent a record from being saved in a before business rule?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) return false</li>
+                                        <li>B) current.setAbortAction(true)</li>
+                                        <li>C) current.cancel()</li>
+                                        <li>D) gs.preventDefault()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use current.setAbortAction(true) in a before business rule to prevent the record from being saved. Combine with gs.addErrorMessage() to inform the user.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>In after business rules, how do you modify the current record?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Changes to current are saved automatically</li>
+                                        <li>B) Must call current.update()</li>
+                                        <li>C) Cannot modify current in after rules</li>
+                                        <li>D) Use current.save()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            In after business rules, changes to current are NOT saved automatically. You must call current.update() to save changes. Be careful of infinite loops!
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>When should you use async business rules?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) For data validation</li>
+                                        <li>B) For long-running operations that shouldn't block the user</li>
+                                        <li>C) To modify field values before save</li>
+                                        <li>D) To control form display</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Async business rules run in the background after the transaction completes. Use for external integrations, email sending, or long-running operations that shouldn't delay the user.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Is the 'previous' object available in async business rules?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Yes, always</li>
+                                        <li>B) No, it's null in async rules</li>
+                                        <li>C) Only for update operations</li>
+                                        <li>D) Only if specified in conditions</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            The 'previous' object is null in async business rules. Use current.changes() methods instead to detect what changed.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you check if a specific field changed?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) current.field.changed()</li>
+                                        <li>B) current.field.changes()</li>
+                                        <li>C) current.field.wasModified()</li>
+                                        <li>D) current.hasChanged('field')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use current.field.changes() to check if a field was modified. Returns true if the field value changed in this transaction.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is g_scratchpad used for?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Temporary database storage</li>
+                                        <li>B) Passing data from display business rules to client scripts</li>
+                                        <li>C) Storing user preferences</li>
+                                        <li>D) Caching query results</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            g_scratchpad is a server-side object available in display business rules. Data added to it is accessible client-side in client scripts.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What controls the order in which business rules execute?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Name alphabetically</li>
+                                        <li>B) Order field (lower numbers first)</li>
+                                        <li>C) Created date</li>
+                                        <li>D) Random order</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            The Order field determines execution sequence. Lower values (100, 200) execute before higher values (300, 400). Default is 100.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can you use GlideRecord in business rules?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) No, only in Script Includes</li>
+                                        <li>B) Yes, business rules run server-side</li>
+                                        <li>C) Only in after business rules</li>
+                                        <li>D) Only with admin role</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Yes! Business rules run server-side and have full access to GlideRecord, gs, and all server APIs. This is a key difference from client scripts.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What happens if you call current.update() in a before business rule?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) It saves the record immediately</li>
+                                        <li>B) It's unnecessary - changes save automatically</li>
+                                        <li>C) It causes an error</li>
+                                        <li>D) It triggers business rules again</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            In before business rules, changes to current are saved automatically when the rule completes. Calling update() is unnecessary and can cause issues.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you get the old value of a field that changed?</span>
+                                    <span class="question-number">Q11</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) previous.field</li>
+                                        <li>B) current.field.getOldValue()</li>
+                                        <li>C) Both A and B</li>
+                                        <li>D) current.field.previous()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer11')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer11" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            Both work: previous.field (when previous is available) or current.field.getOldValue(). The getOldValue() method works even in async where previous is null.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can display business rules use g_form methods?</span>
+                                    <span class="question-number">Q12</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) No, g_form is client-side only</li>
+                                        <li>B) Yes, display rules have access to g_form</li>
+                                        <li>C) Only for read operations</li>
+                                        <li>D) Only with a special setting</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer12')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer12" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Yes, display business rules can use g_form methods because they run during form load preparation. However, UI Policies are generally preferred for form control.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does current.setWorkflow(false) do?</span>
+                                    <span class="question-number">Q13</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Stops all workflows</li>
+                                        <li>B) Prevents other business rules from running on update</li>
+                                        <li>C) Disables the workflow engine</li>
+                                        <li>D) Cancels the current workflow</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer13')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer13" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            current.setWorkflow(false) prevents business rules from running on the subsequent update(). Use to avoid infinite loops when updating current in an after rule.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can business rules run on delete operations?</span>
+                                    <span class="question-number">Q14</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) No, only insert and update</li>
+                                        <li>B) Yes, check the Delete checkbox</li>
+                                        <li>C) Only before delete</li>
+                                        <li>D) Only for admin users</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer14')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer14" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Yes, business rules can run on delete by checking the Delete checkbox. Use to prevent deletion, log deletions, or clean up related records.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What method checks if a field changed from a specific value?</span>
+                                    <span class="question-number">Q15</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) current.field.changedFrom(value)</li>
+                                        <li>B) current.field.changesFrom(value)</li>
+                                        <li>C) current.field.wasValue(value)</li>
+                                        <li>D) current.field.previousValue(value)</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer15')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer15" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use current.field.changesFrom(value) to check if a field changed from a specific value. Can chain with changesTo(): current.state.changesFrom('2').changesTo('6').
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Where do business rules execute?</span>
+                                    <span class="question-number">Q16</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) In the user's browser</li>
+                                        <li>B) On the ServiceNow server</li>
+                                        <li>C) In both browser and server</li>
+                                        <li>D) In the database</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer16')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer16" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Business rules execute on the ServiceNow server, not in the browser. This is why they have full access to the database via GlideRecord.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">Navigation</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="glideajax.html" class="list-group-item list-group-item-action">
+                                        <i class="ti ti-arrow-left me-2"></i> Previous: GlideAjax
+                                    </a>
+                                    <a href="gliderecord.html" class="list-group-item list-group-item-action">
+                                        Next: GlideRecord <i class="ti ti-arrow-right ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>Quick Reference</h4>
+                                    <ul class="small">
+                                        <li><strong>Before:</strong> Modify data pre-save</li>
+                                        <li><strong>After:</strong> Create related records</li>
+                                        <li><strong>Async:</strong> Background tasks</li>
+                                        <li><strong>Display:</strong> Form load setup</li>
+                                        <li><code>setAbortAction(true)</code> - Stop save</li>
+                                        <li><code>changes()</code> - Detect changes</li>
+                                        <li><code>update()</code> - Save in after/async</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                                <li class="list-inline-item"><a href="gliderecord.html">Next Topic</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>

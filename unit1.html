@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1: Basic JavaScript - Full Stack Development</title>
+    <!-- Tabler CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <!-- Tabler Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@2.44.0/tabler-icons.min.css">
+    <!-- Monaco Editor -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
+    <style>
+        .code-editor {
+            height: 300px;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            margin: 1rem 0;
+        }
+        .topic-section {
+            margin-bottom: 3rem;
+        }
+        .example-output {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: ">";
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header class="navbar navbar-expand-md navbar-light d-print-none">
+        <div class="container-xl">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+                <a href="index.html">
+                    <i class="ti ti-code"></i>
+                    Full Stack Development
+                </a>
+            </h1>
+            <div class="collapse navbar-collapse" id="navbar-menu">
+                <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-home"></i>
+                                </span>
+                                <span class="nav-link-title">Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#navbar-help" data-bs-toggle="dropdown" role="button">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-book"></i>
+                                </span>
+                                <span class="nav-link-title">Course Units</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item active" href="unit1.html">Unit 1: Basic JavaScript</a>
+                                <a class="dropdown-item" href="unit2.html">Unit 2: DOM Manipulation</a>
+                                <a class="dropdown-item" href="unit3.html">Unit 3: Forms & React Intro</a>
+                                <a class="dropdown-item" href="unit4.html">Unit 4: React State & APIs</a>
+                                <a class="dropdown-item" href="unit5.html">Unit 5: MongoDB & Webpack</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Breadcrumb -->
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Unit 1</li>
+                            </ol>
+                        </nav>
+                        <h2 class="page-title">
+                            Unit 1: JavaScript Fundamentals
+                        </h2>
+                        <div class="text-muted">
+                            History, Engines, Environment Differences, and Core Language Features
+                        </div>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="unit2.html" class="btn btn-primary">
+                                Next Unit
+                                <i class="ti ti-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page body -->
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <!-- JavaScript History Section -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">📚 History of JavaScript</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h4>Timeline of JavaScript Evolution</h4>
+                                        <div class="timeline">
+                                            <div class="timeline-item">
+                                                <div class="timeline-badge bg-primary"></div>
+                                                <div class="timeline-panel">
+                                                    <div class="timeline-heading">
+                                                        <h5>1995 - Birth of JavaScript</h5>
+                                                    </div>
+                                                    <div class="timeline-body">
+                                                        <p><strong>Brendan Eich</strong> created JavaScript in just <strong>10 days</strong> at Netscape Communications. Originally called "Mocha", then "LiveScript", finally renamed to "JavaScript" for marketing reasons.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-item">
+                                                <div class="timeline-badge bg-success"></div>
+                                                <div class="timeline-panel">
+                                                    <div class="timeline-heading">
+                                                        <h5>1997 - ECMAScript Standard</h5>
+                                                    </div>
+                                                    <div class="timeline-body">
+                                                        <p>JavaScript was standardized as <strong>ECMAScript (ES1)</strong> by ECMA International to ensure compatibility across different browsers.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-item">
+                                <div class="timeline-badge bg-info"></div>
+                                <div class="timeline-panel">
+                                    <div class="timeline-heading">
+                                        <h5>2009 - Node.js Revolution</h5>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-8">
+                                                <p><strong>Ryan Dahl</strong> created Node.js, bringing JavaScript to server-side development and enabling full-stack JavaScript applications.</p>
+                                                <p class="text-muted small mb-0">Node.js revolutionized web development by allowing developers to use JavaScript for both frontend and backend, creating the foundation for modern full-stack development.</p>
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <div class="card border-0 shadow-sm">
+                                                    <div class="card-body p-3">
+                                                        <img src="Ryan_Dahl.jpg" 
+                                                             alt="Ryan Dahl" 
+                                                             class="img-fluid rounded mb-2" 
+                                                             style="max-width: 120px; height: auto;">
+                                                        <h6 class="mb-1 small">Ryan Dahl</h6>
+                                                        <p class="text-muted small mb-0">Creator of Node.js</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                            <div class="timeline-item">
+                                                <div class="timeline-badge bg-warning"></div>
+                                                <div class="timeline-panel">
+                                                    <div class="timeline-heading">
+                                                        <h5>2015 - ES6/ES2015</h5>
+                                                    </div>
+                                                    <div class="timeline-body">
+                                                        <p>Major update introducing <strong>classes, modules, arrow functions, promises</strong>, and many other modern features that transformed JavaScript development.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-item">
+                                                <div class="timeline-badge bg-purple"></div>
+                                                <div class="timeline-panel">
+                                                    <div class="timeline-heading">
+                                                        <h5>2015-Present - Annual Releases</h5>
+                                                    </div>
+                                                    <div class="timeline-body">
+                                                        <p>ECMAScript now follows an <strong>annual release cycle</strong> (ES2016, ES2017, ES2018, etc.) with continuous improvements and new features.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <!-- Brendan Eich Portrait -->
+                                        <div class="card mb-3">
+                                            <div class="card-header">
+                                                <h5>Creator of JavaScript</h5>
+                                            </div>
+                                            <div class="card-body text-center">
+                                                <img src="Brendan_Eich_Mozilla_Foundation_official_photo.jpg" 
+                                                     alt="Brendan Eich" 
+                                                     class="img-fluid rounded mb-3" 
+                                                     style="max-width: 150px; height: auto;">
+                                                <h6 class="mt-2 mb-1">Brendan Eich</h6>
+                                                <p class="text-muted small mb-0">Creator of JavaScript (1995)</p>
+                                                <p class="text-muted small">Co-founder of Mozilla</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="card bg-light">
+                                            <div class="card-header">
+                                                <h5>Key Milestones</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="list-unstyled">
+                                                    <li><span class="badge bg-primary me-2">1995</span>JavaScript Created</li>
+                                                    <li><span class="badge bg-success me-2">1997</span>ECMAScript Standard</li>
+                                                    <li><span class="badge bg-info me-2">2005</span>AJAX Revolution</li>
+                                                    <li><span class="badge bg-warning me-2">2009</span>Node.js Launch</li>
+                                                    <li><span class="badge bg-danger me-2">2010</span>npm Package Manager</li>
+                                                    <li><span class="badge bg-purple me-2">2015</span>ES6/ES2015</li>
+                                                    <li><span class="badge bg-dark me-2">2020</span>ES2020 Features</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- JavaScript Engines Section -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">⚙️ JavaScript Engines</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-4">JavaScript engines are programs that execute JavaScript code. Each browser and runtime environment uses different engines with unique optimizations and features.</p>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4>Major JavaScript Engines</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Engine</th>
+                                                        <th>Used In</th>
+                                                        <th>Developer</th>
+                                                        <th>Language</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><strong>V8</strong></td>
+                                                        <td>Chrome, Node.js, Edge</td>
+                                                        <td>Google</td>
+                                                        <td>C++</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>SpiderMonkey</strong></td>
+                                                        <td>Firefox</td>
+                                                        <td>Mozilla</td>
+                                                        <td>C++</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>JavaScriptCore</strong></td>
+                                                        <td>Safari, WebKit</td>
+                                                        <td>Apple</td>
+                                                        <td>C++</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Chakra</strong></td>
+                                                        <td>Internet Explorer, Legacy Edge</td>
+                                                        <td>Microsoft</td>
+                                                        <td>C++</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4>Engine Architecture</h4>
+                                        <div class="alert alert-info">
+                                            <h5>How JavaScript Engines Work:</h5>
+                                            <ol>
+                                                <li><strong>Parsing:</strong> Source code → Abstract Syntax Tree (AST)</li>
+                                                <li><strong>Compilation:</strong> AST → Bytecode/Machine Code</li>
+                                                <li><strong>Optimization:</strong> Just-In-Time (JIT) compilation</li>
+                                                <li><strong>Execution:</strong> Running optimized code</li>
+                                                <li><strong>Garbage Collection:</strong> Memory management</li>
+                                            </ol>
+                                        </div>
+                                        
+                                        <div class="card bg-light mt-3">
+                                            <div class="card-body">
+                                                <h6>V8 Engine Features:</h6>
+                                                <ul class="mb-0">
+                                                    <li><strong>Hidden Classes:</strong> Optimize object property access</li>
+                                                    <li><strong>Inline Caching:</strong> Speed up method calls</li>
+                                                    <li><strong>Crankshaft/TurboFan:</strong> Optimizing compilers</li>
+                                                    <li><strong>Ignition:</strong> Interpreter for faster startup</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Client-side vs Server-side JavaScript -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">🌐 Client-side vs Server-side JavaScript</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card border-primary">
+                                            <div class="card-header bg-primary text-white">
+                                                <h4 class="mb-0">🖥️ Client-side JavaScript</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <h5>Environment & Runtime:</h5>
+                                                <ul>
+                                                    <li><strong>Runs in:</strong> Web browsers (Chrome, Firefox, Safari, Edge)</li>
+                                                    <li><strong>Engine:</strong> Browser's JavaScript engine</li>
+                                                    <li><strong>Sandbox:</strong> Restricted environment for security</li>
+                                                    <li><strong>DOM Access:</strong> Can manipulate HTML/CSS</li>
+                                                </ul>
+                                                
+                                                <h5>Capabilities:</h5>
+                                                <ul>
+                                                    <li>DOM manipulation and event handling</li>
+                                                    <li>AJAX requests and fetch API</li>
+                                                    <li>Local storage and session storage</li>
+                                                    <li>Geolocation and device APIs</li>
+                                                    <li>Canvas and WebGL graphics</li>
+                                                    <li>Service workers and PWAs</li>
+                                                </ul>
+                                                
+                                                <h5>Limitations:</h5>
+                                                <ul>
+                                                    <li>No file system access</li>
+                                                    <li>No direct database connections</li>
+                                                    <li>Same-origin policy restrictions</li>
+                                                    <li>Limited system resource access</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="card border-success">
+                                            <div class="card-header bg-success text-white">
+                                                <h4 class="mb-0">🖧 Server-side JavaScript (Node.js)</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <h5>Environment & Runtime:</h5>
+                                                <ul>
+                                                    <li><strong>Runs in:</strong> Server environments (Linux, Windows, macOS)</li>
+                                                    <li><strong>Engine:</strong> V8 engine (same as Chrome)</li>
+                                                    <li><strong>Full Access:</strong> Complete system access</li>
+                                                    <li><strong>No DOM:</strong> No browser-specific APIs</li>
+                                                </ul>
+                                                
+                                                <h5>Capabilities:</h5>
+                                                <ul>
+                                                    <li>File system operations</li>
+                                                    <li>Database connections</li>
+                                                    <li>Network programming</li>
+                                                    <li>Process management</li>
+                                                    <li>Package management (npm)</li>
+                                                    <li>Build tools and automation</li>
+                                                </ul>
+                                                
+                                                <h5>Advantages:</h5>
+                                                <ul>
+                                                    <li>Single language for full-stack</li>
+                                                    <li>Large ecosystem (npm)</li>
+                                                    <li>High performance (V8 engine)</li>
+                                                    <li>Event-driven, non-blocking I/O</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h4>Code Examples: Environment Differences</h4>
+                                    <div class="code-editor" id="editor-environment"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Introduction -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">🚀 Introduction to JavaScript</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>JavaScript is a high-level, interpreted programming language that is one of the core technologies of the World Wide Web. It enables interactive web pages and is an essential part of web applications.</p>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4>Key Characteristics:</h4>
+                                        <ul>
+                                            <li><strong>Dynamic:</strong> Variables can change types at runtime</li>
+                                            <li><strong>Interpreted:</strong> No compilation step required</li>
+                                            <li><strong>Multi-paradigm:</strong> Supports OOP, functional, and procedural programming</li>
+                                            <li><strong>Prototype-based:</strong> Objects can inherit directly from other objects</li>
+                                            <li><strong>Event-driven:</strong> Responds to user interactions and system events</li>
+                                            <li><strong>Weakly typed:</strong> Automatic type conversion</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4>Modern JavaScript Features:</h4>
+                                        <ul>
+                                            <li><strong>ES6+ Syntax:</strong> Arrow functions, classes, modules</li>
+                                            <li><strong>Async Programming:</strong> Promises, async/await</li>
+                                            <li><strong>Destructuring:</strong> Extract values from arrays/objects</li>
+                                            <li><strong>Template Literals:</strong> String interpolation</li>
+                                            <li><strong>Spread/Rest Operators:</strong> Flexible function parameters</li>
+                                            <li><strong>Modules:</strong> Import/export functionality</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- JavaScript Instructions and Statements -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">JavaScript Instructions and Statements</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>JavaScript programs are composed of statements that are executed by the browser. Each statement performs an action.</p>
+                                
+                                <h4>Basic Syntax Rules:</h4>
+                                <ul>
+                                    <li>Statements end with semicolons (;)</li>
+                                    <li>JavaScript is case-sensitive</li>
+                                    <li>Whitespace is generally ignored</li>
+                                    <li>Use camelCase for variable names</li>
+                                </ul>
+
+                                <div class="code-editor" id="editor1"></div>
+                                <div class="example-output">
+                                    <strong>Output:</strong><br>
+                                    Hello, World!<br>
+                                    Welcome to JavaScript!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comments -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Comments in JavaScript</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Comments are used to explain code and make it more readable. They are ignored by the JavaScript engine.</p>
+                                
+                                <h4>Types of Comments:</h4>
+                                <ul>
+                                    <li><strong>Single-line comments:</strong> Use // for single line</li>
+                                    <li><strong>Multi-line comments:</strong> Use /* */ for multiple lines</li>
+                                </ul>
+
+                                <div class="code-editor" id="editor2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Variables -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">📦 Variables and Scope</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Variables are containers for storing data values. JavaScript has evolved from <code>var</code> to modern <code>let</code> and <code>const</code> declarations with different scoping rules.</p>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-md-4">
+                                        <div class="card border-warning">
+                                            <div class="card-header bg-warning text-dark">
+                                                <h5 class="mb-0">var (Legacy)</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="mb-0">
+                                                    <li><strong>Scope:</strong> Function/Global</li>
+                                                    <li><strong>Hoisting:</strong> Yes (undefined)</li>
+                                                    <li><strong>Redeclaration:</strong> Allowed</li>
+                                                    <li><strong>Reassignment:</strong> Allowed</li>
+                                                    <li><strong>TDZ:</strong> No</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card border-primary">
+                                            <div class="card-header bg-primary text-white">
+                                                <h5 class="mb-0">let (ES6+)</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="mb-0">
+                                                    <li><strong>Scope:</strong> Block</li>
+                                                    <li><strong>Hoisting:</strong> Yes (not accessible)</li>
+                                                    <li><strong>Redeclaration:</strong> Not allowed</li>
+                                                    <li><strong>Reassignment:</strong> Allowed</li>
+                                                    <li><strong>TDZ:</strong> Yes</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card border-success">
+                                            <div class="card-header bg-success text-white">
+                                                <h5 class="mb-0">const (ES6+)</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="mb-0">
+                                                    <li><strong>Scope:</strong> Block</li>
+                                                    <li><strong>Hoisting:</strong> Yes (not accessible)</li>
+                                                    <li><strong>Redeclaration:</strong> Not allowed</li>
+                                                    <li><strong>Reassignment:</strong> Not allowed</li>
+                                                    <li><strong>TDZ:</strong> Yes</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info">
+                                    <h5>🔍 Key Concepts:</h5>
+                                    <ul class="mb-0">
+                                        <li><strong>Hoisting:</strong> Variable declarations are moved to the top of their scope</li>
+                                        <li><strong>Temporal Dead Zone (TDZ):</strong> Period where let/const variables exist but can't be accessed</li>
+                                        <li><strong>Block Scope:</strong> Variables are only accessible within the nearest enclosing block</li>
+                                        <li><strong>Function Scope:</strong> Variables are accessible throughout the entire function</li>
+                                    </ul>
+                                </div>
+
+                                <h4>Variable Declaration Examples</h4>
+                                <div class="code-editor" id="editor3"></div>
+                                <div class="example-output">
+                                    <strong>Output:</strong><br>
+                                    John<br>
+                                    30<br>
+                                    true
+                                </div>
+                                
+                                <h4 class="mt-4">Scope and Hoisting Examples</h4>
+                                <div class="code-editor" id="editor-scope"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Types -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">🏷️ Data Types and Type System</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>JavaScript is a <strong>dynamically typed</strong> language with <strong>weak typing</strong>, meaning variables can hold different types of values and automatic type conversion occurs.</p>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="card border-primary">
+                                            <div class="card-header bg-primary text-white">
+                                                <h5 class="mb-0">Primitive Types (7 types)</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="mb-0">
+                                                    <li><strong>Number:</strong> 42, 3.14, NaN, Infinity, -Infinity</li>
+                                                    <li><strong>String:</strong> "Hello", 'World', `Template ${var}`</li>
+                                                    <li><strong>Boolean:</strong> true, false</li>
+                                                    <li><strong>Undefined:</strong> Variable declared but not assigned</li>
+                                                    <li><strong>Null:</strong> Intentional absence of value</li>
+                                                    <li><strong>Symbol:</strong> Symbol('id') - Unique identifier (ES6)</li>
+                                                    <li><strong>BigInt:</strong> 123n - Large integers (ES2020)</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-success">
+                                            <div class="card-header bg-success text-white">
+                                                <h5 class="mb-0">Non-Primitive Types (1 type)</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="mb-0">
+                                                    <li><strong>Object:</strong> Collection of key-value pairs</li>
+                                                    <li class="ms-3">• Plain objects: {name: "John"}</li>
+                                                    <li class="ms-3">• Arrays: [1, 2, 3]</li>
+                                                    <li class="ms-3">• Functions: function() {}</li>
+                                                    <li class="ms-3">• Dates: new Date()</li>
+                                                    <li class="ms-3">• RegExp: /pattern/</li>
+                                                    <li class="ms-3">• Maps, Sets, WeakMap, WeakSet</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-warning">
+                                    <h5>⚠️ Type Checking Gotchas:</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <ul class="mb-0">
+                                                <li><code>typeof null</code> returns "object" (historical bug)</li>
+                                                <li><code>typeof []</code> returns "object" (arrays are objects)</li>
+                                                <li><code>typeof NaN</code> returns "number"</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <ul class="mb-0">
+                                                <li><code>Array.isArray([])</code> to check for arrays</li>
+                                                <li><code>Number.isNaN(NaN)</code> to check for NaN</li>
+                                                <li><code>value === null</code> to check for null</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h4>Basic Data Types Examples</h4>
+                                <div class="code-editor" id="editor4"></div>
+                                <div class="example-output">
+                                    <strong>Output:</strong><br>
+                                    number<br>
+                                    string<br>
+                                    boolean<br>
+                                    undefined<br>
+                                    object<br>
+                                    object
+                                </div>
+                                
+                                <h4 class="mt-4">Type Conversion and Coercion</h4>
+                                <div class="code-editor" id="editor-types"></div>
+                                
+                                <h4 class="mt-4">Modern Type Checking</h4>
+                                <div class="code-editor" id="editor-type-checking"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Arrays -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">📋 Arrays and Array Methods</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Arrays are ordered collections that can hold multiple values of any type. JavaScript arrays are dynamic and provide powerful built-in methods.</p>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="card border-info">
+                                            <div class="card-header bg-info text-white">
+                                                <h5 class="mb-0">Mutating Methods</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="mb-0">
+                                                    <li><strong>push():</strong> Add to end</li>
+                                                    <li><strong>pop():</strong> Remove from end</li>
+                                                    <li><strong>shift():</strong> Remove from start</li>
+                                                    <li><strong>unshift():</strong> Add to start</li>
+                                                    <li><strong>splice():</strong> Add/remove at index</li>
+                                                    <li><strong>sort():</strong> Sort in place</li>
+                                                    <li><strong>reverse():</strong> Reverse in place</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-warning">
+                                            <div class="card-header bg-warning text-dark">
+                                                <h5 class="mb-0">Non-Mutating Methods</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="mb-0">
+                                                    <li><strong>slice():</strong> Extract portion</li>
+                                                    <li><strong>concat():</strong> Join arrays</li>
+                                                    <li><strong>join():</strong> Convert to string</li>
+                                                    <li><strong>indexOf():</strong> Find index</li>
+                                                    <li><strong>includes():</strong> Check existence</li>
+                                                    <li><strong>toString():</strong> Convert to string</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-success">
+                                    <h5>🚀 Modern Array Methods (ES5+)</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <ul class="mb-0">
+                                                <li><strong>map():</strong> Transform each element</li>
+                                                <li><strong>filter():</strong> Filter elements</li>
+                                                <li><strong>reduce():</strong> Reduce to single value</li>
+                                                <li><strong>find():</strong> Find first match</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <ul class="mb-0">
+                                                <li><strong>forEach():</strong> Execute for each</li>
+                                                <li><strong>some():</strong> Test if any match</li>
+                                                <li><strong>every():</strong> Test if all match</li>
+                                                <li><strong>findIndex():</strong> Find index of match</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h4>Basic Array Operations</h4>
+                                <div class="code-editor" id="editor5"></div>
+                                <div class="example-output">
+                                    <strong>Output:</strong><br>
+                                    ["apple", "banana", "orange"]<br>
+                                    3<br>
+                                    banana<br>
+                                    ["apple", "banana", "orange", "grape"]<br>
+                                    grape<br>
+                                    ["apple", "banana", "orange"]
+                                </div>
+                                
+                                <h4 class="mt-4">Modern Array Methods</h4>
+                                <div class="code-editor" id="editor-array-methods"></div>
+                                
+                                <h4 class="mt-4">Array Destructuring & Spread</h4>
+                                <div class="code-editor" id="editor-array-destructuring"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Strings -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Strings</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Strings are used to represent text data. They can be created using single quotes, double quotes, or template literals.</p>
+                                
+                                <h4>String Methods:</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <ul>
+                                            <li><code>length</code> - Get string length</li>
+                                            <li><code>toUpperCase()</code> - Convert to uppercase</li>
+                                            <li><code>toLowerCase()</code> - Convert to lowercase</li>
+                                            <li><code>charAt()</code> - Get character at index</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <ul>
+                                            <li><code>indexOf()</code> - Find substring index</li>
+                                            <li><code>slice()</code> - Extract portion of string</li>
+                                            <li><code>split()</code> - Split string into array</li>
+                                            <li><code>replace()</code> - Replace substring</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="code-editor" id="editor6"></div>
+                                <div class="example-output">
+                                    <strong>Output:</strong><br>
+                                    13<br>
+                                    HELLO, WORLD!<br>
+                                    hello, world!<br>
+                                    H<br>
+                                    7<br>
+                                    Hello<br>
+                                    Hi, World!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Functions -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">⚡ Functions and Modern JavaScript</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Functions are first-class citizens in JavaScript - they can be stored in variables, passed as arguments, and returned from other functions.</p>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-md-4">
+                                        <div class="card border-primary">
+                                            <div class="card-header bg-primary text-white">
+                                                <h5 class="mb-0">Function Declaration</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <code>function name() {}</code>
+                                                <ul class="mt-2 mb-0">
+                                                    <li>Hoisted</li>
+                                                    <li>Can be called before definition</li>
+                                                    <li>Has function scope</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card border-success">
+                                            <div class="card-header bg-success text-white">
+                                                <h5 class="mb-0">Function Expression</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <code>const name = function() {}</code>
+                                                <ul class="mt-2 mb-0">
+                                                    <li>Not hoisted</li>
+                                                    <li>Anonymous or named</li>
+                                                    <li>Block scope (with const/let)</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card border-warning">
+                                            <div class="card-header bg-warning text-dark">
+                                                <h5 class="mb-0">Arrow Function (ES6)</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <code>const name = () => {}</code>
+                                                <ul class="mt-2 mb-0">
+                                                    <li>Lexical 'this' binding</li>
+                                                    <li>Shorter syntax</li>
+                                                    <li>No 'arguments' object</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info">
+                                    <h5>🔥 Modern Function Features</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <ul class="mb-0">
+                                                <li><strong>Default Parameters:</strong> <code>function(a = 5)</code></li>
+                                                <li><strong>Rest Parameters:</strong> <code>function(...args)</code></li>
+                                                <li><strong>Destructuring:</strong> <code>function({name, age})</code></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <ul class="mb-0">
+                                                <li><strong>Higher-Order Functions:</strong> Functions that take/return functions</li>
+                                                <li><strong>Closures:</strong> Inner functions accessing outer scope</li>
+                                                <li><strong>IIFE:</strong> Immediately Invoked Function Expression</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h4>Basic Function Examples</h4>
+                                <div class="code-editor" id="editor7"></div>
+                                <div class="example-output">
+                                    <strong>Output:</strong><br>
+                                    Hello, Alice!<br>
+                                    8<br>
+                                    25<br>
+                                    15
+                                </div>
+                                
+                                <h4 class="mt-4">Modern Function Features</h4>
+                                <div class="code-editor" id="editor-modern-functions"></div>
+                                
+                                <h4 class="mt-4">Higher-Order Functions & Closures</h4>
+                                <div class="code-editor" id="editor-advanced-functions"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Objects -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Objects and Methods</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Objects are collections of key-value pairs. They can contain properties (data) and methods (functions).</p>
+                                
+                                <h4>Object Features:</h4>
+                                <ul>
+                                    <li>Properties store data</li>
+                                    <li>Methods are functions inside objects</li>
+                                    <li>Access using dot notation or bracket notation</li>
+                                    <li>Can be created using object literals or constructors</li>
+                                </ul>
+
+                                <div class="code-editor" id="editor8"></div>
+                                <div class="example-output">
+                                    <strong>Output:</strong><br>
+                                    John<br>
+                                    30<br>
+                                    Hello, my name is John and I am 30 years old.<br>
+                                    31
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Decisions and Loops -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Decisions and Loops</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Control structures allow you to control the flow of your program execution.</p>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Decision Structures:</h5>
+                                        <ul>
+                                            <li><code>if...else</code> - Conditional execution</li>
+                                            <li><code>switch</code> - Multiple condition checking</li>
+                                            <li><code>ternary operator</code> - Shorthand conditional</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Loop Structures:</h5>
+                                        <ul>
+                                            <li><code>for</code> - Known number of iterations</li>
+                                            <li><code>while</code> - Condition-based loop</li>
+                                            <li><code>do...while</code> - Execute at least once</li>
+                                            <li><code>for...in</code> - Iterate over object properties</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="code-editor" id="editor9"></div>
+                                <div class="example-output">
+                                    <strong>Output:</strong><br>
+                                    You are an adult.<br>
+                                    Good morning!<br>
+                                    adult<br>
+                                    0 1 2 3 4<br>
+                                    5 4 3 2 1<br>
+                                    name: John<br>
+                                    age: 30
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ES6+ Modern JavaScript Features -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">🚀 ES6+ Modern JavaScript Features</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>ECMAScript 2015 (ES6) and later versions introduced many powerful features that modernized JavaScript development.</p>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="card border-success">
+                                            <div class="card-header bg-success text-white">
+                                                <h5 class="mb-0">ES6 (2015) Features</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="mb-0">
+                                                    <li><strong>let/const:</strong> Block-scoped variables</li>
+                                                    <li><strong>Arrow Functions:</strong> Concise function syntax</li>
+                                                    <li><strong>Template Literals:</strong> String interpolation</li>
+                                                    <li><strong>Destructuring:</strong> Extract values from arrays/objects</li>
+                                                    <li><strong>Spread/Rest:</strong> ... operator</li>
+                                                    <li><strong>Classes:</strong> Class-based OOP syntax</li>
+                                                    <li><strong>Modules:</strong> import/export</li>
+                                                    <li><strong>Promises:</strong> Async programming</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-info">
+                                            <div class="card-header bg-info text-white">
+                                                <h5 class="mb-0">ES2017+ Features</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="mb-0">
+                                                    <li><strong>async/await:</strong> Cleaner async code</li>
+                                                    <li><strong>Object.entries/values:</strong> Object iteration</li>
+                                                    <li><strong>Optional Chaining:</strong> ?. operator (ES2020)</li>
+                                                    <li><strong>Nullish Coalescing:</strong> ?? operator (ES2020)</li>
+                                                    <li><strong>BigInt:</strong> Large integers (ES2020)</li>
+                                                    <li><strong>Dynamic Imports:</strong> import() function</li>
+                                                    <li><strong>Private Fields:</strong> # syntax (ES2022)</li>
+                                                    <li><strong>Top-level await:</strong> (ES2022)</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-warning">
+                                    <h5>💡 Key Benefits of Modern JavaScript</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <ul class="mb-0">
+                                                <li><strong>Cleaner Syntax:</strong> More readable and concise code</li>
+                                                <li><strong>Better Scoping:</strong> Block scope with let/const</li>
+                                                <li><strong>Async Handling:</strong> Promises and async/await</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <ul class="mb-0">
+                                                <li><strong>Modularity:</strong> ES6 modules for better organization</li>
+                                                <li><strong>Performance:</strong> Optimizations in modern engines</li>
+                                                <li><strong>Developer Experience:</strong> Better tooling support</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h4>Template Literals & Destructuring</h4>
+                                <div class="code-editor" id="editor-es6-basics"></div>
+                                
+                                <h4 class="mt-4">Classes & Modules</h4>
+                                <div class="code-editor" id="editor-es6-classes"></div>
+                                
+                                <h4 class="mt-4">Async/Await & Modern Operators</h4>
+                                <div class="code-editor" id="editor-modern-async"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="btn-list">
+                                    <a href="index.html" class="btn btn-outline-primary">
+                                        <i class="ti ti-arrow-left me-1"></i>
+                                        Back to Home
+                                    </a>
+                                    <a href="unit2.html" class="btn btn-primary">
+                                        Next: Unit 2 - DOM Manipulation
+                                        <i class="ti ti-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabler JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    
+    <!-- Monaco Editor Setup -->
+    <script>
+        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs' } });
+        
+        const codeExamples = {
+            'editor-environment': `// CLIENT-SIDE JAVASCRIPT (Browser)
+// ===================================
+
+// DOM Manipulation (only available in browsers)
+document.getElementById('myButton').addEventListener('click', function() {
+    alert('Button clicked!');
+});
+
+// Browser APIs
+navigator.geolocation.getCurrentPosition(function(position) {
+    console.log('Latitude: ' + position.coords.latitude);
+});
+
+// Local Storage
+localStorage.setItem('username', 'john_doe');
+const username = localStorage.getItem('username');
+
+// Fetch API for HTTP requests
+fetch('https://api.example.com/data')
+    .then(response => response.json())
+    .then(data => console.log(data));
+
+// Window object
+console.log('Window width:', window.innerWidth);
+
+
+// SERVER-SIDE JAVASCRIPT (Node.js)
+// =================================
+
+// File System Operations (Node.js only)
+const fs = require('fs');
+fs.readFile('data.txt', 'utf8', (err, data) => {
+    if (err) throw err;
+    console.log(data);
+});
+
+// HTTP Server Creation
+const http = require('http');
+const server = http.createServer((req, res) => {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end('Hello from Node.js server!');
+});
+server.listen(3000);
+
+// Database Connection (example with MongoDB)
+const MongoClient = require('mongodb').MongoClient;
+MongoClient.connect('mongodb://localhost:27017', (err, client) => {
+    if (err) throw err;
+    console.log('Connected to MongoDB');
+});
+
+// Process and OS information
+console.log('Node.js version:', process.version);
+console.log('Platform:', process.platform);
+
+// Environment Variables
+const port = process.env.PORT || 3000;
+console.log('Server will run on port:', port);`,
+            
+            editor1: `// Basic JavaScript statements
+console.log("Hello, World!");
+console.log("Welcome to JavaScript!");
+
+// Variables and basic operations
+let message = "Learning JavaScript";
+console.log(message);`,
+            
+            editor2: `// Single-line comment
+console.log("This line will execute");
+
+/* 
+   Multi-line comment
+   This is useful for longer explanations
+   or temporarily disabling code blocks
+*/
+
+// TODO: Add more functionality here
+let name = "JavaScript"; // Inline comment`,
+            
+            editor3: `// Variable declarations
+var name = "John";        // Function-scoped
+let age = 30;            // Block-scoped
+const isStudent = true;  // Block-scoped, constant
+
+// Display values
+console.log(name);
+console.log(age);
+console.log(isStudent);
+
+// age = 31; // This is allowed
+// isStudent = false; // This would cause an error`,
+            
+            editor4: `// Different data types
+let number = 42;
+let text = "Hello World";
+let boolean = true;
+let undefined_var;
+let null_var = null;
+let array = [1, 2, 3];
+
+// Check types using typeof
+console.log(typeof number);      // "number"
+console.log(typeof text);        // "string"
+console.log(typeof boolean);     // "boolean"
+console.log(typeof undefined_var); // "undefined"
+console.log(typeof null_var);    // "object" (this is a known quirk)
+console.log(typeof array);       // "object"`,
+            
+            editor5: `// Creating and manipulating arrays
+let fruits = ["apple", "banana", "orange"];
+
+console.log(fruits);           // Display array
+console.log(fruits.length);    // Array length
+console.log(fruits[1]);        // Access element by index
+
+// Add element to end
+fruits.push("grape");
+console.log(fruits);
+
+// Remove last element
+let lastFruit = fruits.pop();
+console.log(lastFruit);
+console.log(fruits);`,
+            
+            editor6: `// String operations
+let text = "Hello, World!";
+
+console.log(text.length);           // String length
+console.log(text.toUpperCase());    // Convert to uppercase
+console.log(text.toLowerCase());    // Convert to lowercase
+console.log(text.charAt(0));        // First character
+console.log(text.indexOf("World")); // Find substring
+console.log(text.slice(0, 5));      // Extract substring
+console.log(text.replace("Hello", "Hi")); // Replace substring`,
+            
+            editor7: `// Function declaration
+function greet(name) {
+    return "Hello, " + name + "!";
+}
+
+// Function expression
+const add = function(a, b) {
+    return a + b;
+};
+
+// Arrow function
+const square = (x) => x * x;
+
+// Arrow function with multiple statements
+const multiply = (a, b) => {
+    const result = a * b;
+    return result;
+};
+
+// Using functions
+console.log(greet("Alice"));
+console.log(add(3, 5));
+console.log(square(5));
+console.log(multiply(3, 5));`,
+            
+            editor8: `// Creating an object
+let person = {
+    name: "John",
+    age: 30,
+    city: "New York",
+    
+    // Method inside object
+    introduce: function() {
+        return "Hello, my name is " + this.name + " and I am " + this.age + " years old.";
+    },
+    
+    // Method using arrow function (be careful with 'this')
+    celebrateBirthday: function() {
+        this.age++;
+    }
+};
+
+// Accessing properties
+console.log(person.name);
+console.log(person["age"]);
+
+// Calling methods
+console.log(person.introduce());
+person.celebrateBirthday();
+console.log(person.age);`,
+            
+            editor9: `// Decision structures
+let age = 20;
+
+// if...else statement
+if (age >= 18) {
+    console.log("You are an adult.");
+} else {
+    console.log("You are a minor.");
+}
+
+// switch statement
+let timeOfDay = "morning";
+switch (timeOfDay) {
+    case "morning":
+        console.log("Good morning!");
+        break;
+    case "afternoon":
+        console.log("Good afternoon!");
+        break;
+    default:
+        console.log("Good day!");
+}
+
+// Ternary operator
+let status = age >= 18 ? "adult" : "minor";
+console.log(status);
+
+// for loop
+let numbers = "";
+for (let i = 0; i < 5; i++) {
+    numbers += i + " ";
+}
+console.log(numbers.trim());
+
+// while loop
+let countdown = "";
+let count = 5;
+while (count > 0) {
+    countdown += count + " ";
+    count--;
+}
+console.log(countdown.trim());
+
+// for...in loop (for objects)
+let student = { name: "John", age: 30 };
+for (let key in student) {
+    console.log(key + ": " + student[key]);
+}`,
+
+            // New editors for enhanced sections
+            'editor-scope': `// Scope and Hoisting Examples
+
+// Hoisting with var
+console.log(hoistedVar); // undefined (not error)
+var hoistedVar = "I'm hoisted!";
+
+// TDZ with let/const
+try {
+    console.log(notHoisted); // ReferenceError
+} catch(e) {
+    console.log("Error:", e.message);
+}
+let notHoisted = "I'm in TDZ!";
+
+// Block scope
+if (true) {
+    var functionScoped = "I'm function scoped";
+    let blockScoped = "I'm block scoped";
+    const alsoBlockScoped = "Me too!";
+}
+
+console.log(functionScoped); // Works
+// console.log(blockScoped); // ReferenceError
+
+// Function scope
+function scopeExample() {
+    if (true) {
+        var innerVar = "Function scoped";
+        let innerLet = "Block scoped";
+    }
+    console.log(innerVar); // Works
+    // console.log(innerLet); // ReferenceError
+}
+scopeExample();`,
+
+            'editor-types': `// Type Conversion and Coercion
+
+// Explicit conversion
+let str = "123";
+let num = Number(str);
+console.log(typeof num, num); // number 123
+
+let bool = Boolean("hello");
+console.log(typeof bool, bool); // boolean true
+
+// Implicit coercion (automatic)
+console.log("5" + 3);     // "53" (string concatenation)
+console.log("5" - 3);     // 2 (numeric subtraction)
+console.log("5" * "2");   // 10 (numeric multiplication)
+console.log(true + 1);    // 2 (boolean to number)
+
+// Falsy values
+let falsyValues = [false, 0, -0, 0n, "", null, undefined, NaN];
+falsyValues.forEach(val => {
+    console.log(\`$\{val} is $\{Boolean(val) ? 'truthy' : 'falsy'}\`);
+});
+
+// Equality comparisons
+console.log("\n=== vs ==");
+console.log("5" == 5);    // true (coercion)
+console.log("5" === 5);   // false (strict)
+console.log(null == undefined);  // true
+console.log(null === undefined); // false`,
+
+            'editor-type-checking': `// Modern Type Checking
+
+// Better type checking methods
+function getType(value) {
+    if (value === null) return 'null';
+    if (Array.isArray(value)) return 'array';
+    if (value instanceof Date) return 'date';
+    if (value instanceof RegExp) return 'regexp';
+    return typeof value;
+}
+
+// Test different values
+let testValues = [
+    42, "hello", true, null, undefined,
+    [], {}, new Date(), /pattern/, 
+    function() {}, Symbol('test'), 123n
+];
+
+testValues.forEach(val => {
+    console.log(\`$\{JSON.stringify(val)} is type: $\{getType(val)}\`);
+});
+
+// Number validation
+console.log("\nNumber validation:");
+console.log("isNaN('hello'):", isNaN('hello'));           // true (but converts first)
+console.log("Number.isNaN('hello'):", Number.isNaN('hello')); // false (strict)
+console.log("Number.isNaN(NaN):", Number.isNaN(NaN));         // true
+
+// Integer checking
+console.log("Number.isInteger(42):", Number.isInteger(42));     // true
+console.log("Number.isInteger(42.0):", Number.isInteger(42.0)); // true
+console.log("Number.isInteger(42.1):", Number.isInteger(42.1)); // false`,
+
+            'editor-array-methods': `// Modern Array Methods
+
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let users = [
+    { name: 'Alice', age: 25, active: true },
+    { name: 'Bob', age: 30, active: false },
+    { name: 'Charlie', age: 35, active: true }
+];
+
+// map() - transform each element
+let doubled = numbers.map(n => n * 2);
+console.log('Doubled:', doubled);
+
+// filter() - keep elements that match condition
+let evens = numbers.filter(n => n % 2 === 0);
+console.log('Even numbers:', evens);
+
+// reduce() - reduce to single value
+let sum = numbers.reduce((acc, n) => acc + n, 0);
+console.log('Sum:', sum);
+
+// find() - find first match
+let activeUser = users.find(user => user.active);
+console.log('First active user:', activeUser);
+
+// some() and every()
+console.log('Some users active:', users.some(u => u.active));
+console.log('All users active:', users.every(u => u.active));
+
+// Method chaining
+let result = numbers
+    .filter(n => n > 5)
+    .map(n => n * 2)
+    .reduce((acc, n) => acc + n, 0);
+console.log('Chained result:', result);`,
+
+            'editor-array-destructuring': `// Array Destructuring & Spread
+
+// Basic destructuring
+let colors = ['red', 'green', 'blue', 'yellow'];
+let [first, second, ...rest] = colors;
+console.log('First:', first);     // red
+console.log('Second:', second);   // green
+console.log('Rest:', rest);       // ['blue', 'yellow']
+
+// Skipping elements
+let [primary, , tertiary] = colors;
+console.log('Primary:', primary, 'Tertiary:', tertiary);
+
+// Default values
+let [a, b, c, d, e = 'default'] = colors;
+console.log('Fifth color:', e);
+
+// Spread operator
+let moreColors = ['purple', 'orange'];
+let allColors = [...colors, ...moreColors];
+console.log('All colors:', allColors);
+
+// Array copying
+let originalArray = [1, 2, 3];
+let copiedArray = [...originalArray];
+copiedArray.push(4);
+console.log('Original:', originalArray); // [1, 2, 3]
+console.log('Copied:', copiedArray);     // [1, 2, 3, 4]
+
+// Function with rest parameters
+function sum(...numbers) {
+    return numbers.reduce((acc, n) => acc + n, 0);
+}
+console.log('Sum of 1,2,3,4,5:', sum(1, 2, 3, 4, 5));`,
+
+            'editor-modern-functions': `// Modern Function Features
+
+// Default parameters
+function greet(name = 'World', greeting = 'Hello') {
+    return \`$\{greeting}, $\{name}!\`;
+}
+console.log(greet());                    // Hello, World!
+console.log(greet('Alice'));             // Hello, Alice!
+console.log(greet('Bob', 'Hi'));         // Hi, Bob!
+
+// Rest parameters
+function multiply(multiplier, ...numbers) {
+    return numbers.map(n => n * multiplier);
+}
+console.log(multiply(2, 1, 2, 3, 4));    // [2, 4, 6, 8]
+
+// Destructuring parameters
+function createUser({name, age, email = 'not provided'}) {
+    return {
+        name,
+        age,
+        email,
+        id: Math.random().toString(36).substr(2, 9)
+    };
+}
+
+let user = createUser({name: 'Alice', age: 25});
+console.log('Created user:', user);
+
+// Arrow function variations
+let square = x => x * x;                    // Single parameter
+let add = (a, b) => a + b;                  // Multiple parameters
+let complexOperation = (x, y) => {          // Multiple statements
+    let result = x * y;
+    return result + 10;
+};
+
+console.log('Square of 5:', square(5));
+console.log('Add 3 + 7:', add(3, 7));
+console.log('Complex op:', complexOperation(4, 5));`,
+
+            'editor-advanced-functions': `// Higher-Order Functions & Closures
+
+// Higher-order function (takes function as parameter)
+function withLogging(fn) {
+    return function(...args) {
+        console.log(\`Calling function with args: $\{args}\`);
+        let result = fn(...args);
+        console.log(\`Function returned: $\{result}\`);
+        return result;
+    };
+}
+
+let loggedAdd = withLogging((a, b) => a + b);
+loggedAdd(3, 5);
+
+// Closure example
+function createCounter(start = 0) {
+    let count = start;
+    
+    return {
+        increment: () => ++count,
+        decrement: () => --count,
+        getValue: () => count,
+        reset: () => count = start
+    };
+}
+
+let counter = createCounter(10);
+console.log('Initial:', counter.getValue());  // 10
+console.log('Increment:', counter.increment()); // 11
+console.log('Increment:', counter.increment()); // 12
+console.log('Decrement:', counter.decrement()); // 11
+counter.reset();
+console.log('After reset:', counter.getValue()); // 10
+
+// IIFE (Immediately Invoked Function Expression)
+(function() {
+    console.log('IIFE executed!');
+    let privateVar = 'This is private';
+    // privateVar is not accessible outside
+})();
+
+// Modern IIFE with arrow function
+(() => {
+    console.log('Modern IIFE executed!');
+})();`,
+
+            'editor-es6-basics': `// Template Literals
+const name = 'JavaScript';
+const version = 'ES6+';
+const year = 2015;
+
+// Multi-line strings with interpolation
+const message = 'Welcome to ' + name + '!\n' +
+    'Version: ' + version + '\n' +
+    'Released: ' + year + '\n' +
+    'Current year: ' + new Date().getFullYear();
+
+console.log(message);
+
+// Tagged template literals
+function highlight(strings, ...values) {
+    return strings.reduce((result, string, i) => {
+        const value = values[i] ? \`<mark>$\{values[i]}</mark>\` : '';
+        return result + string + value;
+    }, '');
+}
+
+const highlighted = highlight\`Hello $\{name}, welcome to $\{version}!\`;
+console.log(highlighted);
+
+// Destructuring Arrays
+const colors = ['red', 'green', 'blue', 'yellow'];
+const [primary, secondary, ...others] = colors;
+console.log('Primary:', primary);
+console.log('Secondary:', secondary);
+console.log('Others:', others);
+
+// Destructuring Objects
+const person = {
+    firstName: 'John',
+    lastName: 'Doe',
+    age: 30,
+    address: {
+        city: 'New York',
+        country: 'USA'
+    }
+};
+
+const { firstName, lastName, age, address: { city } } = person;
+console.log(\`$\{firstName} $\{lastName}, $\{age}, from $\{city}\`);
+
+// Default values in destructuring
+const { email = 'not provided' } = person;
+console.log('Email:', email);`,
+
+            'editor-es6-classes': `// ES6 Classes
+class Animal {
+    constructor(name, species) {
+        this.name = name;
+        this.species = species;
+    }
+    
+    speak() {
+        return \`$\{this.name} makes a sound\`;
+    }
+    
+    // Static method
+    static getKingdom() {
+        return 'Animalia';
+    }
+    
+    // Getter
+    get info() {
+        return \`$\{this.name} is a $\{this.species}\`;
+    }
+    
+    // Setter
+    set nickname(nick) {
+        this._nickname = nick;
+    }
+    
+    get nickname() {
+        return this._nickname || this.name;
+    }
+}
+
+// Inheritance
+class Dog extends Animal {
+    constructor(name, breed) {
+        super(name, 'dog');
+        this.breed = breed;
+    }
+    
+    speak() {
+        return \`$\{this.name} barks!\`;
+    }
+    
+    fetch() {
+        return \`$\{this.name} fetches the ball\`;
+    }
+}
+
+const myDog = new Dog('Buddy', 'Golden Retriever');
+console.log(myDog.speak());
+console.log(myDog.info);
+console.log(myDog.fetch());
+console.log(Animal.getKingdom());
+
+myDog.nickname = 'Bud';
+console.log('Nickname:', myDog.nickname);
+
+// Symbols (unique identifiers)
+const id = Symbol('id');
+const user = {
+    name: 'Alice',
+    [id]: 12345
+};
+console.log(user[id]); // 12345
+console.log(Object.keys(user)); // ['name'] - symbol not enumerable`,
+
+            'editor-modern-async': `// Promises
+function fetchUserData(userId) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (userId > 0) {
+                resolve({ id: userId, name: 'John Doe', email: 'john@example.com' });
+            } else {
+                reject(new Error('Invalid user ID'));
+            }
+        }, 1000);
+    });
+}
+
+// Async/Await
+async function getUserInfo(userId) {
+    try {
+        console.log('Fetching user data...');
+        const user = await fetchUserData(userId);
+        console.log('User found:', user);
+        return user;
+    } catch (error) {
+        console.error('Error:', error.message);
+        return null;
+    }
+}
+
+// Call async function
+getUserInfo(1).then(user => {
+    console.log('Final result:', user);
+});
+
+// Optional Chaining (ES2020)
+const response = {
+    data: {
+        user: {
+            profile: {
+                name: 'Alice'
+            }
+        }
+    }
+};
+
+// Safe property access
+const userName = response?.data?.user?.profile?.name;
+const userAge = response?.data?.user?.profile?.age; // undefined
+console.log('Name:', userName);
+console.log('Age:', userAge);
+
+// Nullish Coalescing (ES2020)
+const config = {
+    theme: null,
+    timeout: 0,
+    retries: undefined
+};
+
+const theme = config.theme ?? 'default';
+const timeout = config.timeout ?? 5000; // 0 is falsy but not nullish
+const retries = config.retries ?? 3;
+
+console.log('Theme:', theme);     // 'default'
+console.log('Timeout:', timeout); // 0
+console.log('Retries:', retries); // 3
+
+// Promise.allSettled (ES2020)
+const promises = [
+    Promise.resolve('Success 1'),
+    Promise.reject('Error 1'),
+    Promise.resolve('Success 2')
+];
+
+Promise.allSettled(promises).then(results => {
+    results.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+            console.log('Promise ' + (index + 1) + ' succeeded:', result.value);
+        } else {
+            console.log('Promise ' + (index + 1) + ' failed:', result.reason);
+        }
+    });
+});`
+        };
+        
+        require(['vs/editor/editor.main'], function () {
+            Object.keys(codeExamples).forEach(editorId => {
+                monaco.editor.create(document.getElementById(editorId), {
+                    value: codeExamples[editorId],
+                    language: 'javascript',
+                    theme: 'vs-light',
+                    readOnly: false,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    fontSize: 14,
+                    lineNumbers: 'on',
+                    roundedSelection: false,
+                    automaticLayout: true
+                });
+            });
+        });
+    </script>
+</body>
+</html>

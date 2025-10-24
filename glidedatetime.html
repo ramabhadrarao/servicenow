@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlideDateTime & GlideDuration - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()"><i class="ti ti-eye"></i> Show All</button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()"><i class="ti ti-eye-off"></i> Hide All</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Server-Side JavaScript - Topic 9</div>
+                            <h2 class="page-title">GlideDateTime & GlideDuration</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What is GlideDateTime?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>GlideDateTime provides robust date and time manipulation in ServiceNow. It handles time zones, date arithmetic, and formatting.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Server-Side Only
+                                        </div>
+                                        <p>GlideDateTime and GlideDuration are SERVER-SIDE only. They cannot be used in client scripts. For simple date operations, use gs.daysAgo(), gs.now(), etc.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Creating GlideDateTime Objects</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Initialization Methods</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Create with current date/time
+var gdt = new GlideDateTime();
+gs.info('Current: ' + gdt.getDisplayValue());
+
+// Create from string (YYYY-MM-DD HH:MM:SS)
+var gdt2 = new GlideDateTime('2024-12-25 10:30:00');
+gs.info('Christmas: ' + gdt2.getDisplayValue());
+
+// Create from GlideRecord field
+var gr = new GlideRecord('incident');
+if (gr.get('sys_id_here')) {
+    var createdDate = gr.sys_created_on.getGlideObject(); // Returns GlideDateTime
+    gs.info('Created: ' + createdDate.getDisplayValue());
+}
+
+// Create from milliseconds
+var gdt3 = new GlideDateTime();
+gdt3.setNumericValue(1703505600000); // Unix timestamp in ms
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Getting Values</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Retrieving Date/Time Information</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>var gdt = new GlideDateTime('2024-10-24 15:30:45');
+
+// Get formatted display value
+var displayValue = gdt.getDisplayValue(); // '2024-10-24 15:30:45'
+var displayValueInternal = gdt.getDisplayValueInternal(); // Without timezone conversion
+
+// Get internal value (database format)
+var internalValue = gdt.getValue(); // '2024-10-24 15:30:45'
+
+// Get date only
+var date = gdt.getDate(); // Returns GlideDate object
+gs.info('Date: ' + date.getValue()); // '2024-10-24'
+
+// Get time only
+var time = gdt.getTime(); // Returns GlideTime object
+gs.info('Time: ' + time.getValue()); // '15:30:45'
+
+// Get specific components
+var year = gdt.getYearLocalTime(); // 2024
+var month = gdt.getMonthLocalTime(); // 10
+var day = gdt.getDayOfMonthLocalTime(); // 24
+var hour = gdt.getHourLocalTime(); // 15
+var minute = gdt.getMinuteLocalTime(); // 30
+var second = gdt.getSecondLocalTime(); // 45
+
+// Get day of week (1=Monday, 7=Sunday)
+var dayOfWeek = gdt.getDayOfWeekLocalTime(); // 4 (Thursday)
+
+// Get numeric value (milliseconds since epoch)
+var timestamp = gdt.getNumericValue(); // 1729783845000
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Setting Values</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Modifying Date/Time</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>var gdt = new GlideDateTime();
+
+// Set from string
+gdt.setValue('2024-12-25 10:00:00');
+
+// Set to current date/time
+gdt.setNow();
+
+// Set specific components
+gdt.setYearLocalTime(2025);
+gdt.setMonthLocalTime(1); // January
+gdt.setDayOfMonthLocalTime(15);
+gdt.setHourLocalTime(14);
+gdt.setMinuteLocalTime(30);
+gdt.setSecondLocalTime(0);
+
+// Set from numeric value (milliseconds)
+gdt.setNumericValue(1703505600000);
+
+// Set to midnight
+gdt.setDisplayValue('2024-10-24 00:00:00');
+
+// Example: Set incident due date to 3 days from now at 5 PM
+var gr = new GlideRecord('incident');
+if (gr.get('sys_id_here')) {
+    var dueDate = new GlideDateTime();
+    dueDate.addDaysLocalTime(3);
+    dueDate.setHourLocalTime(17); // 5 PM
+    dueDate.setMinuteLocalTime(0);
+    dueDate.setSecondLocalTime(0);
+    gr.due_date = dueDate;
+    gr.update();
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Date Arithmetic</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Adding and Subtracting Time</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>var gdt = new GlideDateTime();
+
+// Add time
+gdt.addYearsLocalTime(1);      // Add 1 year
+gdt.addMonthsLocalTime(2);     // Add 2 months
+gdt.addDaysLocalTime(7);       // Add 7 days
+gdt.addWeeksLocalTime(2);      // Add 2 weeks
+gdt.addSeconds(3600);          // Add 1 hour (3600 seconds)
+
+// Subtract time (use negative numbers)
+gdt.addDaysLocalTime(-7);      // Subtract 7 days
+gdt.addMonthsLocalTime(-1);    // Subtract 1 month
+
+// Add milliseconds
+gdt.add(86400000); // Add 24 hours (86400000 ms)
+
+// Subtract milliseconds
+gdt.subtract(3600000); // Subtract 1 hour (3600000 ms)
+
+// Example: Calculate SLA due date (4 business hours)
+var startTime = new GlideDateTime();
+var schedule = new GlideSchedule('8-5 weekdays');
+var dueTime = schedule.add(startTime, 4 * 60 * 60 * 1000); // 4 hours in ms
+gs.info('Due: ' + dueTime.getDisplayValue());
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Comparing Dates</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Date Comparison Methods</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>var date1 = new GlideDateTime('2024-10-24 10:00:00');
+var date2 = new GlideDateTime('2024-10-25 10:00:00');
+
+// Compare dates
+if (date1.before(date2)) {
+    gs.info('date1 is before date2');
+}
+
+if (date2.after(date1)) {
+    gs.info('date2 is after date1');
+}
+
+if (date1.equals(date2)) {
+    gs.info('dates are equal');
+}
+
+// Check if date is on or after another date
+if (date1.onOrAfter(date2)) {
+    gs.info('date1 is on or after date2');
+}
+
+// Check if date is on or before another date
+if (date1.onOrBefore(date2)) {
+    gs.info('date1 is on or before date2');
+}
+
+// Get difference between dates (returns GlideDuration)
+var duration = GlideDateTime.subtract(date1, date2);
+gs.info('Difference: ' + duration.getDisplayValue());
+
+// Compare with current time
+var now = new GlideDateTime();
+var futureDate = new GlideDateTime('2025-12-31 23:59:59');
+if (futureDate.after(now)) {
+    gs.info('Future date is in the future');
+}
+
+// Example: Check if incident is overdue
+var gr = new GlideRecord('incident');
+if (gr.get('sys_id_here')) {
+    var dueDate = gr.due_date.getGlideObject();
+    var now = new GlideDateTime();
+    
+    if (dueDate.before(now)) {
+        gs.addErrorMessage('Incident ' + gr.number + ' is overdue!');
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">GlideDuration</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>GlideDuration represents a length of time and provides methods for duration calculations.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Working with Durations</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Create duration from milliseconds
+var duration = new GlideDuration(3600000); // 1 hour
+gs.info('Duration: ' + duration.getDisplayValue()); // '1:00:00'
+
+// Create duration from string
+var duration2 = new GlideDuration();
+duration2.setValue('2 12:30:45'); // 2 days, 12 hours, 30 min, 45 sec
+
+// Get duration components
+var days = duration2.getDayPart(); // 2
+var hours = duration2.getHourPart(); // 12
+var minutes = duration2.getMinutePart(); // 30
+var seconds = duration2.getSecondPart(); // 45
+
+// Get total values
+var totalSeconds = duration2.getRoundedDayPart() * 86400 + 
+                   duration2.getHourPart() * 3600 + 
+                   duration2.getMinutePart() * 60 + 
+                   duration2.getSecondPart();
+
+// Get duration between two dates
+var start = new GlideDateTime('2024-10-24 10:00:00');
+var end = new GlideDateTime('2024-10-24 14:30:00');
+var diff = GlideDateTime.subtract(start, end);
+gs.info('Duration: ' + diff.getDisplayValue()); // '4:30:00'
+
+// Get duration in specific units
+var durationMs = diff.getNumericValue(); // In milliseconds
+
+// Example: Calculate incident resolution time
+var gr = new GlideRecord('incident');
+if (gr.get('sys_id_here')) {
+    if (!gr.resolved_at.nil()) {
+        var opened = gr.opened_at.getGlideObject();
+        var resolved = gr.resolved_at.getGlideObject();
+        var resolutionTime = GlideDateTime.subtract(opened, resolved);
+        
+        gs.info('Resolution time: ' + resolutionTime.getDisplayValue());
+        
+        // Store in a duration field
+        gr.u_resolution_duration = resolutionTime.getDisplayValue();
+        gr.update();
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Timezone Handling</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Working with Timezones</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>var gdt = new GlideDateTime();
+
+// Get timezone
+var tz = gdt.getTZ();
+gs.info('Timezone: ' + tz);
+
+// Set timezone
+gdt.setTZ('America/New_York');
+gdt.setTZ('Europe/London');
+gdt.setTZ('Asia/Tokyo');
+
+// Get user timezone
+var userTZ = gs.getUser().getTimeZone();
+gdt.setTZ(userTZ);
+
+// Local time methods (use user's timezone)
+var localHour = gdt.getHourLocalTime();
+var localDay = gdt.getDayOfMonthLocalTime();
+
+// UTC methods (ignore timezone)
+var utcHour = gdt.getHourUTC();
+var utcDay = gdt.getDayOfMonthUTC();
+
+// Example: Log date in different timezones
+var gdt = new GlideDateTime();
+gs.info('UTC: ' + gdt.getDisplayValueInternal());
+gdt.setTZ('America/Los_Angeles');
+gs.info('PST: ' + gdt.getDisplayValue());
+gdt.setTZ('Europe/Paris');
+gs.info('CET: ' + gdt.getDisplayValue());
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Common Patterns</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Practical Examples</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Pattern 1: Set due date to end of business day
+var dueDate = new GlideDateTime();
+dueDate.addDaysLocalTime(3);
+dueDate.setHourLocalTime(17); // 5 PM
+dueDate.setMinuteLocalTime(0);
+dueDate.setSecondLocalTime(0);
+
+// Pattern 2: Check if date is today
+function isToday(gdtDate) {
+    var today = new GlideDateTime();
+    return gdtDate.getYearLocalTime() == today.getYearLocalTime() &&
+           gdtDate.getMonthLocalTime() == today.getMonthLocalTime() &&
+           gdtDate.getDayOfMonthLocalTime() == today.getDayOfMonthLocalTime();
+}
+
+// Pattern 3: Get start of day
+function getStartOfDay(gdt) {
+    var startOfDay = new GlideDateTime(gdt.getValue());
+    startOfDay.setHourLocalTime(0);
+    startOfDay.setMinuteLocalTime(0);
+    startOfDay.setSecondLocalTime(0);
+    return startOfDay;
+}
+
+// Pattern 4: Get end of day
+function getEndOfDay(gdt) {
+    var endOfDay = new GlideDateTime(gdt.getValue());
+    endOfDay.setHourLocalTime(23);
+    endOfDay.setMinuteLocalTime(59);
+    endOfDay.setSecondLocalTime(59);
+    return endOfDay;
+}
+
+// Pattern 5: Calculate age of record
+var gr = new GlideRecord('incident');
+if (gr.get('sys_id_here')) {
+    var created = gr.sys_created_on.getGlideObject();
+    var now = new GlideDateTime();
+    var age = GlideDateTime.subtract(created, now);
+    
+    var days = age.getDayPart();
+    var hours = age.getHourPart();
+    
+    gs.info('Incident age: ' + days + ' days, ' + hours + ' hours');
+}
+
+// Pattern 6: Query records from specific date range
+var gr = new GlideRecord('incident');
+var startDate = new GlideDateTime('2024-10-01 00:00:00');
+var endDate = new GlideDateTime('2024-10-31 23:59:59');
+gr.addQuery('sys_created_on', '>=', startDate);
+gr.addQuery('sys_created_on', '<=', endDate);
+gr.query();
+gs.info('October incidents: ' + gr.getRowCount());
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (12 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <!-- Questions 1-12 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Where can you use GlideDateTime?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Client scripts only</li>
+                                        <li>B) Server-side scripts only</li>
+                                        <li>C) Both client and server scripts</li>
+                                        <li>D) Only in scheduled jobs</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            GlideDateTime is server-side only. It cannot be used in client scripts. For client-side date operations, use JavaScript Date objects or pass data from server.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you create a GlideDateTime object with the current date/time?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) var gdt = GlideDateTime.now()</li>
+                                        <li>B) var gdt = new GlideDateTime()</li>
+                                        <li>C) var gdt = new GlideDateTime(gs.now())</li>
+                                        <li>D) var gdt = GlideDateTime.current()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            new GlideDateTime() creates a GlideDateTime object initialized to the current date and time. You can also use setNow() method.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you add 7 days to a GlideDateTime object?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gdt.addDays(7)</li>
+                                        <li>B) gdt.addDaysLocalTime(7)</li>
+                                        <li>C) gdt.add(7)</li>
+                                        <li>D) gdt.plusDays(7)</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use addDaysLocalTime(7) to add days using local time. Use negative numbers to subtract: addDaysLocalTime(-7) subtracts 7 days.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you get a GlideDateTime object from a GlideRecord date field?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gr.field.getDateTime()</li>
+                                        <li>B) gr.field.getGlideObject()</li>
+                                        <li>C) new GlideDateTime(gr.field)</li>
+                                        <li>D) gr.field.toGlideDateTime()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use getGlideObject() to get a GlideDateTime object from a GlideRecord date/time field. Example: var gdt = gr.sys_created_on.getGlideObject();
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you compare if one date is before another?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) date1 < date2</li>
+                                        <li>B) date1.before(date2)</li>
+                                        <li>C) date1.isBefore(date2)</li>
+                                        <li>D) date1.compare(date2) < 0</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use the before() method: if (date1.before(date2)) { }. Also available: after(), equals(), onOrBefore(), onOrAfter().
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does getDisplayValue() return for a GlideDateTime?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Unix timestamp</li>
+                                        <li>B) Formatted date/time string for display</li>
+                                        <li>C) JavaScript Date object</li>
+                                        <li>D) Number of days since epoch</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            getDisplayValue() returns a formatted string representation of the date/time (e.g., '2024-10-24 15:30:45'). Use getValue() for internal format.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you calculate the duration between two GlideDateTime objects?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) date1.subtract(date2)</li>
+                                        <li>B) GlideDateTime.subtract(date1, date2)</li>
+                                        <li>C) date1.getDuration(date2)</li>
+                                        <li>D) new GlideDuration(date1, date2)</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use the static method GlideDateTime.subtract(start, end) which returns a GlideDuration object representing the time difference.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does GlideDuration represent?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) A specific date and time</li>
+                                        <li>B) A length of time</li>
+                                        <li>C) A timezone offset</li>
+                                        <li>D) A date format</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            GlideDuration represents a length/span of time (e.g., 3 days, 2 hours, 30 minutes). It's the difference between two dates.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you set a GlideDateTime to midnight (00:00:00)?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) gdt.setToMidnight()</li>
+                                        <li>B) gdt.setHourLocalTime(0); gdt.setMinuteLocalTime(0); gdt.setSecondLocalTime(0)</li>
+                                        <li>C) gdt.clearTime()</li>
+                                        <li>D) gdt.setTime('00:00:00')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Set each time component to 0: gdt.setHourLocalTime(0); gdt.setMinuteLocalTime(0); gdt.setSecondLocalTime(0); to set time to midnight.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What method returns the year from a GlideDateTime?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gdt.getYear()</li>
+                                        <li>B) gdt.getYearLocalTime()</li>
+                                        <li>C) gdt.year()</li>
+                                        <li>D) gdt.getYearValue()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use getYearLocalTime() to get the year. Similar methods: getMonthLocalTime(), getDayOfMonthLocalTime(), getHourLocalTime(), etc.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you subtract 3 months from a GlideDateTime?</span>
+                                    <span class="question-number">Q11</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) gdt.subtractMonths(3)</li>
+                                        <li>B) gdt.addMonthsLocalTime(-3)</li>
+                                        <li>C) gdt.minusMonths(3)</li>
+                                        <li>D) gdt.subtract(3, 'months')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer11')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer11" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use negative numbers with add methods to subtract: addMonthsLocalTime(-3) subtracts 3 months. Same pattern for days, years, weeks.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can you modify a GlideDateTime object retrieved from a GlideRecord field without affecting the record?</span>
+                                    <span class="question-number">Q12</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) No, changes affect the record automatically</li>
+                                        <li>B) Yes, it's a copy - assign it back to save changes</li>
+                                        <li>C) Only if you call gdt.detach()</li>
+                                        <li>D) Only in before business rules</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer12')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer12" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            getGlideObject() returns a copy. Modifications don't affect the record unless you assign it back: gr.field = modifiedGdt; gr.update();
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">Navigation</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="glidesystem.html" class="list-group-item list-group-item-action">
+                                        <i class="ti ti-arrow-left me-2"></i> Previous: GlideSystem
+                                    </a>
+                                    <a href="script-includes.html" class="list-group-item list-group-item-action">
+                                        Next: Script Includes <i class="ti ti-arrow-right ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>Quick Reference</h4>
+                                    <ul class="small">
+                                        <li><code>new GlideDateTime()</code> - Current time</li>
+                                        <li><code>getGlideObject()</code> - From GlideRecord</li>
+                                        <li><code>addDaysLocalTime(n)</code> - Add days</li>
+                                        <li><code>before()/after()</code> - Compare</li>
+                                        <li><code>getDisplayValue()</code> - Format output</li>
+                                        <li><code>GlideDateTime.subtract()</code> - Duration</li>
+                                        <li><code>setHourLocalTime()</code> - Set time</li>
+                                        <li>Server-side only!</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                                <li class="list-inline-item"><a href="script-includes.html">Next Topic</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>

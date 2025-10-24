@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2: DOM Manipulation - Full Stack Development</title>
+    <!-- Tabler CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <!-- Tabler Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@2.44.0/tabler-icons.min.css">
+    <!-- Monaco Editor -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
+    <style>
+        .code-editor {
+            height: 300px;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            margin: 1rem 0;
+        }
+        .topic-section {
+            margin-bottom: 3rem;
+        }
+        .example-output {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+        .demo-box {
+            border: 2px solid #007bff;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        .highlight {
+            background-color: yellow;
+            padding: 5px;
+        }
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: ">";
+        }
+        .dom-tree {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+        }
+        .tree-node {
+            margin: 4px 0;
+            padding: 2px 0;
+        }
+        .tree-children {
+            margin-left: 20px;
+            border-left: 1px dashed #dee2e6;
+            padding-left: 15px;
+        }
+        .tree-node i {
+            margin-right: 8px;
+        }
+        .interactive-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .demo-controls {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .demo-output {
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            min-height: 100px;
+        }
+        .btn-demo {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .btn-demo:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .feature-card {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .highlight {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #333;
+            font-weight: bold;
+            animation: glow 1s ease-in-out;
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+        }
+        .topic-section {
+            margin-bottom: 40px;
+        }
+        .code-editor {
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header class="navbar navbar-expand-md navbar-light d-print-none">
+        <div class="container-xl">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+                <a href="index.html">
+                    <i class="ti ti-code"></i>
+                    Full Stack Development
+                </a>
+            </h1>
+            <div class="collapse navbar-collapse" id="navbar-menu">
+                <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-home"></i>
+                                </span>
+                                <span class="nav-link-title">Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#navbar-help" data-bs-toggle="dropdown" role="button">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-book"></i>
+                                </span>
+                                <span class="nav-link-title">Course Units</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="unit1.html">Unit 1: Basic JavaScript</a>
+                                <a class="dropdown-item active" href="unit2.html">Unit 2: DOM Manipulation</a>
+                                <a class="dropdown-item" href="unit3.html">Unit 3: Forms & React Intro</a>
+                                <a class="dropdown-item" href="unit4.html">Unit 4: React State & APIs</a>
+                                <a class="dropdown-item" href="unit5.html">Unit 5: MongoDB & Webpack</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Breadcrumb -->
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Unit 2</li>
+                            </ol>
+                        </nav>
+                        <h2 class="page-title">
+                            Unit 2: Document Object Model (DOM)
+                        </h2>
+                        <div class="text-muted">
+                            DOM Manipulation, Selecting Elements, Working with DOM Nodes, Events, Event Listeners
+                        </div>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="unit1.html" class="btn btn-outline-primary">
+                                <i class="ti ti-arrow-left me-1"></i>
+                                Previous Unit
+                            </a>
+                            <a href="unit3.html" class="btn btn-primary">
+                                Next Unit
+                                <i class="ti ti-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page body -->
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <!-- Introduction to DOM -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Introduction to the Document Object Model (DOM)</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>The Document Object Model (DOM) is a programming interface for HTML and XML documents. It represents the page so that programs can change the document structure, style, and content.</p>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4>What is the DOM?</h4>
+                                        <ul>
+                                            <li>Tree-like representation of HTML document</li>
+                                            <li>Each HTML element is a node in the tree</li>
+                                            <li>JavaScript can access and modify these nodes</li>
+                                            <li>Changes are reflected immediately in the browser</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4>DOM Tree Structure:</h4>
+                                        <ul>
+                                            <li><strong>Document:</strong> Root of the tree</li>
+                                            <li><strong>Element nodes:</strong> HTML tags</li>
+                                            <li><strong>Text nodes:</strong> Text content</li>
+                                            <li><strong>Attribute nodes:</strong> Element attributes</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="demo-box">
+                                    <h5>DOM Tree Visualization:</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>HTML Structure:</h6>
+                                            <pre><code>&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Page Title&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Main Heading&lt;/h1&gt;
+    &lt;p&gt;Paragraph text&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>DOM Tree Structure:</h6>
+                                            <div class="dom-tree">
+                                                <div class="tree-node">
+                                                    <i class="ti ti-file-code text-primary"></i> document
+                                                    <div class="tree-children">
+                                                        <div class="tree-node">
+                                                            <i class="ti ti-tag text-success"></i> html
+                                                            <div class="tree-children">
+                                                                <div class="tree-node">
+                                                                    <i class="ti ti-tag text-info"></i> head
+                                                                    <div class="tree-children">
+                                                                        <div class="tree-node">
+                                                                            <i class="ti ti-tag text-warning"></i> title
+                                                                            <div class="tree-children">
+                                                                                <div class="tree-node text-muted">
+                                                                                    <i class="ti ti-file-text"></i> "Page Title"
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="tree-node">
+                                                                    <i class="ti ti-tag text-info"></i> body
+                                                                    <div class="tree-children">
+                                                                        <div class="tree-node">
+                                                                            <i class="ti ti-tag text-warning"></i> h1
+                                                                            <div class="tree-children">
+                                                                                <div class="tree-node text-muted">
+                                                                                    <i class="ti ti-file-text"></i> "Main Heading"
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="tree-node">
+                                                                            <i class="ti ti-tag text-warning"></i> p
+                                                                            <div class="tree-children">
+                                                                                <div class="tree-node text-muted">
+                                                                                    <i class="ti ti-file-text"></i> "Paragraph text"
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive DOM Playground -->
+                    <div class="col-12 topic-section">
+                        <div class="interactive-demo">
+                            <h3><i class="ti ti-wand"></i> Interactive DOM Playground</h3>
+                            <p>Try out DOM manipulation in real-time! Click the buttons below to see how different DOM methods work.</p>
+                            
+                            <div class="demo-controls">
+                                <button class="btn btn-demo" onclick="demoGetElementById()">getElementById</button>
+                                <button class="btn btn-demo" onclick="demoQuerySelector()">querySelector</button>
+                                <button class="btn btn-demo" onclick="demoCreateElement()">createElement</button>
+                                <button class="btn btn-demo" onclick="demoChangeContent()">Change Content</button>
+                                <button class="btn btn-demo" onclick="demoAddClass()">Add Class</button>
+                                <button class="btn btn-demo" onclick="demoRemoveElement()">Remove Element</button>
+                                <button class="btn btn-demo" onclick="resetDemo()">Reset Demo</button>
+                            </div>
+                            
+                            <div class="demo-output" id="demoOutput">
+                                <div id="demoContainer">
+                                    <h4 id="demoTitle">Demo Title</h4>
+                                    <p class="demo-text">This is a demo paragraph.</p>
+                                    <ul id="demoList">
+                                        <li>Item 1</li>
+                                        <li>Item 2</li>
+                                    </ul>
+                                </div>
+                                <div id="consoleOutput" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2);">
+                                    <strong>Console Output:</strong><br>
+                                    <span id="consoleText">Click a button to see DOM manipulation in action!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selecting Elements -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Selecting Elements</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Before you can manipulate DOM elements, you need to select them. JavaScript provides several methods to select elements from the DOM.</p>
+                                
+                                <h4>Selection Methods:</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="feature-card">
+                                            <div class="feature-icon bg-primary-lt">
+                                                <i class="ti ti-id text-primary"></i>
+                                            </div>
+                                            <h5>getElementById()</h5>
+                                            <p class="text-muted">Selects a single element by its unique ID attribute. Fast and efficient for targeting specific elements.</p>
+                                            <code>document.getElementById('myElement')</code>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="feature-card">
+                                            <div class="feature-icon bg-success-lt">
+                                                <i class="ti ti-tag text-success"></i>
+                                            </div>
+                                            <h5>querySelector()</h5>
+                                            <p class="text-muted">Selects the first element matching a CSS selector. Very flexible and powerful.</p>
+                                            <code>document.querySelector('.myClass')</code>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="feature-card">
+                                            <div class="feature-icon bg-warning-lt">
+                                                <i class="ti ti-tags text-warning"></i>
+                                            </div>
+                                            <h5>querySelectorAll()</h5>
+                                            <p class="text-muted">Selects all elements matching a CSS selector. Returns a NodeList collection.</p>
+                                            <code>document.querySelectorAll('div.item')</code>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="feature-card">
+                                            <div class="feature-icon bg-info-lt">
+                                                <i class="ti ti-list text-info"></i>
+                                            </div>
+                                            <h5>getElementsByClassName()</h5>
+                                            <p class="text-muted">Selects elements by class name. Returns a live HTMLCollection that updates automatically.</p>
+                                            <code>document.getElementsByClassName('myClass')</code>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="code-editor" id="editor1"></div>
+                                
+                                <!-- Demo HTML for selection -->
+                                <div class="demo-box">
+                                    <h5>Demo HTML Structure:</h5>
+                                    <div id="demo-content">
+                                        <h3 id="main-title">Main Title</h3>
+                                        <p class="description">This is a description paragraph.</p>
+                                        <p class="description">Another description paragraph.</p>
+                                        <ul>
+                                            <li>List item 1</li>
+                                            <li>List item 2</li>
+                                            <li>List item 3</li>
+                                        </ul>
+                                        <button id="demo-button" class="btn btn-primary">Click Me</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Working with DOM Nodes -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Working with DOM Nodes</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Once you've selected elements, you can manipulate them by changing their content, attributes, and structure.</p>
+                                
+                                <h4>Node Manipulation Methods:</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Creating and Adding:</h5>
+                                        <ul>
+                                            <li><code>createElement()</code> - Create new element</li>
+                                            <li><code>createTextNode()</code> - Create text node</li>
+                                            <li><code>appendChild()</code> - Add child element</li>
+                                            <li><code>insertBefore()</code> - Insert before element</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Removing and Replacing:</h5>
+                                        <ul>
+                                            <li><code>removeChild()</code> - Remove child element</li>
+                                            <li><code>replaceChild()</code> - Replace element</li>
+                                            <li><code>remove()</code> - Remove element (modern)</li>
+                                            <li><code>cloneNode()</code> - Clone element</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="code-editor" id="editor2"></div>
+                                
+                                <div class="demo-box">
+                                    <h5>Dynamic Content Area:</h5>
+                                    <div id="dynamic-content">
+                                        <p>Original content</p>
+                                    </div>
+                                    <button onclick="addElement()" class="btn btn-success me-2">Add Element</button>
+                                    <button onclick="removeElement()" class="btn btn-danger">Remove Last Element</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Updating Element Content & Attributes -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Updating Element Content & Attributes</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>You can modify the content and attributes of DOM elements to create dynamic web pages.</p>
+                                
+                                <h4>Content Modification:</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <ul>
+                                            <li><code>innerHTML</code> - Get/set HTML content</li>
+                                            <li><code>textContent</code> - Get/set text content</li>
+                                            <li><code>innerText</code> - Get/set visible text</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <ul>
+                                            <li><code>getAttribute()</code> - Get attribute value</li>
+                                            <li><code>setAttribute()</code> - Set attribute value</li>
+                                            <li><code>removeAttribute()</code> - Remove attribute</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="code-editor" id="editor3"></div>
+                                
+                                <div class="demo-box">
+                                    <h5>Content Update Demo:</h5>
+                                    <div id="content-demo">
+                                        <h4 id="demo-heading">Original Heading</h4>
+                                        <p id="demo-paragraph">Original paragraph content.</p>
+                                        <img id="demo-image" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzAwN2JmZiIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2U8L3RleHQ+PC9zdmc+" alt="Demo Image" style="width: 100px; height: 100px;">
+                                    </div>
+                                    <button onclick="updateContent()" class="btn btn-info me-2">Update Content</button>
+                                    <button onclick="updateAttributes()" class="btn btn-warning">Update Attributes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Events Introduction -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Introduction to Events</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Events are actions that happen in the browser, such as clicking a button, moving the mouse, or pressing a key. JavaScript can respond to these events.</p>
+                                
+                                <h4>Event Concepts:</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <ul>
+                                            <li><strong>Event:</strong> Something that happens in the browser</li>
+                                            <li><strong>Event Handler:</strong> Function that responds to an event</li>
+                                            <li><strong>Event Object:</strong> Contains information about the event</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <ul>
+                                            <li><strong>Event Target:</strong> Element that triggered the event</li>
+                                            <li><strong>Event Bubbling:</strong> Events propagate up the DOM tree</li>
+                                            <li><strong>Event Capturing:</strong> Events propagate down the DOM tree</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="code-editor" id="editor4"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Different Types of Events -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Different Types of Events</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>There are many different types of events that can occur in a web browser. Here are the most common categories:</p>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="feature-card">
+                                            <div class="feature-icon bg-primary-lt">
+                                                <i class="ti ti-mouse text-primary"></i>
+                                            </div>
+                                            <h5>Mouse Events</h5>
+                                            <p class="text-muted">Handle user interactions with mouse clicks, movements, and hover states.</p>
+                                            <div class="small">
+                                                <code>click</code>, <code>dblclick</code>, <code>mousedown</code>, <code>mouseup</code>, <code>mouseover</code>, <code>mouseout</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="feature-card">
+                                            <div class="feature-icon bg-success-lt">
+                                                <i class="ti ti-keyboard text-success"></i>
+                                            </div>
+                                            <h5>Keyboard Events</h5>
+                                            <p class="text-muted">Respond to keyboard input and key combinations for interactive experiences.</p>
+                                            <div class="small">
+                                                <code>keydown</code>, <code>keyup</code>, <code>keypress</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="feature-card">
+                                            <div class="feature-icon bg-warning-lt">
+                                                <i class="ti ti-forms text-warning"></i>
+                                            </div>
+                                            <h5>Form Events</h5>
+                                            <p class="text-muted">Handle form submissions, input changes, and focus states for user input validation.</p>
+                                            <div class="small">
+                                                <code>submit</code>, <code>change</code>, <code>input</code>, <code>focus</code>, <code>blur</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="feature-card">
+                                            <div class="feature-icon bg-info-lt">
+                                                <i class="ti ti-window text-info"></i>
+                                            </div>
+                                            <h5>Window Events</h5>
+                                            <p class="text-muted">Monitor browser window changes like loading, resizing, and scrolling.</p>
+                                            <div class="small">
+                                                <code>load</code>, <code>resize</code>, <code>scroll</code>, <code>beforeunload</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="code-editor" id="editor5"></div>
+                                
+                                <div class="interactive-demo">
+                                    <h4><i class="ti ti-bolt"></i> Interactive Event Playground</h4>
+                                    <p>Experience different event types in real-time! Interact with the elements below and watch the events fire.</p>
+                                    
+                                    <div class="demo-controls">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <h6>Mouse Events</h6>
+                                                <button id="click-demo" class="btn btn-demo btn-sm mb-2 w-100">Click Me</button>
+                                                <button id="hover-demo" class="btn btn-demo btn-sm w-100">Hover Me</button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <h6>Keyboard Events</h6>
+                                                <input type="text" id="input-demo" placeholder="Type here..." class="form-control form-control-sm mb-2" style="background: rgba(255,255,255,0.9);">
+                                                <button id="key-demo" class="btn btn-demo btn-sm w-100">Focus & Type</button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <h6>Form Events</h6>
+                                                <select id="select-demo" class="form-select form-select-sm mb-2" style="background: rgba(255,255,255,0.9);">
+                                                    <option value="">Choose option...</option>
+                                                    <option value="option1">Option 1</option>
+                                                    <option value="option2">Option 2</option>
+                                                </select>
+                                                <button type="button" id="submit-demo" class="btn btn-demo btn-sm w-100">Submit Form</button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <h6>Controls</h6>
+                                                <button id="clear-log" class="btn btn-demo btn-sm mb-2 w-100">Clear Log</button>
+                                                <button id="scroll-demo" class="btn btn-demo btn-sm w-100">Scroll Event</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="demo-output">
+                                        <h6>Event Log:</h6>
+                                        <div id="event-log" style="height: 150px; overflow-y: auto; font-family: monospace; font-size: 12px; line-height: 1.4;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event Binding and Event Listeners -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Event Binding and Event Listeners</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>There are several ways to bind events to elements in JavaScript. The most modern and flexible approach is using event listeners.</p>
+                                
+                                <h4>Methods of Event Binding:</h4>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h5>HTML Attributes:</h5>
+                                        <pre><code>&lt;button onclick="myFunction()"&gt;
+  Click me
+&lt;/button&gt;</code></pre>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h5>DOM Properties:</h5>
+                                        <pre><code>element.onclick = function() {
+  // Handle click
+};</code></pre>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h5>Event Listeners:</h5>
+                                        <pre><code>element.addEventListener(
+  'click', 
+  function() {
+    // Handle click
+  }
+);</code></pre>
+                                    </div>
+                                </div>
+
+                                <div class="code-editor" id="editor6"></div>
+                                
+                                <div class="demo-box">
+                                    <h5>Event Listener Demo:</h5>
+                                    <button id="listener-demo" class="btn btn-info me-2">Multiple Listeners</button>
+                                    <button id="remove-demo" class="btn btn-warning me-2">Remove Listener</button>
+                                    <div id="listener-output" class="mt-2 p-2 bg-light border rounded"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event Delegation -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Event Delegation</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Event delegation is a technique where you attach a single event listener to a parent element to handle events for multiple child elements, including those added dynamically.</p>
+                                
+                                <h4>Benefits of Event Delegation:</h4>
+                                <ul>
+                                    <li>Better performance with many elements</li>
+                                    <li>Works with dynamically added elements</li>
+                                    <li>Reduces memory usage</li>
+                                    <li>Simplifies event management</li>
+                                </ul>
+
+                                <div class="code-editor" id="editor7"></div>
+                                
+                                <div class="demo-box">
+                                    <h5>Event Delegation Demo:</h5>
+                                    <div id="delegation-container" class="border p-3 mb-3">
+                                        <button class="btn btn-sm btn-outline-primary me-2 mb-2">Button 1</button>
+                                        <button class="btn btn-sm btn-outline-primary me-2 mb-2">Button 2</button>
+                                        <button class="btn btn-sm btn-outline-primary me-2 mb-2">Button 3</button>
+                                    </div>
+                                    <button onclick="addDelegationButton()" class="btn btn-success">Add New Button</button>
+                                    <div id="delegation-output" class="mt-2 p-2 bg-light border rounded"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="btn-list">
+                                    <a href="unit1.html" class="btn btn-outline-primary">
+                                        <i class="ti ti-arrow-left me-1"></i>
+                                        Previous: Unit 1 - Basic JavaScript
+                                    </a>
+                                    <a href="unit3.html" class="btn btn-primary">
+                                        Next: Unit 3 - Forms & React Intro
+                                        <i class="ti ti-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabler JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    
+    <!-- Monaco Editor Setup -->
+    <script>
+        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs' } });
+        
+        const codeExamples = {
+            editor1: `// Selecting elements by different methods
+
+// Select by ID
+const title = document.getElementById('main-title');
+console.log(title);
+
+// Select by class name (returns HTMLCollection)
+const descriptions = document.getElementsByClassName('description');
+console.log(descriptions);
+
+// Select by tag name
+const paragraphs = document.getElementsByTagName('p');
+console.log(paragraphs);
+
+// Select first element matching CSS selector
+const firstDescription = document.querySelector('.description');
+console.log(firstDescription);
+
+// Select all elements matching CSS selector (returns NodeList)
+const allDescriptions = document.querySelectorAll('.description');
+console.log(allDescriptions);
+
+// Select by complex CSS selectors
+const listItems = document.querySelectorAll('ul li');
+console.log(listItems);
+
+// Navigate the DOM tree
+const button = document.getElementById('demo-button');
+console.log(button.parentNode);     // Parent element
+console.log(button.nextSibling);    // Next sibling
+console.log(button.previousSibling); // Previous sibling`,
+            
+            editor2: `// Creating and manipulating DOM nodes
+
+// Create new elements
+const newParagraph = document.createElement('p');
+const textNode = document.createTextNode('This is a new paragraph!');
+newParagraph.appendChild(textNode);
+
+// Alternative: set innerHTML
+const anotherParagraph = document.createElement('p');
+anotherParagraph.innerHTML = 'Another <strong>new</strong> paragraph!';
+
+// Add elements to the DOM
+const container = document.getElementById('dynamic-content');
+container.appendChild(newParagraph);
+container.appendChild(anotherParagraph);
+
+// Insert before existing element
+const firstChild = container.firstElementChild;
+const insertedElement = document.createElement('p');
+insertedElement.textContent = 'Inserted at the beginning';
+container.insertBefore(insertedElement, firstChild);
+
+// Remove elements
+// Old way:
+// container.removeChild(anotherParagraph);
+
+// Modern way:
+anotherParagraph.remove();
+
+// Clone elements
+const clonedParagraph = newParagraph.cloneNode(true); // true = deep clone
+container.appendChild(clonedParagraph);`,
+            
+            editor3: `// Updating element content and attributes
+
+// Get elements
+const heading = document.getElementById('demo-heading');
+const paragraph = document.getElementById('demo-paragraph');
+const image = document.getElementById('demo-image');
+
+// Update text content
+heading.textContent = 'Updated Heading';
+
+// Update HTML content
+paragraph.innerHTML = 'Updated paragraph with <em>emphasis</em> and <strong>bold</strong> text.';
+
+// Update attributes
+image.setAttribute('alt', 'Updated alt text');
+image.setAttribute('title', 'This is a tooltip');
+
+// Get attribute values
+console.log(image.getAttribute('src'));
+console.log(image.getAttribute('alt'));
+
+// Remove attributes
+// image.removeAttribute('title');
+
+// Working with CSS classes
+heading.classList.add('highlight');
+paragraph.classList.toggle('highlight');
+
+// Check if class exists
+if (heading.classList.contains('highlight')) {
+    console.log('Heading has highlight class');
+}
+
+// Update styles directly
+heading.style.color = 'blue';
+heading.style.fontSize = '24px';
+paragraph.style.backgroundColor = '#f0f0f0';
+paragraph.style.padding = '10px';`,
+            
+            editor4: `// Basic event handling
+
+// Method 1: HTML attribute (not recommended)
+// <button onclick="handleClick()">Click me</button>
+
+// Method 2: DOM property
+const button = document.getElementById('demo-button');
+button.onclick = function(event) {
+    console.log('Button clicked!');
+    console.log('Event type:', event.type);
+    console.log('Target element:', event.target);
+};
+
+// Method 3: Event listener (recommended)
+button.addEventListener('click', function(event) {
+    console.log('Event listener triggered');
+    
+    // Event object properties
+    console.log('Event type:', event.type);
+    console.log('Target:', event.target);
+    console.log('Current target:', event.currentTarget);
+    console.log('Mouse coordinates:', event.clientX, event.clientY);
+    
+    // Prevent default behavior (for links, forms, etc.)
+    // event.preventDefault();
+    
+    // Stop event propagation
+    // event.stopPropagation();
+});
+
+// You can add multiple event listeners
+button.addEventListener('click', function() {
+    console.log('Second event listener');
+});`,
+            
+            editor5: `// Different types of events
+
+// Mouse events
+const clickButton = document.getElementById('click-demo');
+const hoverButton = document.getElementById('hover-demo');
+const inputField = document.getElementById('input-demo');
+const eventLog = document.getElementById('event-log');
+
+function logEvent(message) {
+    const logEntry = document.createElement('div');
+    logEntry.textContent = new Date().toLocaleTimeString() + ': ' + message;
+    eventLog.appendChild(logEntry);
+    eventLog.scrollTop = eventLog.scrollHeight;
+}
+
+// Click event
+clickButton.addEventListener('click', function() {
+    logEvent('Button clicked!');
+});
+
+// Mouse hover events
+hoverButton.addEventListener('mouseenter', function() {
+    logEvent('Mouse entered hover button');
+    this.style.backgroundColor = '#28a745';
+});
+
+hoverButton.addEventListener('mouseleave', function() {
+    logEvent('Mouse left hover button');
+    this.style.backgroundColor = '';
+});
+
+// Keyboard events
+inputField.addEventListener('keydown', function(event) {
+    logEvent('Key pressed: ' + event.key);
+});
+
+// Input event (fires on every character)
+inputField.addEventListener('input', function(event) {
+    logEvent('Input value: ' + event.target.value);
+});
+
+// Focus and blur events
+inputField.addEventListener('focus', function() {
+    logEvent('Input field focused');
+    this.style.borderColor = '#007bff';
+});
+
+inputField.addEventListener('blur', function() {
+    logEvent('Input field lost focus');
+    this.style.borderColor = '';
+});`,
+            
+            editor6: `// Event listeners - advanced usage
+
+const listenerButton = document.getElementById('listener-demo');
+const removeButton = document.getElementById('remove-demo');
+const output = document.getElementById('listener-output');
+
+// Function to be used as event handler
+function handleClick(event) {
+    output.innerHTML += '<div>Click handler 1 executed</div>';
+}
+
+// Another event handler function
+function handleClickTwo(event) {
+    output.innerHTML += '<div>Click handler 2 executed</div>';
+}
+
+// Add multiple event listeners
+listenerButton.addEventListener('click', handleClick);
+listenerButton.addEventListener('click', handleClickTwo);
+
+// Event listener with options
+listenerButton.addEventListener('click', function(event) {
+    output.innerHTML += '<div>Click handler 3 (with options)</div>';
+}, {
+    once: false,    // Run only once if true
+    passive: false, // Cannot call preventDefault if true
+    capture: false  // Use capturing phase if true
+});
+
+// Remove event listener
+removeButton.addEventListener('click', function() {
+    listenerButton.removeEventListener('click', handleClick);
+    output.innerHTML += '<div style="color: red;">Removed first click handler</div>';
+});
+
+// Event listener with arrow function (cannot be removed easily)
+listenerButton.addEventListener('dblclick', (event) => {
+    output.innerHTML += '<div style="color: blue;">Double-click detected!</div>';
+});`,
+            
+            editor7: `// Event delegation example
+
+const container = document.getElementById('delegation-container');
+const delegationOutput = document.getElementById('delegation-output');
+
+// Single event listener on parent container
+container.addEventListener('click', function(event) {
+    // Check if clicked element is a button
+    if (event.target.tagName === 'BUTTON') {
+        const buttonText = event.target.textContent;
+        delegationOutput.innerHTML += '<div>Clicked: ' + buttonText + '</div>';
+        
+        // You can also check for specific classes
+        if (event.target.classList.contains('btn-outline-primary')) {
+            event.target.style.backgroundColor = '#007bff';
+            event.target.style.color = 'white';
+        }
+    }
+});
+
+// Function to add new buttons dynamically
+function addDelegationButton() {
+    const buttonCount = container.children.length + 1;
+    const newButton = document.createElement('button');
+    newButton.className = 'btn btn-sm btn-outline-primary me-2 mb-2';
+    newButton.textContent = 'Button ' + buttonCount;
+    container.appendChild(newButton);
+}
+
+// More specific event delegation
+container.addEventListener('mouseover', function(event) {
+    if (event.target.tagName === 'BUTTON') {
+        event.target.style.transform = 'scale(1.05)';
+    }
+});
+
+container.addEventListener('mouseout', function(event) {
+    if (event.target.tagName === 'BUTTON') {
+        event.target.style.transform = 'scale(1)';
+    }
+});`
+        };
+        
+        require(['vs/editor/editor.main'], function () {
+            Object.keys(codeExamples).forEach(editorId => {
+                monaco.editor.create(document.getElementById(editorId), {
+                    value: codeExamples[editorId],
+                    language: 'javascript',
+                    theme: 'vs-light',
+                    readOnly: false,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    fontSize: 14,
+                    lineNumbers: 'on',
+                    roundedSelection: false,
+                    automaticLayout: true
+                });
+            });
+        });
+        
+        // Demo functions for interactive examples
+        function addElement() {
+            const container = document.getElementById('dynamic-content');
+            const newElement = document.createElement('p');
+            newElement.textContent = 'Dynamically added element ' + (container.children.length);
+            newElement.style.color = '#007bff';
+            container.appendChild(newElement);
+        }
+        
+        function removeElement() {
+            const container = document.getElementById('dynamic-content');
+            if (container.children.length > 1) {
+                container.removeChild(container.lastElementChild);
+            }
+        }
+        
+        function updateContent() {
+            const heading = document.getElementById('demo-heading');
+            const paragraph = document.getElementById('demo-paragraph');
+            
+            heading.textContent = 'Updated Heading!';
+            paragraph.innerHTML = 'Updated paragraph with <strong>bold</strong> and <em>italic</em> text.';
+        }
+        
+        function updateAttributes() {
+            const image = document.getElementById('demo-image');
+            image.setAttribute('alt', 'Updated image description');
+            image.style.border = '3px solid #28a745';
+            image.style.borderRadius = '10px';
+        }
+        
+        function addDelegationButton() {
+            const container = document.getElementById('delegation-container');
+            const buttonCount = container.children.length + 1;
+            const newButton = document.createElement('button');
+            newButton.className = 'btn btn-sm btn-outline-primary me-2 mb-2';
+            newButton.textContent = 'Button ' + buttonCount;
+            container.appendChild(newButton);
+        }
+        
+        // Initialize event delegation demo
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('delegation-container');
+            const delegationOutput = document.getElementById('delegation-output');
+            
+            container.addEventListener('click', function(event) {
+                if (event.target.tagName === 'BUTTON') {
+                    const buttonText = event.target.textContent;
+                    delegationOutput.innerHTML += '<div>Clicked: ' + buttonText + '</div>';
+                    event.target.style.backgroundColor = '#007bff';
+                    event.target.style.color = 'white';
+                }
+            });
+        });
+        
+        // Interactive DOM Playground Functions
+        function updateConsole(message) {
+            document.getElementById('consoleText').innerHTML = message;
+        }
+        
+        function demoGetElementById() {
+            const element = document.getElementById('demoTitle');
+            element.style.color = '#ff6b6b';
+            updateConsole('getElementById("demoTitle") - Selected and changed color to red');
+        }
+        
+        function demoQuerySelector() {
+            const element = document.querySelector('.demo-text');
+            element.style.fontWeight = 'bold';
+            updateConsole('querySelector(".demo-text") - Selected and made text bold');
+        }
+        
+        function demoCreateElement() {
+            const newItem = document.createElement('li');
+            newItem.textContent = 'New Item ' + (Date.now() % 1000);
+            document.getElementById('demoList').appendChild(newItem);
+            updateConsole('createElement("li") - Created and added new list item');
+        }
+        
+        function demoChangeContent() {
+            const title = document.getElementById('demoTitle');
+            title.textContent = 'Updated Title!';
+            updateConsole('Changed textContent of title element');
+        }
+        
+        function demoAddClass() {
+            const paragraph = document.querySelector('.demo-text');
+            paragraph.classList.add('highlight');
+            updateConsole('Added "highlight" class to paragraph');
+        }
+        
+        function demoRemoveElement() {
+            const list = document.getElementById('demoList');
+            if (list.children.length > 2) {
+                list.removeChild(list.lastElementChild);
+                updateConsole('Removed last list item');
+            } else {
+                updateConsole('Cannot remove - minimum items reached');
+            }
+        }
+        
+        function resetDemo() {
+             const container = document.getElementById('demoContainer');
+             container.innerHTML = `
+                 <h4 id="demoTitle">Demo Title</h4>
+                 <p class="demo-text">This is a demo paragraph.</p>
+                 <ul id="demoList">
+                     <li>Item 1</li>
+                     <li>Item 2</li>
+                 </ul>
+             `;
+             updateConsole('Demo reset to original state');
+         }
+         
+         // Interactive Event Playground Functions
+         function logEvent(eventType, target, details = '') {
+             const eventLog = document.getElementById('event-log');
+             const timestamp = new Date().toLocaleTimeString();
+             const logEntry = `[${timestamp}] ${eventType} on ${target} ${details}`;
+             eventLog.innerHTML += logEntry + '<br>';
+             eventLog.scrollTop = eventLog.scrollHeight;
+         }
+         
+         // Initialize event playground when DOM is loaded
+         document.addEventListener('DOMContentLoaded', function() {
+             // Click demo
+             document.getElementById('click-demo').addEventListener('click', function() {
+                 logEvent('CLICK', 'button', '- Mouse click detected');
+                 this.style.transform = 'scale(0.95)';
+                 setTimeout(() => this.style.transform = 'scale(1)', 100);
+             });
+             
+             // Hover demo
+             const hoverBtn = document.getElementById('hover-demo');
+             hoverBtn.addEventListener('mouseenter', function() {
+                 logEvent('MOUSEENTER', 'button', '- Mouse entered element');
+                 this.style.background = 'rgba(255,255,255,0.4)';
+             });
+             hoverBtn.addEventListener('mouseleave', function() {
+                 logEvent('MOUSELEAVE', 'button', '- Mouse left element');
+                 this.style.background = 'rgba(255,255,255,0.2)';
+             });
+             
+             // Input demo
+             const inputDemo = document.getElementById('input-demo');
+             inputDemo.addEventListener('keydown', function(e) {
+                 logEvent('KEYDOWN', 'input', `- Key: ${e.key}`);
+             });
+             inputDemo.addEventListener('input', function() {
+                 logEvent('INPUT', 'input', `- Value: "${this.value}"`);
+             });
+             inputDemo.addEventListener('focus', function() {
+                 logEvent('FOCUS', 'input', '- Element gained focus');
+             });
+             inputDemo.addEventListener('blur', function() {
+                 logEvent('BLUR', 'input', '- Element lost focus');
+             });
+             
+             // Key demo button
+             document.getElementById('key-demo').addEventListener('click', function() {
+                 inputDemo.focus();
+                 logEvent('PROGRAMMATIC', 'input', '- Focus set programmatically');
+             });
+             
+             // Select demo
+             document.getElementById('select-demo').addEventListener('change', function() {
+                 logEvent('CHANGE', 'select', `- Selected: "${this.value}"`);
+             });
+             
+             // Submit demo
+             document.getElementById('submit-demo').addEventListener('click', function() {
+                 logEvent('CLICK', 'submit-button', '- Form submission triggered');
+             });
+             
+             // Clear log
+             document.getElementById('clear-log').addEventListener('click', function() {
+                 document.getElementById('event-log').innerHTML = '';
+                 logEvent('SYSTEM', 'log', '- Event log cleared');
+             });
+             
+             // Scroll demo
+             document.getElementById('scroll-demo').addEventListener('click', function() {
+                 window.scrollBy(0, 100);
+                 logEvent('SCROLL', 'window', '- Programmatic scroll triggered');
+             });
+             
+             // Window scroll listener
+             let scrollTimeout;
+             window.addEventListener('scroll', function() {
+                 clearTimeout(scrollTimeout);
+                 scrollTimeout = setTimeout(() => {
+                     logEvent('SCROLL', 'window', `- ScrollY: ${window.scrollY}px`);
+                 }, 100);
+             });
+             
+             // Initial log message
+             logEvent('SYSTEM', 'playground', '- Event playground initialized');
+         });
+     </script>
+</body>
+</html>

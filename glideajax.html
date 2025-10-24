@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlideAjax - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()"><i class="ti ti-eye"></i> Show All</button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()"><i class="ti ti-eye-off"></i> Hide All</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Client-Side JavaScript - Topic 5</div>
+                            <h2 class="page-title">GlideAjax - Client-to-Server Communication</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What is GlideAjax?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>GlideAjax enables client-side scripts to call server-side Script Includes asynchronously. It's the bridge between client scripts (which can't access the database) and server-side code (which can).</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Why GlideAjax?
+                                        </div>
+                                        <p>Client scripts run in the browser and cannot directly query the database. GlideAjax allows client scripts to request data from the server without refreshing the page.</p>
+                                    </div>
+
+                                    <h4 class="mt-4">GlideAjax Workflow</h4>
+                                    <ol>
+                                        <li><strong>Client Script:</strong> Creates GlideAjax object and calls server function</li>
+                                        <li><strong>Server Script Include:</strong> Processes request and returns data</li>
+                                        <li><strong>Callback Function:</strong> Receives response and updates form</li>
+                                    </ol>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Creating the Script Include</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>First, create a Script Include that extends AbstractAjaxProcessor with client-callable functions.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Server-Side Script Include</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Script Include Name: MyAjaxUtils
+// Client callable: true
+
+var MyAjaxUtils = Class.create();
+MyAjaxUtils.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+    
+    // Get user details by sys_id
+    getUserDetails: function() {
+        var userID = this.getParameter('sysparam_user_id');
+        var gr = new GlideRecord('sys_user');
+        
+        if (gr.get(userID)) {
+            var result = {
+                name: gr.name.toString(),
+                email: gr.email.toString(),
+                phone: gr.phone.toString(),
+                department: gr.department.getDisplayValue()
+            };
+            return JSON.stringify(result);
+        }
+        return '';
+    },
+    
+    // Check if user is in group
+    isUserInGroup: function() {
+        var userID = this.getParameter('sysparam_user_id');
+        var groupID = this.getParameter('sysparam_group_id');
+        
+        var gr = new GlideRecord('sys_user_grmember');
+        gr.addQuery('user', userID);
+        gr.addQuery('group', groupID);
+        gr.query();
+        
+        return gr.hasNext().toString();
+    },
+    
+    // Get active incidents count for user
+    getActiveIncidents: function() {
+        var userID = this.getParameter('sysparam_user_id');
+        
+        var gr = new GlideRecord('incident');
+        gr.addQuery('assigned_to', userID);
+        gr.addQuery('active', true);
+        gr.query();
+        
+        return gr.getRowCount().toString();
+    },
+    
+    type: 'MyAjaxUtils'
+});
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Script Include Requirements
+                                        </div>
+                                        <p>Must extend AbstractAjaxProcessor. Must be marked as "Client callable". Always return strings from functions. Use this.getParameter() to retrieve parameters.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Client-Side GlideAjax Call</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Basic GlideAjax Pattern</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Client Script (onChange, onLoad, etc.)
+function callAjaxFunction() {
+    // Step 1: Create GlideAjax object
+    var ga = new GlideAjax('MyAjaxUtils');
+    
+    // Step 2: Add function name
+    ga.addParam('sysparam_name', 'getUserDetails');
+    
+    // Step 3: Add parameters
+    ga.addParam('sysparam_user_id', g_form.getValue('assigned_to'));
+    
+    // Step 4: Call server function with callback
+    ga.getXML(processResponse);
+    
+    // Step 5: Process response in callback
+    function processResponse(response) {
+        var answer = response.responseXML.documentElement.getAttribute('answer');
+        
+        if (answer) {
+            var userData = JSON.parse(answer);
+            g_form.addInfoMessage('User: ' + userData.name + ', Email: ' + userData.email);
+        }
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Complete Example: User Lookup</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>onChange Script with GlideAjax</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Client Script: onChange - assigned_to field
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || isTemplate) {
+        return;
+    }
+    
+    if (newValue == '') {
+        return;
+    }
+    
+    // Create GlideAjax call
+    var ga = new GlideAjax('MyAjaxUtils');
+    ga.addParam('sysparam_name', 'getUserDetails');
+    ga.addParam('sysparam_user_id', newValue);
+    ga.getXML(displayUserInfo);
+    
+    function displayUserInfo(response) {
+        var answer = response.responseXML.documentElement.getAttribute('answer');
+        
+        if (answer) {
+            var user = JSON.parse(answer);
+            
+            // Display user information
+            var message = 'Contact: ' + user.phone + ' | Email: ' + user.email;
+            g_form.showFieldMsg('assigned_to', message, 'info');
+            
+            // Auto-populate related fields
+            if (user.department) {
+                g_form.setValue('u_department', user.department);
+            }
+        }
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Synchronous vs Asynchronous</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Asynchronous (Recommended)</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Asynchronous - doesn't block UI
+var ga = new GlideAjax('MyAjaxUtils');
+ga.addParam('sysparam_name', 'getActiveIncidents');
+ga.addParam('sysparam_user_id', userID);
+ga.getXML(callback);  // Non-blocking
+
+function callback(response) {
+    var count = response.responseXML.documentElement.getAttribute('answer');
+    alert('Active incidents: ' + count);
+}
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>Synchronous (Avoid if Possible)</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Synchronous - blocks UI (poor user experience)
+var ga = new GlideAjax('MyAjaxUtils');
+ga.addParam('sysparam_name', 'getActiveIncidents');
+ga.addParam('sysparam_user_id', userID);
+ga.getXMLWait();  // BLOCKS - UI freezes
+
+var answer = ga.getAnswer();
+alert('Active incidents: ' + answer);
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Best Practice
+                                        </div>
+                                        <p>ALWAYS use asynchronous calls (getXML with callback). Synchronous calls (getXMLWait) block the UI and create a poor user experience. Only use synchronous in onSubmit when absolutely necessary.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Common GlideAjax Patterns</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Pattern 1: Validate Field Value</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Server-side Script Include
+validateSerialNumber: function() {
+    var serialNum = this.getParameter('sysparam_serial');
+    
+    var gr = new GlideRecord('alm_hardware');
+    gr.addQuery('serial_number', serialNum);
+    gr.query();
+    
+    if (gr.hasNext()) {
+        return 'exists';
+    }
+    return 'valid';
+}
+
+// Client-side onChange
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || isTemplate) return;
+    
+    var ga = new GlideAjax('MyAjaxUtils');
+    ga.addParam('sysparam_name', 'validateSerialNumber');
+    ga.addParam('sysparam_serial', newValue);
+    ga.getXML(function(response) {
+        var result = response.responseXML.documentElement.getAttribute('answer');
+        if (result == 'exists') {
+            g_form.showFieldMsg('serial_number', 'Serial number already exists', 'error');
+            g_form.clearValue('serial_number');
+        }
+    });
+}
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>Pattern 2: Populate Dependent Fields</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Server-side Script Include
+getLocationDetails: function() {
+    var locationID = this.getParameter('sysparam_location_id');
+    
+    var gr = new GlideRecord('cmn_location');
+    if (gr.get(locationID)) {
+        var result = {
+            city: gr.city.toString(),
+            state: gr.state.toString(),
+            country: gr.country.toString(),
+            time_zone: gr.time_zone.toString()
+        };
+        return JSON.stringify(result);
+    }
+    return '';
+}
+
+// Client-side onChange
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || isTemplate) return;
+    
+    if (newValue == '') {
+        g_form.clearValue('city');
+        g_form.clearValue('state');
+        return;
+    }
+    
+    var ga = new GlideAjax('MyAjaxUtils');
+    ga.addParam('sysparam_name', 'getLocationDetails');
+    ga.addParam('sysparam_location_id', newValue);
+    ga.getXML(function(response) {
+        var answer = response.responseXML.documentElement.getAttribute('answer');
+        if (answer) {
+            var loc = JSON.parse(answer);
+            g_form.setValue('city', loc.city);
+            g_form.setValue('state', loc.state);
+            g_form.setValue('country', loc.country);
+        }
+    });
+}
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>Pattern 3: Dynamic Choice List</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Server-side Script Include
+getAvailableOptions: function() {
+    var category = this.getParameter('sysparam_category');
+    
+    var gr = new GlideRecord('u_options');
+    gr.addQuery('category', category);
+    gr.addQuery('active', true);
+    gr.query();
+    
+    var options = [];
+    while (gr.next()) {
+        options.push({
+            value: gr.sys_id.toString(),
+            label: gr.name.toString()
+        });
+    }
+    return JSON.stringify(options);
+}
+
+// Client-side onChange
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || isTemplate) return;
+    
+    // Clear current options
+    g_form.clearOptions('subcategory');
+    
+    if (newValue == '') return;
+    
+    var ga = new GlideAjax('MyAjaxUtils');
+    ga.addParam('sysparam_name', 'getAvailableOptions');
+    ga.addParam('sysparam_category', newValue);
+    ga.getXML(function(response) {
+        var answer = response.responseXML.documentElement.getAttribute('answer');
+        if (answer) {
+            var options = JSON.parse(answer);
+            for (var i = 0; i < options.length; i++) {
+                g_form.addOption('subcategory', options[i].value, options[i].label);
+            }
+        }
+    });
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Error Handling</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Robust Error Handling</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Client-side with error handling
+function callAjaxWithErrorHandling() {
+    var ga = new GlideAjax('MyAjaxUtils');
+    ga.addParam('sysparam_name', 'getUserDetails');
+    ga.addParam('sysparam_user_id', g_form.getValue('assigned_to'));
+    ga.getXML(handleResponse);
+    
+    function handleResponse(response) {
+        try {
+            var answer = response.responseXML.documentElement.getAttribute('answer');
+            
+            if (!answer || answer == '') {
+                g_form.addErrorMessage('No data returned from server');
+                return;
+            }
+            
+            var userData = JSON.parse(answer);
+            
+            // Process data
+            g_form.showFieldMsg('assigned_to', 'User: ' + userData.name, 'info');
+            
+        } catch (e) {
+            g_form.addErrorMessage('Error processing server response: ' + e.message);
+            gs.log('GlideAjax error: ' + e.message, 'MyClientScript');
+        }
+    }
+}
+
+// Server-side with error handling
+getUserDetails: function() {
+    try {
+        var userID = this.getParameter('sysparam_user_id');
+        
+        if (!userID) {
+            return '';
+        }
+        
+        var gr = new GlideRecord('sys_user');
+        if (gr.get(userID)) {
+            var result = {
+                name: gr.name.toString(),
+                email: gr.email.toString() || 'N/A'
+            };
+            return JSON.stringify(result);
+        }
+        return '';
+        
+    } catch (e) {
+        gs.error('getUserDetails error: ' + e.message);
+        return '';
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (14 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <!-- Questions 1-14 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does GlideAjax allow you to do?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Query the database from client scripts</li>
+                                        <li>B) Call server-side Script Includes from client scripts</li>
+                                        <li>C) Create Ajax web services</li>
+                                        <li>D) Run business rules asynchronously</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            GlideAjax enables client-side scripts to call server-side Script Includes asynchronously. This allows client scripts to access server resources (like database queries) without directly querying from the browser.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What must a Script Include extend to be callable via GlideAjax?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) GlideAjax</li>
+                                        <li>B) AbstractAjaxProcessor</li>
+                                        <li>C) AjaxHandler</li>
+                                        <li>D) ClientCallable</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Script Includes must extend AbstractAjaxProcessor to be callable from GlideAjax. The Script Include must also be marked as "Client callable".
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you specify which function to call in a Script Include?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) ga.setFunction('functionName')</li>
+                                        <li>B) ga.addParam('sysparam_name', 'functionName')</li>
+                                        <li>C) ga.callFunction('functionName')</li>
+                                        <li>D) ga.execute('functionName')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use ga.addParam('sysparam_name', 'functionName') to specify which function in the Script Include to call. This is a required parameter.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What method initiates an asynchronous GlideAjax call?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) ga.execute(callback)</li>
+                                        <li>B) ga.getXML(callback)</li>
+                                        <li>C) ga.call(callback)</li>
+                                        <li>D) ga.query(callback)</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            ga.getXML(callback) initiates an asynchronous call. The callback function receives the response when the server returns data.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you retrieve parameters in a server-side Script Include function?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.getParameter('param_name')</li>
+                                        <li>B) this.getParameter('sysparam_param_name')</li>
+                                        <li>C) request.getParameter('param_name')</li>
+                                        <li>D) current.getValue('param_name')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use this.getParameter('sysparam_param_name') in the Script Include to retrieve parameters. Note the 'sysparam_' prefix on the parameter name.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What data type must Script Include functions return when called via GlideAjax?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Any data type</li>
+                                        <li>B) String only</li>
+                                        <li>C) JSON object</li>
+                                        <li>D) Integer or String</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Script Include functions must always return a STRING. For complex data, use JSON.stringify() on the server and JSON.parse() on the client.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you extract the answer from a GlideAjax response?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) response.answer</li>
+                                        <li>B) response.getAnswer()</li>
+                                        <li>C) response.responseXML.documentElement.getAttribute('answer')</li>
+                                        <li>D) response.data</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            Use response.responseXML.documentElement.getAttribute('answer') to extract the returned value in the callback function.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What's the disadvantage of using getXMLWait() for synchronous calls?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) It's slower than asynchronous</li>
+                                        <li>B) It blocks the UI and freezes the browser</li>
+                                        <li>C) It can't return data</li>
+                                        <li>D) It requires admin privileges</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            getXMLWait() blocks the UI, freezing the browser until the server responds. This creates a poor user experience. Always prefer asynchronous getXML() with callbacks.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Must the Script Include checkbox "Client callable" be checked?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) No, it's optional</li>
+                                        <li>B) Yes, or GlideAjax calls will fail</li>
+                                        <li>C) Only for admin users</li>
+                                        <li>D) Only for asynchronous calls</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            The "Client callable" checkbox MUST be checked for the Script Include to be accessible via GlideAjax. This is a security feature.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you pass multiple parameters to a Script Include function?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Use multiple ga.addParam() calls</li>
+                                        <li>B) Pass an array to addParam()</li>
+                                        <li>C) Use commas in addParam()</li>
+                                        <li>D) Only one parameter is allowed</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: A</strong>
+                                        <div class="explanation">
+                                            Call ga.addParam() multiple times for multiple parameters. Example: ga.addParam('sysparam_user', userID); ga.addParam('sysparam_group', groupID);
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can you use GlideRecord in a client-callable Script Include?</span>
+                                    <span class="question-number">Q11</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) No, it's not allowed</li>
+                                        <li>B) Yes, Script Includes run server-side</li>
+                                        <li>C) Only with special permissions</li>
+                                        <li>D) Only for read operations</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer11')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer11" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Yes! Script Includes run on the server, so you have full access to GlideRecord, gs, and all server-side APIs. This is the primary reason to use GlideAjax.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>When should you use synchronous GlideAjax calls?</span>
+                                    <span class="question-number">Q12</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Always, they're more reliable</li>
+                                        <li>B) Never, always use asynchronous</li>
+                                        <li>C) Only in onSubmit when you must block submission</li>
+                                        <li>D) Only for admin users</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer12')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer12" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            Synchronous calls should be avoided due to poor UX. Use them ONLY in onSubmit scripts when you must validate data before allowing form submission and need to block the submit action.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What happens if a Script Include function doesn't return a value?</span>
+                                    <span class="question-number">Q13</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) An error is thrown</li>
+                                        <li>B) The callback receives an empty string</li>
+                                        <li>C) The call times out</li>
+                                        <li>D) The form refreshes</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer13')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer13" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            If no value is returned (or return ''; is used), the callback receives an empty string. Always check for empty responses in your callback function.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What's the correct pattern for returning complex data from a Script Include?</span>
+                                    <span class="question-number">Q14</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Return the object directly</li>
+                                        <li>B) Use JSON.stringify() on server, JSON.parse() on client</li>
+                                        <li>C) Use XML formatting</li>
+                                        <li>D) Return as comma-separated values</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer14')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer14" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            For complex data, use JSON.stringify() on the server to convert objects to strings, then JSON.parse() on the client to convert back to objects. This is the standard pattern.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">Navigation</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="glideform-glideuser.html" class="list-group-item list-group-item-action">
+                                        <i class="ti ti-arrow-left me-2"></i> Previous: g_form & g_user
+                                    </a>
+                                    <a href="business-rules.html" class="list-group-item list-group-item-action">
+                                        Next: Business Rules <i class="ti ti-arrow-right ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>GlideAjax Quick Steps</h4>
+                                    <ol class="small">
+                                        <li>Create Script Include</li>
+                                        <li>Extend AbstractAjaxProcessor</li>
+                                        <li>Check "Client callable"</li>
+                                        <li>Create function, return string</li>
+                                        <li>Client: new GlideAjax('Name')</li>
+                                        <li>addParam('sysparam_name', 'func')</li>
+                                        <li>Add other parameters</li>
+                                        <li>getXML(callback)</li>
+                                        <li>Extract answer in callback</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                                <li class="list-inline-item"><a href="business-rules.html">Next Topic</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Introduction - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()"><i class="ti ti-eye"></i> Show All</button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()"><i class="ti ti-eye-off"></i> Hide All</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">JavaScript Fundamentals - Introduction</div>
+                            <h2 class="page-title">JavaScript History & Core Concepts</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">📚 History of JavaScript</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Understanding JavaScript's evolution helps you grasp why certain patterns exist in ServiceNow development and how the language has shaped modern web applications.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> ServiceNow Context
+                                        </div>
+                                        <p>ServiceNow uses JavaScript extensively in both client-side (UI Policies, Client Scripts) and server-side (Business Rules, Script Includes) development. Understanding JavaScript fundamentals is crucial for CSA and CAD certifications.</p>
+                                    </div>
+
+                                    <h4>JavaScript Timeline</h4>
+                                    <div class="timeline">
+                                        <div class="timeline-item">
+                                            <div class="timeline-badge bg-primary"></div>
+                                            <div class="timeline-panel">
+                                                <div class="timeline-heading">
+                                                    <h5>1995 - Birth of JavaScript</h5>
+                                                </div>
+                                                <div class="timeline-body">
+                                                    <p><strong>Brendan Eich</strong> created JavaScript in just <strong>10 days</strong> at Netscape Communications. Originally called "Mocha", then "LiveScript", finally renamed to "JavaScript" for marketing reasons.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-badge bg-success"></div>
+                                            <div class="timeline-panel">
+                                                <div class="timeline-heading">
+                                                    <h5>1997 - ECMAScript Standard</h5>
+                                                </div>
+                                                <div class="timeline-body">
+                                                    <p>JavaScript was standardized as <strong>ECMAScript (ES1)</strong> by ECMA International to ensure compatibility across different browsers.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-badge bg-info"></div>
+                                            <div class="timeline-panel">
+                                                <div class="timeline-heading">
+                                                    <h5>2009 - Node.js Revolution</h5>
+                                                </div>
+                                                <div class="timeline-body">
+                                                    <p><strong>Ryan Dahl</strong> created Node.js, bringing JavaScript to server-side development. This concept is similar to how ServiceNow uses JavaScript on the server-side for Business Rules and Script Includes.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-badge bg-warning"></div>
+                                            <div class="timeline-panel">
+                                                <div class="timeline-heading">
+                                                    <h5>2015 - ES6/ES2015</h5>
+                                                </div>
+                                                <div class="timeline-body">
+                                                    <p>Major update introducing <strong>classes, modules, arrow functions, promises</strong>, and many other modern features that transformed JavaScript development.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">⚙️ JavaScript Engines in ServiceNow Context</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>JavaScript engines execute JavaScript code. Understanding how they work helps you write more efficient ServiceNow scripts.</p>
+                                    
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Engine</th>
+                                                    <th>Used In</th>
+                                                    <th>ServiceNow Relevance</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><strong>V8</strong></td>
+                                                    <td>Chrome, Node.js</td>
+                                                    <td>Client Scripts run in browser engines like V8</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Rhino</strong></td>
+                                                    <td>Java Applications</td>
+                                                    <td>ServiceNow server-side JavaScript runs on Rhino engine</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>SpiderMonkey</strong></td>
+                                                    <td>Firefox</td>
+                                                    <td>Client Scripts compatibility across browsers</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="alert alert-info">
+                                        <h5>ServiceNow JavaScript Environment:</h5>
+                                        <ul class="mb-0">
+                                            <li><strong>Client-Side:</strong> Runs in user's browser (V8, SpiderMonkey, etc.)</li>
+                                            <li><strong>Server-Side:</strong> Runs on ServiceNow servers using Rhino engine</li>
+                                            <li><strong>Scoped Applications:</strong> Isolated JavaScript execution contexts</li>
+                                            <li><strong>Security:</strong> Sandboxed execution prevents malicious code</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">🌐 Document Object Model (DOM) in ServiceNow</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>The DOM is crucial for ServiceNow Client Scripts and UI Policies. Understanding DOM manipulation helps you create dynamic, interactive forms.</p>
+                                    
+                                    <h4>DOM Tree Structure</h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>HTML Structure:</h6>
+                                            <div class="code-editor">
+                                                <div class="code-editor-header">
+                                                    <span>ServiceNow Form Structure</span>
+                                                    <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                                </div>
+                                                <div class="code-editor-body">
+<pre>&lt;form&gt;
+  &lt;div class="form-group"&gt;
+    &lt;label&gt;Short Description&lt;/label&gt;
+    &lt;input id="short_description" /&gt;
+  &lt;/div&gt;
+  &lt;div class="form-group"&gt;
+    &lt;label&gt;Priority&lt;/label&gt;
+    &lt;select id="priority"&gt;
+      &lt;option value="1"&gt;Critical&lt;/option&gt;
+      &lt;option value="2"&gt;High&lt;/option&gt;
+    &lt;/select&gt;
+  &lt;/div&gt;
+&lt;/form&gt;</pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>DOM Manipulation in ServiceNow:</h6>
+                                            <div class="code-editor">
+                                                <div class="code-editor-header">
+                                                    <span>Client Script Example</span>
+                                                    <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                                </div>
+                                                <div class="code-editor-body">
+<pre>// Get form field value
+var priority = g_form.getValue('priority');
+
+// Set field value
+g_form.setValue('short_description', 'New incident');
+
+// Hide/show fields
+g_form.setDisplay('assignment_group', false);
+
+// Make field mandatory
+g_form.setMandatory('caller_id', true);
+
+// Add info message
+g_form.addInfoMessage('Priority updated');</pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-lightbulb"></i> ServiceNow Best Practice
+                                        </div>
+                                        <p>Always use ServiceNow's g_form API instead of direct DOM manipulation. This ensures compatibility across ServiceNow versions and provides better performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">🔧 JavaScript Fundamentals for ServiceNow</h3>
+                                </div>
+                                <div class="card-body">
+                                    <h4>Variables and Data Types</h4>
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>ServiceNow Script Examples</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Variable declarations in ServiceNow scripts
+var incidentNumber = current.number;           // String
+var priority = parseInt(current.priority);    // Number
+var isActive = current.active == 'true';      // Boolean
+var assignedTo = current.assigned_to;         // GlideElementReference
+
+// Arrays for multiple values
+var states = ['New', 'In Progress', 'Resolved', 'Closed'];
+var priorities = [1, 2, 3, 4, 5];
+
+// Objects for structured data
+var incidentData = {
+    number: 'INC0000123',
+    priority: 1,
+    state: 'New',
+    caller: 'john.doe'
+};
+
+// Functions in ServiceNow context
+function calculateSLA(priority, category) {
+    if (priority == 1) {
+        return 4; // 4 hours for P1
+    } else if (priority == 2) {
+        return 8; // 8 hours for P2
+    }
+    return 24; // 24 hours for others
+}
+
+// Using the function
+var slaHours = calculateSLA(current.priority, current.category);</pre>
+                                        </div>
+                                    </div>
+
+                                    <h4>Control Structures in ServiceNow</h4>
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Conditional Logic Examples</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// If-else statements for business logic
+if (current.priority == '1') {
+    current.assignment_group = 'Critical Support Team';
+    current.assigned_to = 'senior.engineer';
+} else if (current.priority == '2') {
+    current.assignment_group = 'Level 2 Support';
+} else {
+    current.assignment_group = 'Level 1 Support';
+}
+
+// Switch statements for multiple conditions
+switch (current.category.toString()) {
+    case 'hardware':
+        current.assignment_group = 'Hardware Team';
+        break;
+    case 'software':
+        current.assignment_group = 'Software Team';
+        break;
+    case 'network':
+        current.assignment_group = 'Network Team';
+        break;
+    default:
+        current.assignment_group = 'General Support';
+}
+
+// Loops for processing multiple records
+var gr = new GlideRecord('incident');
+gr.addQuery('state', 'New');
+gr.query();
+
+while (gr.next()) {
+    if (gr.priority == '1') {
+        // Process critical incidents
+        gr.assignment_group = 'Critical Support Team';
+        gr.update();
+    }
+}</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">📋 ServiceNow JavaScript Environment Differences</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h5>Client-Side JavaScript</h5>
+                                            <ul>
+                                                <li><strong>Runs in:</strong> User's browser</li>
+                                                <li><strong>Access to:</strong> g_form, g_user APIs</li>
+                                                <li><strong>Used for:</strong> UI Policies, Client Scripts</li>
+                                                <li><strong>Limitations:</strong> No database access</li>
+                                                <li><strong>Performance:</strong> Depends on user's device</li>
+                                            </ul>
+                                            
+                                            <div class="code-editor">
+                                                <div class="code-editor-header">
+                                                    <span>Client Script Example</span>
+                                                </div>
+                                                <div class="code-editor-body">
+<pre>function onChange(control, oldValue, newValue) {
+    if (newValue == '1') { // Critical priority
+        g_form.setMandatory('assignment_group', true);
+        g_form.addInfoMessage('Critical incident requires immediate assignment');
+    }
+}</pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h5>Server-Side JavaScript</h5>
+                                            <ul>
+                                                <li><strong>Runs on:</strong> ServiceNow servers</li>
+                                                <li><strong>Access to:</strong> GlideRecord, GlideSystem APIs</li>
+                                                <li><strong>Used for:</strong> Business Rules, Script Includes</li>
+                                                <li><strong>Capabilities:</strong> Full database access</li>
+                                                <li><strong>Performance:</strong> Server-grade processing</li>
+                                            </ul>
+                                            
+                                            <div class="code-editor">
+                                                <div class="code-editor-header">
+                                                    <span>Business Rule Example</span>
+                                                </div>
+                                                <div class="code-editor-body">
+<pre>// Business Rule - Before Insert
+if (current.priority == '1') {
+    // Auto-assign critical incidents
+    var gr = new GlideRecord('sys_user');
+    gr.addQuery('roles', 'CONTAINS', 'itil');
+    gr.addQuery('active', true);
+    gr.orderBy('last_login_time');
+    gr.query();
+    
+    if (gr.next()) {
+        current.assigned_to = gr.sys_id;
+    }
+}</pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Embedded Full Content from Unit 1 and Unit 2 -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Unit 1: Basic JavaScript (Embedded)</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted">This section embeds the complete Unit 1 content to ensure full coverage without leaving this page.</p>
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="unit1.html" title="Unit 1: Basic JavaScript" style="border:0; width:100%; height:800px"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Unit 2: DOM Manipulation (Embedded)</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted">This section embeds the complete Unit 2 content for comprehensive DOM coverage.</p>
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="unit2.html" title="Unit 2: DOM Manipulation" style="border:0; width:100%; height:800px"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">On This Page</h4>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li><a href="#history">JavaScript History</a></li>
+                                        <li><a href="#engines">JavaScript Engines</a></li>
+                                        <li><a href="#dom">DOM in ServiceNow</a></li>
+                                        <li><a href="#fundamentals">JavaScript Fundamentals</a></li>
+                                        <li><a href="#environments">Environment Differences</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h4 class="card-title">Next Steps</h4>
+                                </div>
+                                <div class="card-body">
+                                    <p>After understanding JavaScript fundamentals, explore specific ServiceNow implementations:</p>
+                                    <div class="list-group list-group-flush">
+                                        <a href="client-side-basics.html" class="list-group-item list-group-item-action">
+                                            <strong>Client-Side Basics</strong>
+                                            <div class="text-muted">Variables, functions, and syntax</div>
+                                        </a>
+                                        <a href="client-scripts.html" class="list-group-item list-group-item-action">
+                                            <strong>Client Scripts</strong>
+                                            <div class="text-muted">onLoad, onChange, onSubmit</div>
+                                        </a>
+                                        <a href="glideform-glideuser.html" class="list-group-item list-group-item-action">
+                                            <strong>g_form & g_user APIs</strong>
+                                            <div class="text-muted">Form manipulation and user context</div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer footer-transparent d-print-none">
+            <div class="container-xl">
+                <div class="row text-center align-items-center flex-row-reverse">
+                    <div class="col-lg-auto ms-lg-auto">
+                        <ul class="list-inline list-inline-dots mb-0">
+                            <li class="list-inline-item"><a href="index.html" class="link-secondary">Home</a></li>
+                            <li class="list-inline-item"><a href="client-side-basics.html" class="link-secondary">Client-Side Basics</a></li>
+                            <li class="list-inline-item"><a href="client-scripts.html" class="link-secondary">Client Scripts</a></li>
+                            <li class="list-inline-item"><a href="glideform-glideuser.html" class="link-secondary">g_form & g_user</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                        <ul class="list-inline list-inline-dots mb-0">
+                            <li class="list-inline-item">
+                                ServiceNow JavaScript Exam Guide
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>

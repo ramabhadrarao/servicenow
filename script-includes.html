@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Includes - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()"><i class="ti ti-eye"></i> Show All</button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()"><i class="ti ti-eye-off"></i> Hide All</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Server-Side JavaScript - Topic 10</div>
+                            <h2 class="page-title">Script Includes - Reusable Code Libraries</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What are Script Includes?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Script Includes are reusable server-side code libraries that store business logic. They promote code reusability and maintainability.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Key Benefits
+                                        </div>
+                                        <p>Script Includes allow you to centralize logic, avoid code duplication, and create maintainable solutions. They run on-demand, improving performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Creating Script Includes</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Basic Script Include Pattern</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Script Include Name: IncidentUtils
+
+var IncidentUtils = Class.create();
+IncidentUtils.prototype = {
+    initialize: function() {
+        // Constructor
+    },
+    
+    // Get high priority incidents
+    getHighPriorityIncidents: function() {
+        var gr = new GlideRecord('incident');
+        gr.addQuery('priority', '<=', '2');
+        gr.addQuery('active', true);
+        gr.query();
+        
+        var incidents = [];
+        while (gr.next()) {
+            incidents.push({
+                number: gr.number.toString(),
+                priority: gr.priority.toString(),
+                description: gr.short_description.toString()
+            });
+        }
+        return incidents;
+    },
+    
+    // Assign incident
+    assignIncident: function(incidentSysId, userSysId) {
+        var gr = new GlideRecord('incident');
+        if (gr.get(incidentSysId)) {
+            gr.assigned_to = userSysId;
+            gr.state = '2'; // In Progress
+            gr.update();
+            return true;
+        }
+        return false;
+    },
+    
+    type: 'IncidentUtils'
+};
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Calling Script Includes</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>From Business Rules or Other Scripts</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Create instance and call method
+var utils = new IncidentUtils();
+var highPriority = utils.getHighPriorityIncidents();
+
+// Assign incident
+var success = utils.assignIncident(incidentId, userId);
+if (success) {
+    gs.info('Incident assigned successfully');
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Static Methods</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Creating and Using Static Methods</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Script Include with static methods
+var MathUtils = Class.create();
+MathUtils.prototype = {
+    type: 'MathUtils'
+};
+
+// Static methods (don't require instantiation)
+MathUtils.calculatePercentage = function(value, total) {
+    if (total == 0) return 0;
+    return (value / total) * 100;
+};
+
+MathUtils.roundToTwo = function(num) {
+    return Math.round(num * 100) / 100;
+};
+
+// Usage - No need to create instance
+var percent = MathUtils.calculatePercentage(45, 100); // 45
+var rounded = MathUtils.roundToTwo(3.14159); // 3.14
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Client Callable Script Includes</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Script Includes that extend AbstractAjaxProcessor can be called from client scripts via GlideAjax.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Client Callable Script Include</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Script Include: ClientUtils
+// Client callable: TRUE
+
+var ClientUtils = Class.create();
+ClientUtils.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+    
+    getUserCount: function() {
+        var groupId = this.getParameter('sysparam_group_id');
+        
+        var gr = new GlideRecord('sys_user_grmember');
+        gr.addQuery('group', groupId);
+        gr.query();
+        
+        return gr.getRowCount().toString();
+    },
+    
+    type: 'ClientUtils'
+});
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (13 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Where do Script Includes execute?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) In the browser</li>
+                                        <li>B) On the server</li>
+                                        <li>C) In both locations</li>
+                                        <li>D) In the database</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Script Includes execute on the server only. They are server-side reusable code libraries.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is the primary benefit of using Script Includes?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Faster execution</li>
+                                        <li>B) Code reusability and maintainability</li>
+                                        <li>C) Better security</li>
+                                        <li>D) Automatic backups</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Script Includes promote code reusability and maintainability by centralizing common logic in one place.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you create an instance of a Script Include?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) ScriptInclude.create('Name')</li>
+                                        <li>B) var obj = new ScriptIncludeName()</li>
+                                        <li>C) var obj = ScriptIncludeName.getInstance()</li>
+                                        <li>D) var obj = gs.include('ScriptIncludeName')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Create instances using: var obj = new ScriptIncludeName(); then call methods: obj.methodName();
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can Script Includes use GlideRecord?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) No, only in Business Rules</li>
+                                        <li>B) Yes, they run server-side</li>
+                                        <li>C) Only if marked "Client callable"</li>
+                                        <li>D) Only in global scope</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Yes! Script Includes run server-side and have full access to GlideRecord, gs, and all server APIs.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What must a Script Include extend to be callable from client scripts?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) ClientCallable</li>
+                                        <li>B) AbstractAjaxProcessor</li>
+                                        <li>C) GlideAjax</li>
+                                        <li>D) BaseClass</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Script Includes must extend AbstractAjaxProcessor and be marked "Client callable" to be called from client scripts via GlideAjax.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Do Script Includes require instantiation to call static methods?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Yes, always</li>
+                                        <li>B) No, static methods are called directly</li>
+                                        <li>C) Only for admin users</li>
+                                        <li>D) Only in scoped applications</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Static methods can be called directly without creating an instance: ClassName.staticMethod(); Regular methods require: var obj = new ClassName(); obj.method();
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Where are Script Includes stored?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) sys_script table</li>
+                                        <li>B) sys_script_include table</li>
+                                        <li>C) sys_ui_script table</li>
+                                        <li>D) sys_script_client table</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Script Includes are stored in the sys_script_include table. Navigate to System Definition > Script Includes.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can one Script Include call another?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) No, not allowed</li>
+                                        <li>B) Yes, create instance and call methods</li>
+                                        <li>C) Only static methods</li>
+                                        <li>D) Only with special permissions</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Yes, Script Includes can call other Script Includes. Just create an instance and call the methods as normal.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is the purpose of the initialize() function?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Required by ServiceNow</li>
+                                        <li>B) Constructor called when instance is created</li>
+                                        <li>C) Initializes the database</li>
+                                        <li>D) Loads dependencies</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            initialize() is the constructor method that runs when you create a new instance: var obj = new ClassName(); Use it to set up initial state.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>When are Script Includes loaded?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) On system startup</li>
+                                        <li>B) On-demand when called</li>
+                                        <li>C) On every page load</li>
+                                        <li>D) During scheduled maintenance</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Script Includes are loaded on-demand when they're called, improving performance by not loading unnecessary code.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can Business Rules call Script Includes?</span>
+                                    <span class="question-number">Q11</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) No, different execution contexts</li>
+                                        <li>B) Yes, both are server-side</li>
+                                        <li>C) Only async business rules</li>
+                                        <li>D) Only before business rules</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer11')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer11" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Yes! Business Rules commonly call Script Includes to centralize business logic. Both run server-side.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does the 'type' property do in a Script Include?</span>
+                                    <span class="question-number">Q12</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Defines data type returned</li>
+                                        <li>B) Identifies the class name</li>
+                                        <li>C) Sets the script type</li>
+                                        <li>D) Optional metadata only</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer12')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer12" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            The type property identifies the class name and is convention in ServiceNow Script Includes: type: 'ClassName'
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Are Script Includes table-specific?</span>
+                                    <span class="question-number">Q13</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Yes, like Business Rules</li>
+                                        <li>B) No, they're reusable across all tables</li>
+                                        <li>C) Only if configured that way</li>
+                                        <li>D) Depends on the scope</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer13')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer13" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Script Includes are NOT table-specific. They're reusable code libraries that can work with any table or be used for general utilities.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">Navigation</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="glidedatetime.html" class="list-group-item list-group-item-action">
+                                        <i class="ti ti-arrow-left me-2"></i> Previous: GlideDateTime
+                                    </a>
+                                    <a href="glideaggregate.html" class="list-group-item list-group-item-action">
+                                        Next: GlideAggregate <i class="ti ti-arrow-right ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>Key Points</h4>
+                                    <ul class="small">
+                                        <li>Server-side reusable code</li>
+                                        <li>Promote code reusability</li>
+                                        <li>Create with Class.create()</li>
+                                        <li>Instance: new ClassName()</li>
+                                        <li>Static: ClassName.method()</li>
+                                        <li>Ajax: extend AbstractAjaxProcessor</li>
+                                        <li>Loaded on-demand</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                                <li class="list-inline-item"><a href="glideaggregate.html">Next Topic</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>
