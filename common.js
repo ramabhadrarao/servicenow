@@ -151,6 +151,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Track progress
     updateProgress();
+
+    // Inject global footer across all pages
+    injectGlobalFooter();
 });
 
 // Update Progress Bar
@@ -239,4 +242,40 @@ function exportProgress() {
     link.download = 'study-progress.json';
     link.click();
     URL.revokeObjectURL(url);
+}
+
+// Inject a uniform footer with logo and avatar
+function injectGlobalFooter() {
+    const footerHTML = `
+    <footer class="footer footer-transparent d-print-none">
+        <div class="container-xl">
+            <div class="row align-items-center text-center">
+                <div class="col-12">
+                    <div class="d-flex flex-wrap justify-content-center align-items-center" style="gap:12px;">
+                        <img src="swrnlogo.png" alt="Swarnandhra Logo" class="rounded" style="height:40px;width:auto;" />
+                        <span class="text-muted">
+                            <strong>Rama Bhadra rao Maddu</strong> — Head of Department, BCA
+                        </span>
+                        <img src="ramabhadrarao (1).png" alt="Rama Bhadra rao Maddu" class="rounded-circle" style="height:40px;width:40px;object-fit:cover;" />
+                        <span class="text-muted small">ramabhadrarao.maddu</span>
+                    </div>
+                    <div class="text-muted small mt-1">
+                        Swarnandhra College of Engineering and Technology, Seetharampuram, Narsapur, Andhra Pradesh 534280, India
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>`;
+
+    const existingFooter = document.querySelector('footer.footer');
+    if (existingFooter) {
+        existingFooter.outerHTML = footerHTML;
+        return;
+    }
+
+    const wrapper = document.querySelector('.page-wrapper') || document.querySelector('.page-body') || document.body;
+    const temp = document.createElement('div');
+    temp.innerHTML = footerHTML.trim();
+    const newFooter = temp.firstElementChild;
+    wrapper.appendChild(newFooter);
 }
