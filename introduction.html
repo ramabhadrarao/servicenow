@@ -379,40 +379,202 @@ if (current.priority == '1') {
                                 </div>
                             </div>
 
-                            <!-- Embedded Full Content from Unit 1 and Unit 2 -->
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    <h3 class="card-title">Unit 1: Basic JavaScript (Embedded)</h3>
-                                </div>
-                                <div class="card-body">
-                                    <p class="text-muted">This section embeds the complete Unit 1 content to ensure full coverage without leaving this page.</p>
-                                    <div class="ratio ratio-16x9">
-                                        <iframe src="unit1.html" title="Unit 1: Basic JavaScript" style="border:0; width:100%; height:800px"></iframe>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Consolidated Units: Inline scrolling content -->
+                             <div class="card mb-3" id="unit1">
+                                 <div class="card-header">
+                                     <h3 class="card-title">Part 1: JavaScript Basics</h3>
+                                 </div>
+                                 <div id="unit1-content" class="card-body">
+                                     <h4 id="u1-overview">Overview</h4>
+                                     <p class="text-muted">Core language basics: variables, data types, operators, functions, and control flow.</p>
+                                     <div class="code-editor mb-3">
+                                         <div class="code-editor-header">
+                                             <span>Variables & Types</span>
+                                             <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                         </div>
+                                         <div class="code-editor-body">
+<pre>// Declarations
+let count = 0;            // number
+const title = 'Intro';    // string
+let active = true;        // boolean
+let list = [1,2,3];       // array
+let user = {name:'Ada'};  // object
 
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    <h3 class="card-title">Unit 2: DOM Manipulation (Embedded)</h3>
-                                </div>
-                                <div class="card-body">
-                                    <p class="text-muted">This section embeds the complete Unit 2 content for comprehensive DOM coverage.</p>
-                                    <div class="ratio ratio-16x9">
-                                        <iframe src="unit2.html" title="Unit 2: DOM Manipulation" style="border:0; width:100%; height:800px"></iframe>
-                                    </div>
-                                </div>
-                            </div>
+// Operators
+count += 2;               // arithmetic
+const isLarge = count > 1; // comparison
+</pre>
+                                         </div>
+                                     </div>
 
-                        </div>
-                        
-                        <div class="col-lg-4">
+                                     <h4 id="u1-functions">Functions</h4>
+                                     <p class="text-muted">Function declarations, expressions, arrow functions, and scope.</p>
+                                     <div class="code-editor mb-3">
+                                         <div class="code-editor-header">
+                                             <span>Functions & Scope</span>
+                                             <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                         </div>
+                                         <div class="code-editor-body">
+<pre>function greet(name){
+  return `Hello ${name}`;
+}
+
+const add = (a,b) => a + b;
+
+// Block scope
+{
+  let x = 10; // scoped to block
+}
+// 'var' is function-scoped
+</pre>
+                                         </div>
+                                     </div>
+
+                                     <h4 id="u1-es6">ES6 Essentials</h4>
+                                     <p class="text-muted">Classes, template literals, destructuring, spread/rest, and modules basics.</p>
+                                     <div class="code-editor mb-3">
+                                         <div class="code-editor-header">
+                                             <span>ES6 Features</span>
+                                             <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                         </div>
+                                         <div class="code-editor-body">
+<pre>class Counter {
+  #value = 0;
+  inc(){ this.#value++; }
+  get value(){ return this.#value; }
+}
+
+const {value} = new Counter();
+const arr = [1,2,3];
+const arr2 = [...arr, 4];
+
+function sum(...nums){
+  return nums.reduce((a,b)=>a+b,0);
+}
+</pre>
+                                         </div>
+                                     </div>
+
+                                     <h4 id="u1-async">Async & Promises</h4>
+                                     <p class="text-muted">Promises and async/await for asynchronous operations.</p>
+                                     <div class="code-editor mb-0">
+                                         <div class="code-editor-header">
+                                             <span>Async Patterns</span>
+                                             <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                         </div>
+                                         <div class="code-editor-body">
+<pre>function fetchData(){
+  return new Promise((resolve)=>{
+    setTimeout(()=> resolve({ok:true}), 300);
+  });
+}
+
+async function run(){
+  const res = await fetchData();
+  console.log(res.ok);
+}
+</pre>
+                                         </div>
+                                     </div>
+                                 <hr class="mt-2 mb-3">
+                                  <div class="mt-3">
+                                      <a href="unit1.html" class="btn btn-primary">
+                                          Open Part 1: JS Basics <i class="ti ti-arrow-right ms-1"></i>
+                                      </a>
+                                  </div>
+                                  </div>
+                              </div>
+ 
+                              <div class="card mb-3" id="unit2">
+                                 <div class="card-header">
+                                     <h3 class="card-title">Part 2: DOM Manipulation</h3>
+                                 </div>
+                                 <div id="unit2-content" class="card-body">
+                                     <h4 id="u2-select">Selecting Elements</h4>
+                                     <p class="text-muted">Use modern selectors for flexible queries; fall back to classic APIs when needed.</p>
+                                     <div class="code-editor mb-3">
+                                         <div class="code-editor-header">
+                                             <span>Selectors</span>
+                                             <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                         </div>
+                                         <div class="code-editor-body">
+<pre>const title = document.getElementById('demoTitle');
+const firstItem = document.querySelector('.item');
+const allItems = document.querySelectorAll('.item');
+
+// NodeList -> Array
+const arr = Array.from(allItems);
+arr.forEach(el => el.classList.add('selected'));
+</pre>
+                                         </div>
+                                     </div>
+
+                                     <h4 id="u2-nodes">Working with Nodes</h4>
+                                     <p class="text-muted">Create, insert, remove, and update elements and attributes.</p>
+                                     <div class="code-editor mb-3">
+                                         <div class="code-editor-header">
+                                             <span>Nodes & Attributes</span>
+                                             <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                         </div>
+                                         <div class="code-editor-body">
+<pre>const list = document.getElementById('demoList');
+const li = document.createElement('li');
+li.textContent = 'New Item';
+list.appendChild(li);
+
+li.setAttribute('data-id','123');
+li.classList.add('highlight');
+
+list.removeChild(list.firstElementChild);
+</pre>
+                                         </div>
+                                     </div>
+
+                                     <h4 id="u2-events">Events & Delegation</h4>
+                                     <p class="text-muted">Attach listeners, understand propagation, and use delegation for dynamic content.</p>
+                                     <div class="code-editor mb-0">
+                                         <div class="code-editor-header">
+                                             <span>Event Handling</span>
+                                             <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                         </div>
+                                         <div class="code-editor-body">
+<pre>// Direct listener
+const btn = document.getElementById('saveBtn');
+btn.addEventListener('click', (e) => {
+  e.preventDefault();
+  console.log('Saved');
+});
+
+// Delegation
+const container = document.getElementById('delegation');
+container.addEventListener('click', (e) => {
+  if (e.target.matches('button.item')) {
+    console.log('Clicked:', e.target.textContent);
+  }
+});
+</pre>
+                                         </div>
+                                     </div>
+                                 <hr class="mt-2 mb-3">
+                                  <div class="mt-3">
+                                      <a href="unit2.html" class="btn btn-outline-primary">
+                                          <i class="ti ti-arrow-right me-1"></i> Open Part 2: DOM Basics
+                                      </a>
+                                  </div>
+                                  </div>
+                              </div>
+ 
+                           </div>
+                           
+                           <div class="col-lg-4">
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">On This Page</h4>
                                 </div>
                                 <div class="card-body">
                                     <ul class="list-unstyled">
+                                        <li><a href="#unit1">Part 1: JavaScript Basics</a></li>
+                                        <li><a href="#unit2">Part 2: DOM Manipulation</a></li>
                                         <li><a href="#history">JavaScript History</a></li>
                                         <li><a href="#engines">JavaScript Engines</a></li>
                                         <li><a href="#dom">DOM in ServiceNow</a></li>
@@ -475,6 +637,9 @@ if (current.priority == '1') {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script>
+    // Units are linked directly as Part 1 and Part 2; no dynamic injection needed.
+    </script>
     <script src="common.js"></script>
 </body>
 </html>
