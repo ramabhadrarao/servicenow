@@ -709,6 +709,110 @@
                         </div>
                     </div>
 
+                    <!-- JavaScript Operators -->
+                    <div class="col-12 topic-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">🧮 JavaScript Operators</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>This table summarizes the main operator categories with brief examples and expected results.</p>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Category</th>
+                                                <th>Operators</th>
+                                                <th>Example</th>
+                                                <th>Result / Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Arithmetic</strong></td>
+                                                <td><code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code> <code>**</code></td>
+                                                <td><code>3 + 2</code></td>
+                                                <td>5 (basic math; <code>%</code> is remainder; <code>**</code> is exponent)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Assignment</strong></td>
+                                                <td><code>=</code> <code>+=</code> <code>-=</code> <code>*=</code> <code>/=</code> <code>%=</code> <code>**=</code></td>
+                                                <td><code>let x = 5; x += 3;</code></td>
+                                                <td><code>x</code> becomes 8</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Comparison</strong></td>
+                                                <td><code>==</code> <code>!=</code> <code>===</code> <code>!==</code> <code>&gt;</code> <code>&gt;=</code> <code>&lt;</code> <code>&lt;=</code></td>
+                                                <td><code>5 === '5'</code></td>
+                                                <td>false (<code>===</code> checks type and value; avoid <code>==</code> quirks)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Logical</strong></td>
+                                                <td><code>&amp;&amp;</code> <code>||</code> <code>!</code></td>
+                                                <td><code>true &amp;&amp; false</code></td>
+                                                <td>false (short-circuit evaluation)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Bitwise</strong></td>
+                                                <td><code>&amp;</code> <code>|</code> <code>^</code> <code>~</code> <code>&lt;&lt;</code> <code>&gt;&gt;</code> <code>&gt;&gt;&gt;</code></td>
+                                                <td><code>5 &amp; 3</code></td>
+                                                <td>1 (operates on 32-bit integers)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Unary</strong></td>
+                                                <td><code>+</code> (unary), <code>-</code> (unary), <code>++</code>, <code>--</code></td>
+                                                <td><code>+"5"</code></td>
+                                                <td>5 (string to number coercion)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Type / Property</strong></td>
+                                                <td><code>typeof</code>, <code>in</code>, <code>instanceof</code></td>
+                                                <td><code>typeof 'hi'</code></td>
+                                                <td>"string"; <code>'key' in obj</code>, <code>arr instanceof Array</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Conditional</strong></td>
+                                                <td><code>?:</code> (ternary)</td>
+                                                <td><code>isAdmin ? 'Yes' : 'No'</code></td>
+                                                <td>Returns one of two values based on condition</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Nullish / Optional</strong></td>
+                                                <td><code>??</code>, <code>?.</code></td>
+                                                <td><code>null ?? 'default'</code></td>
+                                                <td>Returns fallback when left side is <code>null</code> or <code>undefined</code>; <code>user?.profile?.name</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Spread / Rest</strong></td>
+                                                <td><code>...</code></td>
+                                                <td><code>[1, ...[2,3]]</code></td>
+                                                <td>Expands or collects values (arrays/objects/functions)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Delete / Void</strong></td>
+                                                <td><code>delete</code>, <code>void</code></td>
+                                                <td><code>delete obj.key</code></td>
+                                                <td>Removes a property; <code>void 0</code> yields <code>undefined</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>String Concatenation</strong></td>
+                                                <td><code>+</code></td>
+                                                <td><code>'a' + 'b'</code></td>
+                                                <td>"ab" (use template literals for readability)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Comma</strong></td>
+                                                <td><code>,</code></td>
+                                                <td><code>(a = 1, b = 2, b)</code></td>
+                                                <td>Evaluates left→right, returns last expression</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Strings -->
                     <div class="col-12 topic-section">
                         <div class="card">
