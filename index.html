@@ -7,6 +7,25 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <link rel="stylesheet" href="styles.css">
+<style>
+  .code-editor {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    min-height: 260px;
+  }
+  .code-console {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: #0f172a;
+    color: #e2e8f0;
+    border-radius: 6px;
+    padding: 12px;
+    min-height: 260px;
+    overflow: auto;
+  }
+  .code-console .log { color: #a7f3d0; }
+  .code-console .warn { color: #fde68a; }
+  .code-console .error { color: #fecaca; }
+  .code-console .result { color: #93c5fd; }
+</style>
 </head>
 <body>
     <div class="page">
@@ -192,6 +211,45 @@
                                             </div>
                                         </div>
                                     </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- JavaScript Practice Playground -->
+                    <div class="row row-cards mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-dark text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-terminal-2 me-2"></i>JavaScript Practice Playground
+                                    </h3>
+                                    <div class="card-actions">
+                                        <button id="run-code-btn" class="btn btn-success btn-sm me-2">
+                                            <i class="ti ti-player-play"></i> Run
+                                        </button>
+                                        <button id="reset-code-btn" class="btn btn-outline-warning btn-sm me-2">
+                                            <i class="ti ti-rotate"></i> Reset
+                                        </button>
+                                        <button id="copy-code-btn" class="btn btn-outline-secondary btn-sm">
+                                            <i class="ti ti-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-lg-7">
+                                            <label class="form-label">Code Editor</label>
+                                            <textarea id="js-editor" class="form-control code-editor" rows="12"></textarea>
+                                            <div class="text-muted small mt-2">
+                                                Tip: Use <code>console.log()</code> to print output.
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-5">
+                                            <label class="form-label">Console Output</label>
+                                            <div id="js-output" class="code-console"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -416,5 +474,80 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script>
+      (function() {
+        const editor = document.getElementById('js-editor');
+        const output = document.getElementById('js-output');
+        const runBtn = document.getElementById('run-code-btn');
+        const resetBtn = document.getElementById('reset-code-btn');
+        const copyBtn = document.getElementById('copy-code-btn');
+
+        const defaultCode = `// Try editing and clicking Run!\n// Prints to the console-output panel:\nconsole.log("Hello, ServiceNow JavaScript!");\n// Do some math:\nfunction add(a, b) { return a + b; }\nconsole.log("2 + 3 =", add(2, 3));\n// Return a value from your script:\n"Returned value from your script";`;
+
+        function append(type, valueArr) {
+          const line = document.createElement('div');
+          line.className = type;
+          const text = valueArr.map(v => {
+            try {
+              if (typeof v === 'object') {
+                return JSON.stringify(v, null, 2);
+              }
+              return String(v);
+            } catch (_) {
+              return String(v);
+            }
+          }).join(' ');
+          line.textContent = text;
+          output.appendChild(line);
+          output.scrollTop = output.scrollHeight;
+        }
+
+        function runCode() {
+          output.innerHTML = '';
+          const original = {
+            log: console.log,
+            warn: console.warn,
+            error: console.error
+          };
+          console.log = (...args) => append('log', args);
+          console.warn = (...args) => append('warn', args);
+          console.error = (...args) => append('error', args);
+
+          try {
+            const result = new Function(editor.value)();
+            if (typeof result !== 'undefined') {
+              append('result', [result]);
+            }
+          } catch (err) {
+            append('error', [err && err.stack ? err.stack : err]);
+          } finally {
+            console.log = original.log;
+            console.warn = original.warn;
+            console.error = original.error;
+          }
+        }
+
+        function resetCode() {
+          editor.value = defaultCode;
+          output.innerHTML = '';
+        }
+
+        function copyCode() {
+          navigator.clipboard.writeText(editor.value)
+            .then(() => {
+              append('log', ['Code copied to clipboard']);
+            })
+            .catch(() => {
+              append('warn', ['Unable to copy to clipboard']);
+            });
+        }
+
+        runBtn.addEventListener('click', runCode);
+        resetBtn.addEventListener('click', resetCode);
+        copyBtn.addEventListener('click', copyCode);
+
+        resetCode();
+      })();
+    </script>
 </body>
 </html>
