@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Basics & Syntax - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html">
+                        <i class="ti ti-arrow-left me-2"></i>Back to Topics
+                    </a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()">
+                        <i class="ti ti-eye"></i> Show All
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()">
+                        <i class="ti ti-eye-off"></i> Hide All
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Client-Side JavaScript - Topic 1</div>
+                            <h2 class="page-title">JavaScript Basics & Syntax</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row row-deck row-cards">
+                        <div class="col-lg-8">
+                            
+                            <!-- Introduction -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Introduction to JavaScript in ServiceNow</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>JavaScript is the primary scripting language used in ServiceNow for both client-side and server-side operations.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Important Note
+                                        </div>
+                                        <p>ServiceNow uses JavaScript (ECMAScript 5) on the server-side and modern JavaScript (ES6+) on the client-side.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Variables -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Variables and Data Types</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Variable Declaration Examples</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="ti ti-copy"></i> Copy
+                                            </button>
+                                            <button class="copy-btn" onclick="runCode('variables-example')">
+                                                <i class="ti ti-player-play"></i> Run
+                                            </button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Server-side (Business Rules, Script Includes)
+var userName = 'John Doe';
+var isActive = true;
+var ticketCount = 42;
+
+// Client-side (Client Scripts - Modern)
+let currentValue = g_form.getValue('priority');
+const MAX_ATTEMPTS = 3;
+var legacyVariable = 'still works';
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions Section -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (12 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <!-- Question 1 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is the difference between == and === in JavaScript?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) No difference, they work the same way</li>
+                                        <li>B) == compares values only, === compares both value and type</li>
+                                        <li>C) === is faster than ==</li>
+                                        <li>D) == is deprecated in ServiceNow</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            The == operator performs type coercion before comparing, while === checks both value and type. Example: 5 == '5' returns true, but 5 === '5' returns false. Always use === in ServiceNow for predictable results.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 2 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which keyword is used to declare a variable in server-side scripts?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) let</li>
+                                        <li>B) const</li>
+                                        <li>C) var</li>
+                                        <li>D) All of the above</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            Server-side scripts use ECMAScript 5, which only supports 'var'. Client-side scripts support 'let' and 'const' as they run in modern browsers.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 3 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What will typeof null return?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) "null"</li>
+                                        <li>B) "undefined"</li>
+                                        <li>C) "object"</li>
+                                        <li>D) null</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            This is a JavaScript quirk. typeof null returns "object" due to a legacy bug. To check for null, use: if (value === null) or in ServiceNow: current.field.nil()
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 4 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is the correct syntax for multi-line comments?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) // Comment //</li>
+                                        <li>B) &lt;!-- Comment --&gt;</li>
+                                        <li>C) /* Comment */</li>
+                                        <li>D) # Comment #</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            Multi-line comments use /* */. Single-line uses //. Both are valid in ServiceNow scripts.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 5 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which method adds an element to the end of an array?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) array.push()</li>
+                                        <li>B) array.pop()</li>
+                                        <li>C) array.shift()</li>
+                                        <li>D) array.unshift()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: A</strong>
+                                        <div class="explanation">
+                                            push() adds to end, pop() removes from end, unshift() adds to beginning, shift() removes from beginning.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 6 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does Boolean("false") return?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) false</li>
+                                        <li>B) true</li>
+                                        <li>C) "false"</li>
+                                        <li>D) undefined</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Any non-empty string converts to true. Only false, 0, "", null, undefined, and NaN convert to false. Be careful when checking boolean fields in ServiceNow.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 7 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is the output of '10' + 5?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) 15</li>
+                                        <li>B) "15"</li>
+                                        <li>C) "105"</li>
+                                        <li>D) Error</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            The + operator performs string concatenation when one operand is a string. Result: "105". Use parseInt() or Number() to force numeric addition.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 8 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which loop is best for iterating over object properties?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) for loop</li>
+                                        <li>B) while loop</li>
+                                        <li>C) for...in loop</li>
+                                        <li>D) do...while loop</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            for...in is designed for iterating over object properties. Example: for (var key in obj) { }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 9 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is the scope of a variable declared with 'var' inside a function?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Global scope</li>
+                                        <li>B) Function scope</li>
+                                        <li>C) Block scope</li>
+                                        <li>D) Module scope</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            'var' has function scope, accessible throughout the entire function. 'let' and 'const' have block scope (client-side only).
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 10 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which method converts a string to lowercase?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) string.lower()</li>
+                                        <li>B) string.toLowerCase()</li>
+                                        <li>C) string.toLower()</li>
+                                        <li>D) string.lowerCase()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            toLowerCase() converts to lowercase, toUpperCase() converts to uppercase. Use for case-insensitive comparisons in ServiceNow.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 11 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What will typeof [] output?</span>
+                                    <span class="question-number">Q11</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) "array"</li>
+                                        <li>B) "object"</li>
+                                        <li>C) "Array"</li>
+                                        <li>D) "list"</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer11')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer11" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Arrays are objects in JavaScript. Use Array.isArray() to check if a variable is an array.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 12 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is an IIFE (Immediately Invoked Function Expression)?</span>
+                                    <span class="question-number">Q12</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) function() { }()</li>
+                                        <li>B) (function() { })();</li>
+                                        <li>C) function()() { }</li>
+                                        <li>D) immediate function() { }</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer12')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer12" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            IIFE syntax: (function() { code })(); - Executes immediately and creates a private scope. Useful in ServiceNow to avoid global namespace pollution.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">On This Page</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="client-scripts.html" class="list-group-item list-group-item-action">
+                                        <strong>Next:</strong> Client Scripts <i class="ti ti-arrow-right ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>Key Takeaways</h4>
+                                    <ul>
+                                        <li>Use === for comparisons</li>
+                                        <li>Server-side uses 'var' only</li>
+                                        <li>typeof returns "object" for arrays and null</li>
+                                        <li>String + Number = String concatenation</li>
+                                        <li>for...in for object properties</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center align-items-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item">
+                                    <a href="index.html" class="link-secondary">Home</a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="client-scripts.html" class="link-secondary">Next Topic</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+/* Common Styles for ServiceNow JavaScript Exam Guide */
+
+:root {
+    --primary-color: #0066cc;
+    --success-color: #2fb344;
+    --info-color: #4299e1;
+    --warning-color: #f59f00;
+    --danger-color: #d63939;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+    background-color: #f4f6fa;
+}
+
+/* Code Editor Styles */
+.code-editor {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+.code-editor-header {
+    background: #2d2d2d;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.code-editor-body {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 1rem;
+    overflow-x: auto;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.code-editor-body pre {
+    margin: 0;
+    color: #d4d4d4;
+}
+
+/* Syntax Highlighting */
+.keyword { color: #569cd6; }
+.string { color: #ce9178; }
+.comment { color: #6a9955; font-style: italic; }
+.function { color: #dcdcaa; }
+.number { color: #b5cea8; }
+.operator { color: #d4d4d4; }
+.variable { color: #9cdcfe; }
+.property { color: #9cdcfe; }
+.punctuation { color: #d4d4d4; }
+
+/* Question Card Styles */
+.question-card {
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.question-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.question-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Ensure question text has room and wraps normally */
+.question-header span:first-child {
+    flex: 1 1 auto;
+    min-width: 250px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+.question-number {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.options-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.options-list li {
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.options-list li:hover {
+    border-color: var(--primary-color);
+    background: #f0f7ff;
+}
+
+.options-list li.correct {
+    border-color: var(--success-color);
+    background: #e6f4ea;
+}
+
+.options-list li.incorrect {
+    border-color: var(--danger-color);
+    background: #fce8e8;
+}
+
+.answer-section {
+    background: #e6f4ea;
+    border-left: 4px solid var(--success-color);
+    padding: 1rem 1.5rem;
+    margin-top: 1rem;
+    border-radius: 6px;
+}
+
+.answer-section.show {
+    display: block;
+}
+
+.answer-section.hide {
+    display: none;
+}
+
+.explanation {
+    margin-top: 0.5rem;
+    color: #495057;
+    line-height: 1.6;
+}
+
+/* Exam Badge */
+.exam-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.exam-badge.csa {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.exam-badge.cad {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+/* Toggle Answer Button */
+.toggle-answer {
+    cursor: pointer;
+    color: var(--primary-color);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.toggle-answer:hover {
+    color: #004999;
+}
+
+/* Topic Navigation */
+.topic-nav {
+    position: sticky;
+    top: 20px;
+}
+
+/* Best Practices Box */
+.best-practice {
+    background: #fff3cd;
+    border-left: 4px solid var(--warning-color);
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    border-radius: 6px;
+}
+
+.best-practice-title {
+    font-weight: 600;
+    color: #856404;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Note Box */
+.note-box {
+    background: #d1ecf1;
+    border-left: 4px solid var(--info-color);
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    border-radius: 6px;
+}
+
+.note-box-title {
+    font-weight: 600;
+    color: #0c5460;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* API Method Box */
+.api-method {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.api-method-signature {
+    background: #f8f9fa;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-family: 'Monaco', monospace;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+    color: #495057;
+}
+
+.api-method-description {
+    margin-bottom: 0.75rem;
+    color: #495057;
+}
+
+.api-method-params,
+.api-method-returns {
+    margin-top: 0.75rem;
+}
+
+.api-method-params dt,
+.api-method-returns dt {
+    font-weight: 600;
+    color: #495057;
+    margin-top: 0.5rem;
+}
+
+.api-method-params dd,
+.api-method-returns dd {
+    margin-left: 1.5rem;
+    color: #6c757d;
+}
+
+/* Comparison Table */
+.comparison-table {
+    width: 100%;
+    margin: 1rem 0;
+}
+
+.comparison-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+}
+
+.comparison-table td {
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+}
+
+/* Progress Indicator */
+.progress-bar-custom {
+    height: 8px;
+    border-radius: 4px;
+}
+
+/* Copy Button */
+.copy-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .code-editor-body {
+        font-size: 12px;
+    }
+    
+    .question-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .navbar,
+    .footer,
+    .toggle-answer {
+        display: none;
+    }
+    
+    .answer-section {
+        display: block !important;
+    }
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Section Divider */
+.section-divider {
+    border-top: 2px solid #dee2e6;
+    margin: 2rem 0;
+}
+
+/* Example Output */
+.example-output {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-family: monospace;
+}
+
+.example-output-title {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}

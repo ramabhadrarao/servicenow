@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlideRecord - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()"><i class="ti ti-eye"></i> Show All</button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()"><i class="ti ti-eye-off"></i> Hide All</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Server-Side JavaScript - Topic 7</div>
+                            <h2 class="page-title">GlideRecord - Database Operations</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row row-deck row-cards">
+                        <div class="col-lg-8">
+                            
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What is GlideRecord?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>GlideRecord is the primary API for database operations in ServiceNow. It allows you to query, insert, update, and delete records from database tables.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Critical for Exams
+                                        </div>
+                                        <p>GlideRecord is the MOST tested topic in CSA and CAD exams. Master query(), next(), getValue(), setValue(), insert(), update(), and deleteRecord().</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Query Records - Reading Data</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Basic Query Pattern</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Step 1: Create GlideRecord object
+var gr = new GlideRecord('incident');
+
+// Step 2: Add query conditions
+gr.addQuery('active', true);
+gr.addQuery('priority', '1');
+
+// Step 3: Execute query
+gr.query();
+
+// Step 4: Loop through results
+while (gr.next()) {
+    // Step 5: Access field values
+    gs.info('Incident: ' + gr.number + ', Priority: ' + gr.priority);
+}
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>Query Operators</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>var gr = new GlideRecord('incident');
+
+// Equals
+gr.addQuery('state', '2');
+
+// Not equals
+gr.addQuery('state', '!=', '7');
+
+// Greater than, less than
+gr.addQuery('priority', '<', '3');
+gr.addQuery('sys_created_on', '>', '2024-01-01');
+
+// IN operator
+gr.addQuery('state', 'IN', '1,2,3');
+
+// LIKE (contains)
+gr.addQuery('short_description', 'CONTAINS', 'email');
+
+// STARTSWITH, ENDSWITH
+gr.addQuery('number', 'STARTSWITH', 'INC');
+
+// IS EMPTY, IS NOT EMPTY
+gr.addQuery('assignment_group', 'ISEMPTY');
+gr.addQuery('assigned_to', 'ISNOTEMPTY');
+
+gr.query();
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>OR Conditions</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>var gr = new GlideRecord('incident');
+
+// OR query - priority 1 OR 2
+var qc = gr.addQuery('priority', '1');
+qc.addOrCondition('priority', '2');
+
+// Complex OR: (priority=1 OR priority=2) AND state=2
+var qc = gr.addQuery('priority', '1');
+qc.addOrCondition('priority', '2');
+gr.addQuery('state', '2');
+
+gr.query();
+while (gr.next()) {
+    gs.info(gr.number);
+}
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Best Practice
+                                        </div>
+                                        <p>Always call query() before next(). Limit results with setLimit() for performance. Use addEncodedQuery() for complex queries copied from filter navigator.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Get/Set Field Values</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>getValue() and setValue()</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>var gr = new GlideRecord('incident');
+gr.get('sys_id_here');
+
+// Get field value
+var priority = gr.getValue('priority');  // Returns string
+var state = gr.state.toString();  // Also returns string
+
+// Get reference field sys_id
+var assignedToID = gr.getValue('assigned_to');
+
+// Get display value (for reference fields)
+var assignedToName = gr.getDisplayValue('assigned_to');
+var groupName = gr.assignment_group.getDisplayValue();
+
+// Set field value
+gr.setValue('priority', '1');
+gr.priority = '2';  // Alternative syntax
+
+// Set reference field
+gr.setValue('assigned_to', 'user_sys_id_here');
+gr.assigned_to = 'user_sys_id_here';
+
+// Update record
+gr.update();
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Insert Records</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Creating New Records</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Create new incident
+var gr = new GlideRecord('incident');
+gr.initialize();  // Optional but recommended
+
+gr.short_description = 'Network outage in Building A';
+gr.category = 'network';
+gr.priority = '1';
+gr.caller_id = gs.getUserID();
+
+// Insert returns sys_id of new record
+var newSysID = gr.insert();
+
+if (newSysID) {
+    gs.info('Created incident: ' + gr.number);
+} else {
+    gs.error('Failed to create incident');
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Update Records</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Updating Existing Records</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Update single record by sys_id
+var gr = new GlideRecord('incident');
+if (gr.get('sys_id_here')) {
+    gr.state = '2';  // In Progress
+    gr.assigned_to = gs.getUserID();
+    gr.update();
+}
+
+// Update multiple records
+var gr = new GlideRecord('incident');
+gr.addQuery('state', '1');  // New
+gr.addQuery('priority', '1');
+gr.query();
+
+while (gr.next()) {
+    gr.state = '2';
+    gr.assignment_group = 'high_priority_group_id';
+    gr.update();  // Update each record
+}
+
+// updateMultiple() - updates all matching records
+var gr = new GlideRecord('incident');
+gr.addQuery('state', '1');
+gr.addQuery('priority', '5');
+gr.setValue('state', '7');  // Closed
+gr.updateMultiple();  // Updates all at once
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Best Practice
+                                        </div>
+                                        <p>Use update() in a loop for complex logic. Use updateMultiple() for simple bulk updates (faster, but doesn't run business rules for each record).</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Delete Records</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Deleting Records</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Delete single record
+var gr = new GlideRecord('incident');
+if (gr.get('sys_id_here')) {
+    gr.deleteRecord();
+}
+
+// Delete multiple records
+var gr = new GlideRecord('incident');
+gr.addQuery('state', '7');  // Closed
+gr.addQuery('sys_created_on', '<', 'javascript:gs.daysAgo(365)');
+gr.query();
+
+while (gr.next()) {
+    gr.deleteRecord();
+}
+
+// deleteMultiple() - deletes all matching records
+var gr = new GlideRecord('incident');
+gr.addQuery('state', '7');
+gr.addQuery('sys_created_on', '<', 'javascript:gs.daysAgo(730)');
+gr.deleteMultiple();
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Important GlideRecord Methods</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Essential Methods</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>var gr = new GlideRecord('incident');
+
+// get() - Query by sys_id, returns boolean
+if (gr.get('sys_id_here')) {
+    // Record found
+}
+
+// get(name, value) - Query by any field
+if (gr.get('number', 'INC0010001')) {
+    // Record found
+}
+
+// getRowCount() - Count results
+gr.addQuery('active', true);
+gr.query();
+var count = gr.getRowCount();
+gs.info('Active incidents: ' + count);
+
+// hasNext() - Check if more records
+gr.query();
+if (gr.hasNext()) {
+    // At least one record exists
+}
+
+// next() - Move to next record
+while (gr.next()) {
+    // Process each record
+}
+
+// setLimit() - Limit results
+gr.setLimit(10);
+gr.query();
+
+// orderBy() and orderByDesc()
+gr.orderBy('priority');
+gr.orderByDesc('sys_created_on');
+gr.query();
+
+// nil() - Check if field is empty
+if (gr.assignment_group.nil()) {
+    // Field is empty
+}
+
+// changes() - Check if field was modified
+if (gr.priority.changes()) {
+    gs.info('Priority changed from ' + gr.priority.getOldValue() + 
+            ' to ' + gr.priority.getValue());
+}
+
+// changesFrom() and changesTo()
+if (gr.state.changesFrom('1').changesTo('2')) {
+    // State changed from New to In Progress
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (20 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <!-- Question 1 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What method executes a GlideRecord query?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gr.execute()</li>
+                                        <li>B) gr.query()</li>
+                                        <li>C) gr.run()</li>
+                                        <li>D) gr.get()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            query() executes the query and retrieves matching records. Always call query() before using next().
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 2 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you loop through GlideRecord results?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) for (gr in results)</li>
+                                        <li>B) while (gr.hasNext())</li>
+                                        <li>C) while (gr.next())</li>
+                                        <li>D) gr.forEach()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            Use while (gr.next()) to iterate through query results. next() moves to the next record and returns true if a record exists.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 3 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which method retrieves a single record by sys_id?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gr.query('sys_id')</li>
+                                        <li>B) gr.get('sys_id')</li>
+                                        <li>C) gr.getByID('sys_id')</li>
+                                        <li>D) gr.find('sys_id')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gr.get('sys_id') retrieves a single record by sys_id and returns true if found. Example: if (gr.get('123456')) { }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 4 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you create an OR condition in GlideRecord?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) gr.addQuery('field', 'value1 OR value2')</li>
+                                        <li>B) var qc = gr.addQuery('field', 'value1'); qc.addOrCondition('field', 'value2')</li>
+                                        <li>C) gr.addOrQuery('field', 'value1', 'value2')</li>
+                                        <li>D) gr.addQuery('field', 'value1') || gr.addQuery('field', 'value2')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Store addQuery() result and call addOrCondition() on it: var qc = gr.addQuery('priority', '1'); qc.addOrCondition('priority', '2');
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 5 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does gr.insert() return?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) true or false</li>
+                                        <li>B) The sys_id of the new record</li>
+                                        <li>C) The record number</li>
+                                        <li>D) The GlideRecord object</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            insert() returns the sys_id of the newly created record. Store it: var newID = gr.insert();
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 6 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What's the difference between update() and updateMultiple()?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) No difference</li>
+                                        <li>B) update() runs business rules for each record, updateMultiple() doesn't</li>
+                                        <li>C) updateMultiple() is slower</li>
+                                        <li>D) update() can only update one field</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            update() in a loop runs business rules for each record. updateMultiple() updates all records at once without running business rules per record (faster but less control).
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 7 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you get the display value of a reference field?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gr.getValue('assigned_to')</li>
+                                        <li>B) gr.getDisplayValue('assigned_to')</li>
+                                        <li>C) gr.assigned_to.getName()</li>
+                                        <li>D) gr.getReference('assigned_to')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            getDisplayValue() returns the display value (name) of reference fields. getValue() returns the sys_id.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 8 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which method counts the number of records returned by a query?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gr.count()</li>
+                                        <li>B) gr.getRowCount()</li>
+                                        <li>C) gr.size()</li>
+                                        <li>D) gr.length()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            getRowCount() returns the number of records. Call it after query(): gr.query(); var count = gr.getRowCount();
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 9 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you check if a field is empty in GlideRecord?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) if (gr.field == '')</li>
+                                        <li>B) if (gr.field.nil())</li>
+                                        <li>C) if (gr.isEmpty('field'))</li>
+                                        <li>D) if (!gr.field)</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use .nil() to check if a field is empty: if (gr.assignment_group.nil()) { }. This is the ServiceNow recommended method.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 10 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What's the correct order for GlideRecord operations?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) new GlideRecord → next() → addQuery() → query()</li>
+                                        <li>B) new GlideRecord → query() → addQuery() → next()</li>
+                                        <li>C) new GlideRecord → addQuery() → query() → next()</li>
+                                        <li>D) new GlideRecord → addQuery() → next() → query()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            Correct order: 1) new GlideRecord 2) addQuery 3) query() 4) next(). Always add queries before calling query(), then iterate with next().
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Questions 11-20 continue with similar structure -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which method limits the number of records returned?</span>
+                                    <span class="question-number">Q11</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) gr.limit(10)</li>
+                                        <li>B) gr.setLimit(10)</li>
+                                        <li>C) gr.setMaxRows(10)</li>
+                                        <li>D) gr.take(10)</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer11')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer11" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            setLimit(n) limits query results. Call before query(): gr.setLimit(10); gr.query();
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you sort GlideRecord results in ascending order?</span>
+                                    <span class="question-number">Q12</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gr.sort('priority')</li>
+                                        <li>B) gr.orderBy('priority')</li>
+                                        <li>C) gr.sortBy('priority')</li>
+                                        <li>D) gr.order('priority')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer12')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer12" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            orderBy('field') sorts ascending. orderByDesc('field') sorts descending. Call before query().
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does gr.changes() check?</span>
+                                    <span class="question-number">Q13</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) If any field in the record changed</li>
+                                        <li>B) If a specific field was modified</li>
+                                        <li>C) The change history</li>
+                                        <li>D) Who made changes</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer13')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer13" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gr.field.changes() returns true if that specific field was modified. Used in business rules with 'current'.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can you use GlideRecord in client scripts?</span>
+                                    <span class="question-number">Q14</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Yes, directly</li>
+                                        <li>B) No, use GlideAjax instead</li>
+                                        <li>C) Only in onLoad scripts</li>
+                                        <li>D) Only for reading data</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer14')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer14" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            GlideRecord cannot be used in client scripts (browser). Use GlideAjax to call server-side Script Includes that use GlideRecord.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What's the purpose of gr.initialize()?</span>
+                                    <span class="question-number">Q15</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Start the query</li>
+                                        <li>B) Prepare a new record with default values</li>
+                                        <li>C) Reset the GlideRecord</li>
+                                        <li>D) Initialize the database connection</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer15')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer15" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            initialize() prepares a new record and sets default values defined in the dictionary. Use before insert(): gr.initialize(); gr.field = value; gr.insert();
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you use addEncodedQuery()?</span>
+                                    <span class="question-number">Q16</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) To encode special characters</li>
+                                        <li>B) To add a complex query string from filter navigator</li>
+                                        <li>C) To encrypt the query</li>
+                                        <li>D) To format query output</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer16')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer16" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            addEncodedQuery() accepts an encoded query string from the filter navigator. Right-click breadcrumb → Copy query. Example: gr.addEncodedQuery('active=true^priority=1');
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does gr.canWrite() check?</span>
+                                    <span class="question-number">Q17</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) If the record is writable to disk</li>
+                                        <li>B) If the current user has write access to the record</li>
+                                        <li>C) If the field is readonly</li>
+                                        <li>D) If the record can be saved</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer17')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer17" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            canWrite() returns true if the current user has write access based on ACLs. Also available: canRead(), canDelete(), canCreate().
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you query for records with CONTAINS operator?</span>
+                                    <span class="question-number">Q18</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gr.addQuery('description', 'email')</li>
+                                        <li>B) gr.addQuery('description', 'CONTAINS', 'email')</li>
+                                        <li>C) gr.addQuery('description', 'LIKE', '%email%')</li>
+                                        <li>D) gr.contains('description', 'email')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer18')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer18" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use three-parameter addQuery with 'CONTAINS': gr.addQuery('short_description', 'CONTAINS', 'email'). Other operators: STARTSWITH, ENDSWITH, IN, etc.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What's the difference between setValue() and field assignment?</span>
+                                    <span class="question-number">Q19</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) No difference</li>
+                                        <li>B) setValue() bypasses certain business logic</li>
+                                        <li>C) Direct assignment is faster</li>
+                                        <li>D) setValue() is deprecated</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer19')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer19" class="answer-section hide">
+                                        <strong>Correct Answer: A</strong>
+                                        <div class="explanation">
+                                            Both work the same: gr.setValue('priority', '1') and gr.priority = '1' are equivalent. Use whichever is more readable.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you get the previous value of a field that changed?</span>
+                                    <span class="question-number">Q20</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) gr.field.previous()</li>
+                                        <li>B) gr.field.oldValue()</li>
+                                        <li>C) gr.field.changes().getOldValue()</li>
+                                        <li>D) current.field.getOldValue()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer20')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer20" class="answer-section hide">
+                                        <strong>Correct Answer: D</strong>
+                                        <div class="explanation">
+                                            In business rules, use current.field.changes() to check if changed, then current.field.getOldValue() to get previous value. Example: if (current.priority.changes()) { var old = current.priority.getOldValue(); }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">Navigation</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="business-rules.html" class="list-group-item list-group-item-action">
+                                        <i class="ti ti-arrow-left me-2"></i> Previous: Business Rules
+                                    </a>
+                                    <a href="glidesystem.html" class="list-group-item list-group-item-action">
+                                        Next: GlideSystem (gs) <i class="ti ti-arrow-right ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>GlideRecord Cheat Sheet</h4>
+                                    <ul class="small">
+                                        <li><code>new GlideRecord('table')</code></li>
+                                        <li><code>addQuery(field, value)</code></li>
+                                        <li><code>query()</code> - Execute</li>
+                                        <li><code>next()</code> - Loop</li>
+                                        <li><code>get(sys_id)</code> - Single record</li>
+                                        <li><code>getValue()/setValue()</code></li>
+                                        <li><code>insert()/update()/deleteRecord()</code></li>
+                                        <li><code>getRowCount()</code> - Count</li>
+                                        <li><code>nil()</code> - Check empty</li>
+                                        <li><code>changes()</code> - Check modified</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                                <li class="list-inline-item"><a href="glidesystem.html">Next Topic</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>

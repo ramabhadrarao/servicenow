@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Scripts - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()">
+                        <i class="ti ti-eye"></i> Show All
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()">
+                        <i class="ti ti-eye-off"></i> Hide All
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Client-Side JavaScript - Topic 2</div>
+                            <h2 class="page-title">Client Scripts</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row row-deck row-cards">
+                        <div class="col-lg-8">
+                            
+                            <!-- Introduction -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What are Client Scripts?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Client Scripts run in the user's browser and control form behavior. They execute when forms are loaded, when field values change, when forms are submitted, or when list cells are edited.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Important
+                                        </div>
+                                        <p>Client Scripts run on the CLIENT side (browser), not on the server. They cannot directly query the database - use GlideAjax for that.</p>
+                                    </div>
+
+                                    <h4 class="mt-4">Four Types of Client Scripts</h4>
+                                    <table class="table comparison-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>When It Runs</th>
+                                                <th>Use Case</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>onLoad</strong></td>
+                                                <td>When form loads</td>
+                                                <td>Set default values, make fields mandatory/readonly</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>onChange</strong></td>
+                                                <td>When field value changes</td>
+                                                <td>Field validation, populate related fields</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>onSubmit</strong></td>
+                                                <td>Before form submission</td>
+                                                <td>Form validation, prevent submission</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>onCellEdit</strong></td>
+                                                <td>When list cell is edited</td>
+                                                <td>Validate list inline edits</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- onLoad Scripts -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">onLoad Client Scripts</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Execute when a form is loaded and the DOM is ready.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>onLoad Example - Set Field Mandatory</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="ti ti-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>function onLoad() {
+    // Make assignment_group mandatory for high priority incidents
+    if (g_form.getValue('priority') == '1') {
+        g_form.setMandatory('assignment_group', true);
+        g_form.showFieldMsg('assignment_group', 'Required for P1 incidents', 'info');
+    }
+    
+    // Set default value if empty
+    if (g_form.getValue('category') == '') {
+        g_form.setValue('category', 'inquiry');
+    }
+    
+    // Hide/Show sections
+    if (g_form.getValue('state') == '6') {  // Resolved
+        g_form.setSectionDisplay('resolution_info', true);
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Best Practice
+                                        </div>
+                                        <p>Keep onLoad scripts lightweight. Heavy operations can slow down form loading. Avoid database queries in onLoad scripts.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- onChange Scripts -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">onChange Client Scripts</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Execute when a specific field value changes. Must specify which field triggers the script.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>onChange Example - Priority Field</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="ti ti-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    // Don't run during form load or templates
+    if (isLoading || isTemplate) {
+        return;
+    }
+    
+    // Check if value actually changed
+    if (oldValue == newValue) {
+        return;
+    }
+    
+    // Get the field name
+    var fieldName = control.id;
+    
+    // Business logic based on priority
+    if (newValue == '1') {  // Critical
+        g_form.setMandatory('assignment_group', true);
+        g_form.setMandatory('assigned_to', true);
+        g_form.showFieldMsg('priority', 'Critical incident - immediate assignment required', 'error');
+    } else {
+        g_form.setMandatory('assignment_group', false);
+        g_form.setMandatory('assigned_to', false);
+        g_form.hideFieldMsg('priority');
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-editor mt-3">
+                                        <div class="code-editor-header">
+                                            <span>onChange Example - Category/Subcategory</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="ti ti-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || isTemplate) {
+        return;
+    }
+    
+    // Clear subcategory when category changes
+    if (oldValue != newValue) {
+        g_form.clearValue('subcategory');
+        
+        // Set filter for subcategory based on category
+        g_form.addFilter('subcategory', 'category', newValue);
+    }
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- onSubmit Scripts -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">onSubmit Client Scripts</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Execute when form is submitted. Can prevent submission by returning false.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>onSubmit Example - Validation</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="ti ti-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>function onSubmit() {
+    // Validate high priority incidents
+    var priority = g_form.getValue('priority');
+    var assignmentGroup = g_form.getValue('assignment_group');
+    
+    if (priority == '1' && assignmentGroup == '') {
+        g_form.addErrorMessage('Critical incidents must have an assignment group');
+        return false;  // Prevent submission
+    }
+    
+    // Validate resolved incidents have resolution notes
+    var state = g_form.getValue('state');
+    var resolutionNotes = g_form.getValue('close_notes');
+    
+    if (state == '6' && resolutionNotes == '') {
+        var confirmed = confirm('No resolution notes provided. Continue anyway?');
+        return confirmed;  // Only submit if user confirms
+    }
+    
+    return true;  // Allow submission
+}
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Best Practice
+                                        </div>
+                                        <p>Use g_form.addErrorMessage() to show specific error messages. Always return true or false from onSubmit scripts.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- onCellEdit Scripts -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">onCellEdit Client Scripts</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Execute when a cell is edited in a list view with inline editing enabled.</p>
+                                    
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>onCellEdit Example</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="ti ti-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>function onCellEdit(sysIDs, table, oldValues, newValue, callback) {
+    // Validate the new value
+    if (newValue == '' || newValue == null) {
+        alert('Value cannot be empty');
+        callback(false);  // Reject the edit
+        return;
+    }
+    
+    // Additional validation
+    if (table == 'incident' && newValue == '1') {  // Priority 1
+        var confirmMsg = 'Setting priority to Critical for ' + sysIDs.length + ' record(s). Continue?';
+        if (!confirm(confirmMsg)) {
+            callback(false);  // Reject the edit
+            return;
+        }
+    }
+    
+    callback(true);  // Accept the edit
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Client Script Best Practices -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Client Script Best Practices</h3>
+                                </div>
+                                <div class="card-body">
+                                    <ul>
+                                        <li><strong>Performance:</strong> Keep scripts lightweight and efficient</li>
+                                        <li><strong>Avoid:</strong> Synchronous GlideAjax calls, heavy loops</li>
+                                        <li><strong>Always Check:</strong> isLoading and isTemplate parameters in onChange</li>
+                                        <li><strong>Return Values:</strong> onSubmit must return true/false</li>
+                                        <li><strong>Messages:</strong> Use g_form methods for user feedback</li>
+                                        <li><strong>Scope:</strong> Global client scripts run on all tables, use sparingly</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (15 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <!-- Question 1 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which client script type executes when a form is loaded?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) onChange</li>
+                                        <li>B) onLoad</li>
+                                        <li>C) onSubmit</li>
+                                        <li>D) onStart</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            onLoad client scripts execute when a form loads. Use them to set default values, make fields mandatory, or configure the form based on initial conditions.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 2 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you prevent a form from submitting in an onSubmit client script?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) return null</li>
+                                        <li>B) return false</li>
+                                        <li>C) g_form.stopSubmit()</li>
+                                        <li>D) g_form.preventDefault()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Return false from an onSubmit client script to prevent form submission. Return true to allow submission.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 3 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What parameter indicates if an onChange script is running during form load?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) isLoading</li>
+                                        <li>B) onLoad</li>
+                                        <li>C) isInitial</li>
+                                        <li>D) formLoad</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: A</strong>
+                                        <div class="explanation">
+                                            The isLoading parameter is true when the onChange script runs during form load. Always check: if (isLoading || isTemplate) return;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 4 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which client script type can prevent inline list edits?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) onLoad</li>
+                                        <li>B) onChange</li>
+                                        <li>C) onCellEdit</li>
+                                        <li>D) onListEdit</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            onCellEdit client scripts validate inline list edits. Call callback(false) to reject the edit or callback(true) to accept it.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 5 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can client scripts directly query the database?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Yes, using GlideRecord</li>
+                                        <li>B) Yes, using GlideQuery</li>
+                                        <li>C) No, use GlideAjax instead</li>
+                                        <li>D) Yes, using g_form.query()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            Client scripts run in the browser and cannot directly access the database. Use GlideAjax to call server-side Script Includes for database operations.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 6 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is the purpose of the 'control' parameter in onChange scripts?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) It contains the new value</li>
+                                        <li>B) It references the DOM element of the field</li>
+                                        <li>C) It contains the old value</li>
+                                        <li>D) It controls form submission</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            The control parameter references the DOM element of the field that changed. Use control.id to get the field name.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 7 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you display an error message to the user in a client script?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) alert('message')</li>
+                                        <li>B) g_form.addErrorMessage('message')</li>
+                                        <li>C) console.error('message')</li>
+                                        <li>D) gs.error('message')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use g_form.addErrorMessage() to display error messages in client scripts. Also available: addInfoMessage() and clearMessages().
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 8 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which method makes a field mandatory in a client script?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.setRequired('field', true)</li>
+                                        <li>B) g_form.setMandatory('field', true)</li>
+                                        <li>C) g_form.mandatory('field')</li>
+                                        <li>D) g_form.required('field', true)</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use g_form.setMandatory('field', true) to make a field mandatory, and g_form.setMandatory('field', false) to remove the requirement.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 9 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What happens if an onSubmit script doesn't return a value?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Form submission is prevented</li>
+                                        <li>B) Form submission proceeds (treated as true)</li>
+                                        <li>C) An error is thrown</li>
+                                        <li>D) User is prompted to confirm</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            If an onSubmit script doesn't explicitly return false, the submission proceeds. Always explicitly return true or false.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 10 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Where do client scripts execute?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) On the ServiceNow server</li>
+                                        <li>B) In the user's web browser</li>
+                                        <li>C) In the database</li>
+                                        <li>D) On both server and client</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Client scripts execute in the user's web browser, not on the server. This is why they cannot directly access the database.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 11 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which parameter in onChange contains the previous field value?</span>
+                                    <span class="question-number">Q11</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) control</li>
+                                        <li>B) oldValue</li>
+                                        <li>C) newValue</li>
+                                        <li>D) previousValue</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer11')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer11" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            onChange signature: function onChange(control, oldValue, newValue, isLoading, isTemplate). oldValue contains the previous value.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 12 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can global client scripts impact system performance?</span>
+                                    <span class="question-number">Q12</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) No, they're optimized by the system</li>
+                                        <li>B) Yes, they run on every form load across all tables</li>
+                                        <li>C) Only if they query the database</li>
+                                        <li>D) Performance impact is negligible</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer12')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer12" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Global client scripts run on every form across all tables, which can significantly impact performance. Use table-specific scripts when possible.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 13 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you hide a field in a client script?</span>
+                                    <span class="question-number">Q13</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) g_form.hideField('field')</li>
+                                        <li>B) g_form.setDisplay('field', false)</li>
+                                        <li>C) g_form.setVisible('field', false)</li>
+                                        <li>D) g_form.hide('field')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer13')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer13" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Use g_form.setDisplay('field', false) to hide a field and g_form.setDisplay('field', true) to show it.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 14 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What is the isTemplate parameter used for in onChange?</span>
+                                    <span class="question-number">Q14</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Indicates if the form is a UI template</li>
+                                        <li>B) Indicates if values are being set from a template</li>
+                                        <li>C) Indicates if the script is a template script</li>
+                                        <li>D) Not used in ServiceNow</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer14')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer14" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            isTemplate is true when field values are being set from a template. Check this to avoid running logic during template application: if (isLoading || isTemplate) return;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 15 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can you have multiple onSubmit client scripts on the same table?</span>
+                                    <span class="question-number">Q15</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) No, only one is allowed</li>
+                                        <li>B) Yes, all active scripts execute in order</li>
+                                        <li>C) Yes, but only the first one runs</li>
+                                        <li>D) Yes, but they run randomly</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer15')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer15" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            Multiple onSubmit scripts can exist on the same table. They execute in order (by Order field). If ANY returns false, submission is prevented.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">Navigation</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="client-side-basics.html" class="list-group-item list-group-item-action">
+                                        <i class="ti ti-arrow-left me-2"></i> Previous: JS Basics
+                                    </a>
+                                    <a href="ui-policies-actions.html" class="list-group-item list-group-item-action">
+                                        Next: UI Policies & Actions <i class="ti ti-arrow-right ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>Key Takeaways</h4>
+                                    <ul>
+                                        <li>Four types: onLoad, onChange, onSubmit, onCellEdit</li>
+                                        <li>Run in browser, not server</li>
+                                        <li>Check isLoading & isTemplate</li>
+                                        <li>Return false to prevent submission</li>
+                                        <li>Use g_form API for form manipulation</li>
+                                        <li>Avoid global client scripts</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                                <li class="list-inline-item"><a href="ui-policies-actions.html">Next Topic</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>

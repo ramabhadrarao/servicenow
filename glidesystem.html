@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlideSystem (gs) - ServiceNow Exam Guide</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <h1 class="navbar-brand">
+                    <a href="index.html"><i class="ti ti-arrow-left me-2"></i>Back to Topics</a>
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <button class="btn btn-primary me-2" onclick="showAllAnswers()"><i class="ti ti-eye"></i> Show All</button>
+                    <button class="btn btn-outline-primary" onclick="hideAllAnswers()"><i class="ti ti-eye-off"></i> Hide All</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <div class="page-pretitle">Server-Side JavaScript - Topic 8</div>
+                            <h2 class="page-title">GlideSystem (gs) Object</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row row-deck row-cards">
+                        <div class="col-lg-8">
+                            
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">What is GlideSystem (gs)?</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>The GlideSystem (gs) object provides access to system methods and information. It's available in all server-side scripts and offers utilities for logging, user management, properties, and more.</p>
+                                    
+                                    <div class="note-box">
+                                        <div class="note-box-title">
+                                            <i class="ti ti-info-circle"></i> Server-Side Only
+                                        </div>
+                                        <p>The gs object is ONLY available in server-side scripts (Business Rules, Script Includes, etc.). Not available in client scripts.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Logging Methods</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Log Messages</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Log levels (shown in System Log)
+gs.log('This is a log message');  // INFO level
+gs.info('Information message');    // INFO level
+gs.warn('Warning message');        // WARNING level
+gs.error('Error message');         // ERROR level
+gs.debug('Debug message');         // DEBUG level
+
+// Log with source (helps identify where log came from)
+gs.log('Processing incident', 'MyScriptInclude');
+gs.error('Failed to update record', 'BusinessRule.UpdateIncident');
+
+// Example in Business Rule
+if (current.priority == '1' && current.assignment_group.nil()) {
+    gs.error('Critical incident without assignment group: ' + current.number);
+}
+</pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="best-practice mt-3">
+                                        <div class="best-practice-title">
+                                            <i class="ti ti-bulb"></i> Best Practice
+                                        </div>
+                                        <p>Use appropriate log levels. Use gs.info() for normal operations, gs.warn() for potential issues, gs.error() for failures. View logs at System Logs > System Log.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">User Information</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Get Current User Info</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Get current user's sys_id
+var userID = gs.getUserID();
+
+// Get current user's username
+var userName = gs.getUserName();  // Returns 'john.doe'
+
+// Get user's display name
+var displayName = gs.getUserDisplayName();  // Returns 'John Doe'
+
+// Check if user has a role
+if (gs.hasRole('admin')) {
+    // User has admin role
+}
+
+if (gs.hasRole('itil,admin')) {
+    // User has EITHER itil OR admin role (OR logic)
+}
+
+// Check if user is impersonating
+if (gs.isImpersonating()) {
+    gs.log('User is impersonating');
+}
+
+// Example: Auto-assign to current user
+if (current.assigned_to.nil()) {
+    current.assigned_to = gs.getUserID();
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">User Messages</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Display Messages to Users</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Info message (blue banner)
+gs.addInfoMessage('Record has been updated successfully');
+
+// Error message (red banner)
+gs.addErrorMessage('Failed to update record: Missing required field');
+
+// Example in Business Rule
+if (current.priority == '1' && current.assignment_group.nil()) {
+    gs.addErrorMessage('Critical incidents must have an assignment group');
+    current.setAbortAction(true);  // Prevent save
+}
+
+// Success message
+gs.addInfoMessage('Incident ' + current.number + ' has been created');
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">System Properties</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Get/Set System Properties</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Get system property value
+var maxAttachmentSize = gs.getProperty('glide.attachment.max_size');
+var instanceName = gs.getProperty('instance_name');
+
+// Get property with default value if not found
+var defaultPriority = gs.getProperty('custom.default.priority', '3');
+
+// Set property value (requires admin role)
+gs.setProperty('custom.my.property', 'value');
+
+// Example: Use property for configuration
+var autoAssignEnabled = gs.getProperty('custom.incident.auto_assign', 'false');
+if (autoAssignEnabled == 'true') {
+    // Auto-assign logic
+}
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Date/Time Methods</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Date/Time Utilities</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Get current date/time
+var now = gs.now();  // Returns: '2024-10-24 10:30:00'
+var nowDateTime = gs.nowDateTime();  // Returns GlideDateTime object
+var nowNoTZ = gs.nowNoTZ();  // Without timezone conversion
+
+// Days ago
+var sevenDaysAgo = gs.daysAgo(7);  // Date 7 days ago
+var startOfToday = gs.daysAgoStart(0);  // Start of today
+var endOfToday = gs.daysAgoEnd(0);  // End of today
+
+// Months ago
+var oneMonthAgo = gs.monthsAgo(1);
+var startOfMonth = gs.monthsAgoStart(0);
+var endOfMonth = gs.monthsAgoEnd(0);
+
+// Begin/End of specific periods
+var startOfWeek = gs.beginningOfThisWeek();
+var endOfWeek = gs.endOfThisWeek();
+var startOfMonth = gs.beginningOfThisMonth();
+var endOfMonth = gs.endOfThisMonth();
+var startOfYear = gs.beginningOfThisYear();
+
+// Date/Time calculations
+var yesterday = gs.daysAgo(1);
+var nextWeek = gs.daysAgo(-7);  // Negative for future
+
+// Example: Query records from last 30 days
+var gr = new GlideRecord('incident');
+gr.addQuery('sys_created_on', '>', gs.daysAgoStart(30));
+gr.query();
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Utility Methods</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Common Utility Methods</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Generate GUID
+var newGUID = gs.generateGUID();
+
+// Get message from sys_ui_message table
+var msg = gs.getMessage('Record not found');
+var msgWithParams = gs.getMessage('Hello {0}, you have {1} tasks', [userName, taskCount]);
+
+// Nil check (check if value is null or empty)
+if (gs.nil(current.assignment_group)) {
+    // Field is empty
+}
+
+// Get session info
+var sessionID = gs.getSessionID();
+var clientIP = gs.getClientIP();
+
+// URL utilities
+var currentURL = gs.getProperty('glide.servlet.uri');
+var baseURL = gs.getProperty('glide.servlet.uri') + '/nav_to.do?uri=' + current.getLink();
+
+// Execute business rule
+gs.eventQueue('incident.assigned', current);
+
+// Sleep (use sparingly)
+gs.sleep(1000);  // Sleep for 1 second (1000 ms)
+
+// Example: Generate unique number
+var uniqueID = gs.generateGUID();
+gs.log('Generated ID: ' + uniqueID);
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Script Evaluation</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="code-editor">
+                                        <div class="code-editor-header">
+                                            <span>Evaluate Scripts and Expressions</span>
+                                            <button class="copy-btn" onclick="copyCode(this)"><i class="ti ti-copy"></i> Copy</button>
+                                        </div>
+                                        <div class="code-editor-body">
+<pre>// Evaluate script from string (use carefully!)
+var result = gs.eval('2 + 2');  // Returns 4
+
+// Check if running in background
+if (gs.isInteractive()) {
+    // Running interactively (from UI)
+} else {
+    // Running in background (scheduled job, etc.)
+}
+
+// Get current scope
+var currentScope = gs.getCurrentScopeName();  // Returns 'global' or app scope
+
+// Include script
+gs.include('UtilityScriptInclude');
+</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exam Questions -->
+                            <div class="section-divider"></div>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="card-title">
+                                        <i class="ti ti-help-circle me-2"></i>CSA & CAD Exam Questions (15 Questions)
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <!-- Question 1 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you get the current user's sys_id in a server script?</span>
+                                    <span class="question-number">Q1</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.getUser()</li>
+                                        <li>B) gs.getUserID()</li>
+                                        <li>C) gs.getUserSysID()</li>
+                                        <li>D) gs.currentUser()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer1')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer1" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gs.getUserID() returns the sys_id of the currently logged-in user. Also available: gs.getUserName() for username, gs.getUserDisplayName() for full name.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 2 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which method displays an error message to the user?</span>
+                                    <span class="question-number">Q2</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.showError('message')</li>
+                                        <li>B) gs.addErrorMessage('message')</li>
+                                        <li>C) gs.error('message')</li>
+                                        <li>D) gs.displayError('message')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer2')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer2" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gs.addErrorMessage() displays a red error banner to the user. gs.error() writes to system logs. Also: gs.addInfoMessage() for info messages.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 3 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you get a date from 7 days ago?</span>
+                                    <span class="question-number">Q3</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.daysAgo(7)</li>
+                                        <li>B) gs.subtractDays(7)</li>
+                                        <li>C) gs.getDate(-7)</li>
+                                        <li>D) gs.pastDays(7)</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer3')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer3" class="answer-section hide">
+                                        <strong>Correct Answer: A</strong>
+                                        <div class="explanation">
+                                            gs.daysAgo(7) returns a date 7 days ago. Use daysAgoStart() for beginning of day, daysAgoEnd() for end of day. Negative values for future dates.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 4 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Where can you use the gs object?</span>
+                                    <span class="question-number">Q4</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) Only in Business Rules</li>
+                                        <li>B) In all server-side scripts</li>
+                                        <li>C) In client scripts</li>
+                                        <li>D) In both client and server scripts</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer4')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer4" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gs is available in ALL server-side scripts: Business Rules, Script Includes, Scheduled Jobs, UI Actions (server side), etc. NOT available in client scripts.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 5 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you check if a user has a specific role?</span>
+                                    <span class="question-number">Q5</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.checkRole('admin')</li>
+                                        <li>B) gs.hasRole('admin')</li>
+                                        <li>C) gs.userHasRole('admin')</li>
+                                        <li>D) gs.validateRole('admin')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer5')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer5" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gs.hasRole('role_name') returns true if current user has that role. Use comma-separated for OR logic: gs.hasRole('admin,itil') checks if user has admin OR itil.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 6 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does gs.now() return?</span>
+                                    <span class="question-number">Q6</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) GlideDateTime object</li>
+                                        <li>B) Current date/time as string</li>
+                                        <li>C) Unix timestamp</li>
+                                        <li>D) JavaScript Date object</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer6')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer6" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gs.now() returns current date/time as a string in format '2024-10-24 10:30:00'. Use gs.nowDateTime() to get GlideDateTime object.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 7 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you get a system property value?</span>
+                                    <span class="question-number">Q7</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.getProperty('property.name')</li>
+                                        <li>B) gs.property('property.name')</li>
+                                        <li>C) gs.getSystemProperty('property.name')</li>
+                                        <li>D) gs.readProperty('property.name')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer7')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer7" class="answer-section hide">
+                                        <strong>Correct Answer: A</strong>
+                                        <div class="explanation">
+                                            gs.getProperty('name') retrieves system property value. Can provide default: gs.getProperty('name', 'default_value'). Set with gs.setProperty().
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 8 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What method generates a globally unique identifier?</span>
+                                    <span class="question-number">Q8</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.createGUID()</li>
+                                        <li>B) gs.generateGUID()</li>
+                                        <li>C) gs.newGUID()</li>
+                                        <li>D) gs.getGUID()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer8')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer8" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gs.generateGUID() generates a 32-character globally unique identifier. Useful for creating unique values.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 9 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you check if a value is null or empty?</span>
+                                    <span class="question-number">Q9</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.isEmpty(value)</li>
+                                        <li>B) gs.nil(value)</li>
+                                        <li>C) gs.isNull(value)</li>
+                                        <li>D) gs.checkNull(value)</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer9')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer9" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gs.nil(value) returns true if value is null, undefined, or empty string. Example: if (gs.nil(current.assignment_group)) { }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 10 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Which gs method writes to the system log?</span>
+                                    <span class="question-number">Q10</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.log()</li>
+                                        <li>B) gs.write()</li>
+                                        <li>C) gs.print()</li>
+                                        <li>D) gs.console()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer10')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer10" class="answer-section hide">
+                                        <strong>Correct Answer: A</strong>
+                                        <div class="explanation">
+                                            gs.log() writes INFO level messages to system log. Also: gs.info(), gs.warn(), gs.error(), gs.debug() for different log levels.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Questions 11-15 -->
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you get the start of the current week?</span>
+                                    <span class="question-number">Q11</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.startOfWeek()</li>
+                                        <li>B) gs.beginningOfThisWeek()</li>
+                                        <li>C) gs.weekStart()</li>
+                                        <li>D) gs.thisWeekStart()</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer11')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer11" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gs.beginningOfThisWeek() returns start of current week. Also: endOfThisWeek(), beginningOfThisMonth(), beginningOfThisYear().
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does gs.getUserName() return?</span>
+                                    <span class="question-number">Q12</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge csa">CSA</span>
+                                    <ul class="options-list">
+                                        <li>A) User's sys_id</li>
+                                        <li>B) User's full name</li>
+                                        <li>C) User's username/login</li>
+                                        <li>D) User's email</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer12')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer12" class="answer-section hide">
+                                        <strong>Correct Answer: C</strong>
+                                        <div class="explanation">
+                                            gs.getUserName() returns the username/login (e.g., 'john.doe'). For full name use gs.getUserDisplayName(), for sys_id use gs.getUserID().
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>How do you retrieve a message from sys_ui_message table?</span>
+                                    <span class="question-number">Q13</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) gs.getUIMessage('key')</li>
+                                        <li>B) gs.getMessage('key')</li>
+                                        <li>C) gs.fetchMessage('key')</li>
+                                        <li>D) gs.readMessage('key')</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer13')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer13" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gs.getMessage('key') retrieves messages from sys_ui_message. Supports parameters: gs.getMessage('Hello {0}', [name]).
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>What does gs.isInteractive() check?</span>
+                                    <span class="question-number">Q14</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) If user is logged in</li>
+                                        <li>B) If script is running from UI (not background)</li>
+                                        <li>C) If form is in edit mode</li>
+                                        <li>D) If user is interacting with the page</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer14')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer14" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            gs.isInteractive() returns true if script is running from UI interaction, false if running in background (scheduled job, async business rule).
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card question-card">
+                                <div class="question-header">
+                                    <span>Can gs.addInfoMessage() be used in async business rules?</span>
+                                    <span class="question-number">Q15</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="exam-badge cad">CAD</span>
+                                    <ul class="options-list">
+                                        <li>A) Yes, it works in all business rules</li>
+                                        <li>B) No, user messages don't display in async context</li>
+                                        <li>C) Yes, but only for admin users</li>
+                                        <li>D) No, use gs.log() instead</li>
+                                    </ul>
+                                    <div class="toggle-answer" onclick="toggleAnswer('answer15')">
+                                        <i class="ti ti-eye me-1"></i>Show Answer
+                                    </div>
+                                    <div id="answer15" class="answer-section hide">
+                                        <strong>Correct Answer: B</strong>
+                                        <div class="explanation">
+                                            User messages (addInfoMessage, addErrorMessage) only display when script runs interactively. Async business rules run in background, so messages aren't shown. Use gs.log() for background logging.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="col-lg-4">
+                            <div class="card topic-nav">
+                                <div class="card-header">
+                                    <h3 class="card-title">Navigation</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <a href="gliderecord.html" class="list-group-item list-group-item-action">
+                                        <i class="ti ti-arrow-left me-2"></i> Previous: GlideRecord
+                                    </a>
+                                    <a href="index.html" class="list-group-item list-group-item-action">
+                                        Back to Home <i class="ti ti-home ms-auto"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>gs Quick Reference</h4>
+                                    <ul class="small">
+                                        <li><code>gs.getUserID()</code> - User sys_id</li>
+                                        <li><code>gs.getUserName()</code> - Username</li>
+                                        <li><code>gs.hasRole('role')</code> - Check role</li>
+                                        <li><code>gs.addInfoMessage()</code> - Info banner</li>
+                                        <li><code>gs.addErrorMessage()</code> - Error banner</li>
+                                        <li><code>gs.log()</code> - Write to logs</li>
+                                        <li><code>gs.now()</code> - Current time</li>
+                                        <li><code>gs.daysAgo(n)</code> - Date n days ago</li>
+                                        <li><code>gs.getProperty()</code> - System property</li>
+                                        <li><code>gs.nil(value)</code> - Check null/empty</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer footer-transparent d-print-none">
+                <div class="container-xl">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                                <li class="list-inline-item"><a href="gliderecord.html">Previous Topic</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script src="common.js"></script>
+</body>
+</html>
